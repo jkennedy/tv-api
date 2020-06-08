@@ -49,8 +49,15 @@ export class AppService {
               {
                 "title": "Ashlie Animal",
                 "image_ratio": "16by9",
-                "image_url": "http://images.unsplash.com/photo-1554456854-55a089fd4cb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80",
+                "image_url": "https://jackkennedy.info/content/images/2020/06/dog.jpg",
                 "action_data": "{\"pictureIdx\": 5}",
+                "is_playable": false
+              },
+              {
+                "title": "Ashlie New",
+                "image_ratio": "16by9",
+                "image_url": "https://developer.samsung.com/onlinedocs/tv/Preview/1.jpg",
+                "action_data": "{\"pictureIdx\": 6}",
                 "is_playable": false
               }
             ]
