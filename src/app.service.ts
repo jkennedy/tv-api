@@ -54,9 +54,9 @@ export class AppService {
                 "is_playable": false
               },
               {
-                "title": "Ashlie New",
+                "title": "Weather",
                 "image_ratio": "16by9",
-                "image_url": "https://developer.samsung.com/onlinedocs/tv/Preview/1.jpg",
+                "image_url": "https://www.myfoxhurricane.com/custom/omni/b_xm0.jpg",
                 "action_data": "{\"pictureIdx\": 6}",
                 "is_playable": false
               }
