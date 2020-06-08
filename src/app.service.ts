@@ -9,11 +9,11 @@ export class AppService {
         "expires": 4106938892,
         "sections": [
           {
-            "title": "Popular VOD",
+            "title": "Ashlie VOD",
             "tiles": [
               {
-                "title": "Funny Jack",
-                "subtitle": "Birthday Party",
+                "title": "Ashlie Funny",
+                "subtitle": "Ashlie Party",
                 "image_ratio": "16by9",
                 "image_url": "http://developer.samsung.com/onlinedocs/tv/Preview/1.jpg",
                 "action_data": "{\"videoIdx\": 1}",
@@ -22,17 +22,17 @@ export class AppService {
             ]
           },
           {
-            "title": "Jack recommended",
+            "title": "Ashlie Recommended",
             "tiles": [
               {
-                "title": "Jack Living",
+                "title": "Ashlie Living",
                 "image_ratio": "1by1",
                 "image_url": "http://developer.samsung.com/onlinedocs/tv/Preview/2.jpg",
                 "action_data": "{\"videoIdx\": 2}",
                 "is_playable": true
               },
               {
-                "title": "Jack Cooking",
+                "title": "Ashlie Cooking",
                 "subtitle": "Season 1",
                 "image_ratio": "16by9",
                 "image_url": "http://developer.samsung.com/onlinedocs/tv/Preview/3.jpg",
@@ -40,14 +40,14 @@ export class AppService {
                 "is_playable": false
               },
               {
-                "title": "Jack Party",
+                "title": "Ashlie Party",
                 "image_ratio": "16by9",
                 "image_url": "http://developer.samsung.com/onlinedocs/tv/Preview/4.jpg",
                 "action_data": "{\"pictureIdx\": 4}",
                 "is_playable": false
               },
               {
-                "title": "Jack Animal",
+                "title": "Ashlie Animal",
                 "image_ratio": "16by9",
                 "image_url": "http://developer.samsung.com/onlinedocs/tv/Preview/5.jpg",
                 "action_data": "{\"pictureIdx\": 5}",
