@@ -15,7 +15,7 @@ export class AppService {
                 "title": "Ashlie Funny",
                 "subtitle": "Ashlie Party",
                 "image_ratio": "16by9",
-                "image_url": "https://images.unsplash.com/photo-1502673530728-f79b4cab31b1",
+                "image_url": "http://developer.samsung.com/onlinedocs/tv/Preview/1.jpg",
                 "action_data": "{\"videoIdx\": 1}",
                 "is_playable": true
               }
@@ -49,7 +49,7 @@ export class AppService {
               {
                 "title": "Ashlie Animal",
                 "image_ratio": "16by9",
-                "image_url": "http://developer.samsung.com/onlinedocs/tv/Preview/5.jpg",
+                "image_url": "https://images.unsplash.com/photo-1502673530728-f79b4cab31b1",
                 "action_data": "{\"pictureIdx\": 5}",
                 "is_playable": false
               }
