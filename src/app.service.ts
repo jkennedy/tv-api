@@ -15,7 +15,7 @@ export class AppService {
                 "title": "Ashlie Funny",
                 "subtitle": "Ashlie Party",
                 "image_ratio": "16by9",
-                "image_url": "http://developer.samsung.com/onlinedocs/tv/Preview/1.jpg",
+                "image_url": "https://jackkennedy.info/content/images/2020/06/Screen-Shot-2020-06-11-at-6.21.45-AM.png",
                 "action_data": "{\"videoIdx\": 1}",
                 "is_playable": true
               }
