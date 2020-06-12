@@ -10,6 +10,7 @@ export class AppController {
   @Get()
   getSections()  {
     return this.appService.getSections();
+    // test
   }
 
   @Get('time')
