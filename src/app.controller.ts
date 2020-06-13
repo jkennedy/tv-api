@@ -16,6 +16,9 @@ export class AppController {
   @Get('time')
   @HttpCode(HttpStatus.OK)
   @Header('Content-Type', 'image/png')
+  @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
+  @Header('Expires', '-1')
+  @Header('Pragma', 'no-cache')
   getTime ( @Res() res) {
     const date = moment().format('MMMM Do YYYY') + '\n' + moment().format('h:mm:ss a');
 
