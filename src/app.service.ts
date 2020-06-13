@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
 
   getSections() {
+    Logger.log('Get Sections');
+
     var sections =
       {
         "sections": [
