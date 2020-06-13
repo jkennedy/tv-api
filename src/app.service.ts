@@ -8,6 +8,7 @@ export class AppService {
 
     var sections =
       {
+        "expires": 0,
         "sections": [
           {
             "title": "Today",
