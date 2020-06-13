@@ -17,7 +17,7 @@ export class AppService {
                 "title": "Today",
                 "subtitle": "Current Time",
                 "image_ratio": "16by9",
-                "image_url": "https://api.jackkennedy.info/time",
+                "image_url": "https://api.jackkennedy.info/time?file.png",
                 "action_data": "{\"videoIdx\": 1}",
                 "is_playable": true
               }
