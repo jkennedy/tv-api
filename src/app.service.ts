@@ -6,7 +6,6 @@ export class AppService {
   getSections() {
     var sections =
       {
-        "expires": 4106938892,
         "sections": [
           {
             "title": "Today",
