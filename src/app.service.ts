@@ -9,13 +9,13 @@ export class AppService {
         "expires": 4106938892,
         "sections": [
           {
-            "title": "Ashlie VOD",
+            "title": "Today",
             "tiles": [
               {
-                "title": "Ashlie Funny",
-                "subtitle": "Ashlie Party",
+                "title": "Today",
+                "subtitle": "Current Time",
                 "image_ratio": "16by9",
-                "image_url": "https://jackkennedy.info/content/images/2020/06/Screen-Shot-2020-06-11-at-6.21.45-AM.png",
+                "image_url": "https://api.jackkennedy.info/time,
                 "action_data": "{\"videoIdx\": 1}",
                 "is_playable": true
               }
