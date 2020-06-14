@@ -1,7 +1,7 @@
-import { Controller, Get, Header, HttpCode, HttpStatus, Res } from '@nestjs/common';
+import { Controller, Get, Header, HttpCode, HttpStatus, Res, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 import text2png = require('text2png');
-import * as moment from 'moment';
+import * as moment from 'moment-timezone';
 
 @Controller()
 export class AppController {
@@ -19,8 +19,10 @@ export class AppController {
   @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
-  getTime ( @Res() res) {
-    const date = moment().format('MMMM Do YYYY') + '\n' + moment().format('h:mm:ss a');
+  getTime ( @Res() res, @Param('timezone') timezone: string) {
+    const date = moment().tz(timezone).format('MMMM Do YYYY') + '\n' + moment().tz(timezone).format('h:mm a');
+
+    console.log("Timezone:" + timezone);
 
     var image = text2png(date, {
       font: '80px Arial',
