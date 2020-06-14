@@ -22,10 +22,37 @@ export class AppController {
   @Header('Pragma', 'no-cache')
   getTime ( @Res() res, @Query('timezone') timezone) {
     console.log("getTime: Timezone:" + timezone);
-    const date = moment().tz(timezone).format('MMMM Do YYYY') + '\n' + moment().tz(timezone).format('h:mm a');
+    let m = moment().tz(timezone);
 
-    var image = text2png(date, {
-      font: '80px Arial',
+    const dateText = m.format('MMMM Do YYYY');
+    const amPmText = m.format('a');
+    const minutes = m.minutes();
+
+    let timeDescription = '';
+
+    if (minutes <= 10)
+      timeDescription = "Just After";
+    else if (minutes >= 10 && minutes < 20)
+      timeDescription = "About Quarter After";
+    else if (minutes >= 20 && minutes < 30)
+      timeDescription = "Almost Half Past ";
+    else if (minutes >= 30 && minutes < 40)
+        timeDescription = "About Half Past ";
+    else if (minutes >= 40 && minutes < 50) {
+        timeDescription = "About A Quarter Till";
+        m.hours(m.hour() + 1);
+    }
+    else if (minutes >= 50 && minutes < 40) {
+        timeDescription = "Almost";
+        m.hours(m.hour() + 1);
+    }
+
+    timeDescription = timeDescription + ' ' + m.format('h');
+
+    let text = dateText + '\n' + timeDescription + ' ' + amPmText;
+
+    var image = text2png(text, {
+      font: '30px Arial',
       color: 'white',
       textAlign: 'center',
       lineSpacing: 10,
