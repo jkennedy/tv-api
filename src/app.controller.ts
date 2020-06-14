@@ -10,10 +10,10 @@ export class AppController {
   @Get(':timezone')
   getSections( @Param('timezone') timezone: string)  {
     console.log("Timezone:" + timezone);
-    return this.appService.getSections();
+    return this.appService.getSections(timezone);
   }
 
-  @Get('time')
+  @Get('time:timezone')
   @HttpCode(HttpStatus.OK)
   @Header('Content-Type', 'image/png')
   @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
