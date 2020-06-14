@@ -7,10 +7,10 @@ import * as moment from 'moment-timezone';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getSections()  {
+  @Get(':timezone')
+  getSections( @Param('timezone') timezone: string)  {
+    console.log("Timezone:" + timezone);
     return this.appService.getSections();
-    // test
   }
 
   @Get('time')
@@ -20,9 +20,8 @@ export class AppController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   getTime ( @Res() res, @Param('timezone') timezone: string) {
-    const date = moment().tz(timezone).format('MMMM Do YYYY') + '\n' + moment().tz(timezone).format('h:mm a');
-
     console.log("Timezone:" + timezone);
+    const date = moment().tz(timezone).format('MMMM Do YYYY') + '\n' + moment().tz(timezone).format('h:mm a');
 
     var image = text2png(date, {
       font: '80px Arial',
