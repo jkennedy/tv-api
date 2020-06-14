@@ -5,10 +5,12 @@ export class AppService {
 
   getSections() {
     Logger.log('Get Sections');
+    const expires = Date.now() + 60000;
+    console.log('returning expires:' + expires);
 
     var sections =
       {
-        "expires": 0,
+        "expires": expires,
         "sections": [
           {
             "title": "Today",
