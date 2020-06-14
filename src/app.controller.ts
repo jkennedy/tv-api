@@ -9,7 +9,8 @@ export class AppController {
 
   @Get()
   getSections( @Query('timezone') timezone)  {
-    console.log("Timezone:" + timezone);
+    console.log("GetSections: Timezone:" + timezone);
+    // America%2FNew_York
     return this.appService.getSections(timezone);
   }
 
@@ -19,8 +20,8 @@ export class AppController {
   @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
-  getTime ( @Res() res, @Param('timezone') timezone: string) {
-    console.log("Timezone:" + timezone);
+  getTime ( @Res() res, @Query('timezone') timezone) {
+    console.log("getTime: Timezone:" + timezone);
     const date = moment().tz(timezone).format('MMMM Do YYYY') + '\n' + moment().tz(timezone).format('h:mm a');
 
     var image = text2png(date, {

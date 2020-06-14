@@ -20,7 +20,7 @@ export class AppService {
                 "title": "Today",
                 "subtitle": "Current Time",
                 "image_ratio": "16by9",
-                "image_url": "https://api.jackkennedy.info/time/" + encodeURIComponent(timezone),
+                "image_url": "https://api.jackkennedy.info/time/?timezone=" + encodeURIComponent(timezone),
                 "action_data": "{\"videoIdx\": 1}",
                 "is_playable": true
               }
@@ -49,7 +49,7 @@ export class AppService {
         ]
       };
 
-      console.log(sections);
+    console.log(JSON.stringify(sections));
     return sections;
   }
 }
