@@ -1,4 +1,4 @@
-import { Controller, Get, Header, HttpCode, HttpStatus, Res, Param } from '@nestjs/common';
+import { Controller, Get, Header, HttpCode, HttpStatus, Res, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import text2png = require('text2png');
 import * as moment from 'moment-timezone';
@@ -7,13 +7,13 @@ import * as moment from 'moment-timezone';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get(':timezone')
-  getSections( @Param('timezone') timezone: string)  {
+  @Get()
+  getSections( @Query('timezone') timezone)  {
     console.log("Timezone:" + timezone);
     return this.appService.getSections(timezone);
   }
 
-  @Get('time:timezone')
+  @Get('time')
   @HttpCode(HttpStatus.OK)
   @Header('Content-Type', 'image/png')
   @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')

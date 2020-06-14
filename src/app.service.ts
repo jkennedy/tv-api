@@ -48,6 +48,8 @@ export class AppService {
           }
         ]
       };
+
+      console.log(sections);
     return sections;
   }
 }
