@@ -1,11 +1,11 @@
-import { Controller, Get, Header, HttpCode, HttpStatus, Res, Param, Query } from '@nestjs/common';
+import { Controller, HttpService, Get, Header, HttpCode, HttpStatus, Res, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import text2png = require('text2png');
 import * as moment from 'moment-timezone';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService,  private readonly httpService: HttpService) {}
 
   @Get()
   getSections( @Query('timezone') timezone)  {
@@ -64,4 +64,22 @@ export class AppController {
 
   }
 
+  @Get('radar')
+  @HttpCode(HttpStatus.OK)
+  @Header('Content-Type', 'image/png')
+  @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
+  @Header('Expires', '-1')
+  @Header('Pragma', 'no-cache')
+  async getRadar ( @Res() res, @Query('timezone') timezone) {
+    console.log("getRadar: Timezone:" + timezone);
+    let m = moment().tz(timezone);
+
+    const image = await this.httpService.axiosRef({
+               url: 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png',
+               method: 'GET',
+               responseType: 'stream',
+           });
+
+           return image.data.pipe(res);
+  }
 }
