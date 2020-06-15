@@ -32,7 +32,7 @@ export class AppService {
               {
                 "title": "Weather",
                 "image_ratio": "16by9",
-                "image_url": "https://www.myfoxhurricane.com/custom/omni/b_xm0.jpg",
+                "image_url": "https://radar.weather.gov/ridge/lite/N0R/TBW_2.png?682",
                 "action_data": "{\"pictureIdx\": 6}",
                 "is_playable": false
               },
