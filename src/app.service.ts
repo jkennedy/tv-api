@@ -5,13 +5,10 @@ export class AppService {
 
   getSections(timezone) {
     Logger.log('Get Sections');
-    console.log('getSections: timezone:' + timezone);
     const expires = Date.now() + 10000;
-    console.log('returning expires:' + expires);
 
     var sections =
       {
-        "expires": expires,
         "sections": [
           {
             "title": "Today",
@@ -32,7 +29,7 @@ export class AppService {
               {
                 "title": "Weather",
                 "image_ratio": "16by9",
-                "image_url": "https://radar.weather.gov/ridge/lite/N0R/TBW_2.png?682",
+                "image_url": "https://radar.weather.gov/ridge/lite/N0R/TBW_2.png?" + expires,
                 "action_data": "{\"pictureIdx\": 6}",
                 "is_playable": false
               },
@@ -49,7 +46,6 @@ export class AppService {
         ]
       };
 
-    console.log(JSON.stringify(sections));
     return sections;
   }
 }
