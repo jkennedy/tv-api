@@ -42,7 +42,7 @@ export class AppController {
         timeDescription = "About A Quarter Till";
         m.hours(m.hour() + 1);
     }
-    else if (minutes >= 50 && minutes < 40) {
+    else if (minutes >= 50 && minutes < 60) {
         timeDescription = "Almost";
         m.hours(m.hour() + 1);
     }
