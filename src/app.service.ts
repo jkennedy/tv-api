@@ -29,7 +29,7 @@ export class AppService {
               {
                 "title": "Weather",
                 "image_ratio": "16by9",
-                "image_url": "https://radar.weather.gov/ridge/lite/N0R/TBW_2.png?" + expires,
+                "image_url": "https://api.jackkennedy.info/radar/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
                 "action_data": "{\"pictureIdx\": 6}",
                 "is_playable": false
               },
