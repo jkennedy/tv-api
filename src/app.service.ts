@@ -27,14 +27,6 @@ export class AppService {
                 "image_url": "https://api.jackkennedy.info/weatherTile/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
                 "action_data": "{\"pictureIdx\": 2}",
                 "is_playable": false
-              },
-              {
-                "title": "News",
-                "subtitle": "Today's News",
-                "image_ratio": "16by9",
-                "image_url": "https://www.cordcuttersnews.com/wp-content/uploads/2020/04/ABC-News-App-1024x576.jpg",
-                "action_data": "{\"pictureIdx\": 3}",
-                "is_playable": false
               }
             ]
           }
