@@ -54,6 +54,7 @@ export class AppController {
     var image = text2png(text, {
       font: '30px Arial',
       color: 'white',
+      bgColor: 'black',
       textAlign: 'center',
       lineSpacing: 10,
       padding: 20,
@@ -111,6 +112,7 @@ export class AppController {
     var image = text2png(text, {
       font: '20px Arial',
       color: 'white',
+      bgColor: 'black',
       textAlign: 'center',
       lineSpacing: 10,
       padding: 20,
