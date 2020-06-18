@@ -4,7 +4,7 @@ import { Injectable, Logger } from '@nestjs/common';
 export class AppService {
 
   getSections(timezone) {
-    Logger.log('AAAA Get Sections');
+    Logger.log('BBB Get Sections');
     const expires = Date.now() + 10000;
 
     var sections =
