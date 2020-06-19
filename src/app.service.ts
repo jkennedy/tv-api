@@ -15,7 +15,7 @@ export class AppService {
             "tiles": [
               {
                 "title": "Today",
-                "subtitle": "Current Time",
+                "subtitle": "Time",
                 "image_ratio": "16by9",
                 "image_url": "https://api.jackkennedy.info/time/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
                 "action_data": "{\"videoIdx\": 1}",
