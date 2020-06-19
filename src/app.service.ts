@@ -23,6 +23,7 @@ export class AppService {
               },
               {
                 "title": "Weather",
+                "subtitle": "Forecast",
                 "image_ratio": "16by9",
                 "image_url": "https://api.jackkennedy.info/weatherTile/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
                 "action_data": "{\"pictureIdx\": 2}",
