@@ -25,7 +25,7 @@ export class AppController {
     console.log("getTime: Timezone:" + timezone);
     let m = moment().tz(timezone);
 
-    const dateText = m.format('MMMM Do YYYY');
+    const dateText = m.format('MMMM Do');
     const amPmText = m.format('a');
     const minutes = m.minutes();
 
@@ -51,7 +51,7 @@ export class AppController {
     let text = dateText + '\n' + timeDescription + ' ' + amPmText;
 
     var image = text2png(text, {
-      font: '30px Arial',
+      font: '20px Arial',
       color: 'white',
       bgColor: 'black',
       textAlign: 'center',
