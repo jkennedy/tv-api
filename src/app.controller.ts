@@ -32,15 +32,13 @@ export class AppController {
     let timeDescription = '';
 
     if (minutes <= 10)
-      timeDescription = "Just After";
+      timeDescription = "About";
     else if (minutes >= 10 && minutes < 20)
-      timeDescription = "About Quarter After";
-    else if (minutes >= 20 && minutes < 30)
-      timeDescription = "Almost Half Past ";
-    else if (minutes >= 30 && minutes < 40)
-      timeDescription = "About Half Past ";
+      timeDescription = "Quarter After";
+    else if (minutes >= 20 && minutes < 40)
+      timeDescription = "Half Past ";
     else if (minutes >= 40 && minutes < 50) {
-      timeDescription = "About A Quarter Till";
+      timeDescription = "Quarter Til";
       m.hours(m.hour() + 1);
     }
     else if (minutes >= 50 && minutes < 60) {
