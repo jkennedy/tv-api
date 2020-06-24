@@ -2,6 +2,7 @@ import { Controller, HttpService, Get, Header, HttpCode, HttpStatus, Res, Param,
 import { AppService } from './app.service';
 import text2png = require('text2png');
 import nodeHtmlToImage = require('node-html-to-image');
+import Handlebars = require("handlebars");
 import * as moment from 'moment-timezone';
 
 @Controller()
@@ -83,7 +84,6 @@ export class AppController {
     return image.data.pipe(res);
   }
 
-/*
   @Get('weatherTile')
   @HttpCode(HttpStatus.OK)
   @Header('Content-Type', 'image/png')
@@ -91,8 +91,6 @@ export class AppController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getWeatherTile( @Res() res, @Query('timezone') timezone) {
-    console.log("weatherTile: Timezone:" + timezone);
-    let m = moment().tz(timezone);
 
     const forecastRequest = await this.httpService.axiosRef({
       url: 'https://api.weather.gov/gridpoints/TBW/56,95/forecast',
@@ -101,42 +99,21 @@ export class AppController {
     });
 
     const forecast = forecastRequest.data;
-    let text = '';
+    let periods = forecast.properties.periods.slice(0,4);
 
-    for (let i = 0; i < 4; i++) {
-      let period = forecast.properties.periods[i];
-      text = text + period.name + ' ' + period.shortForecast + ' ' + period.temperature + '\n';
-    }
+    Handlebars.registerHelper('firstWord', function (aString) {
+      return aString.split(' ')[0];
+    })
 
-
-    var image = text2png(text, {
-      font: '20px Arial',
-      color: 'white',
-      bgColor: 'black',
-      textAlign: 'center',
-      lineSpacing: 10,
-      padding: 20,
-      output: 'stream'
-    });
-
-    return image.pipe(res);
-
-  }
-  */
-
-  @Get('weatherTile')
-  @HttpCode(HttpStatus.OK)
-  @Header('Content-Type', 'image/png')
-  @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
-  @Header('Expires', '-1')
-  @Header('Pragma', 'no-cache')
-  async getWeatherTile( @Res() res, @Query('timezone') timezone) {
     const image = await nodeHtmlToImage({
+      content: {
+        periods: periods
+      },
       html: `<html>
               <head>
               <style>
               body {
-                width: 500px;
+                width: 600px;
                 height: 220px;
                 margin: 0 auto;
                 padding-top: 5px;
@@ -151,6 +128,7 @@ export class AppController {
 
               .tile {
                 width: 150px;
+                flex: 1;
                 background-color: black;
                 display: flex;
                 flex-direction: column;
@@ -159,8 +137,15 @@ export class AppController {
                 margin: 10px;
               }
 
-              .iconContainer * {
+              .title * {
+                flex: 1;
+                color: white;
+                text-align: center;
+                font: 20px Arial;
+              }
 
+              .iconContainer * {
+                flex: 4;
               }
 
               .icon {
@@ -169,55 +154,30 @@ export class AppController {
                 margin-right: auto;
               }
 
-              .title * {
-                color: white;
-                text-align: center;
-                font: 20px Arial;
-              }
-
               .forecast * {
+                flex: 1;
                 color: white;
                 text-align: center;
-                font: 20px Arial;
+                font: 10px Arial;
               }
               </style>
               </head>
               <body>
 
               <div class="strip">
-                <div class="tile">
-                  <div class='title'>
-                    <h1>Today</h1>
-                  </div>
-                  <div class="iconContainer">
-                      <img class="icon" src='https://api.weather.gov/icons/land/day/few?size=medium'/>
-                  </div>
-                  <div class='forecast'>
-                    <h1>Sunny</h1>
-                  </div>
-                </div>
-                <div class="tile">
-                  <div class='title'>
-                    <h1>Tonight</h1>
-                  </div>
-                  <div class="iconContainer">
-                      <img class="icon" src='https://api.weather.gov/icons/land/night/sct?size=medium'/>
-                  </div>
-                  <div class='forecast'>
-                    <h1>Partly Cloudy</h1>
-                  </div>
-                </div>
-                <div class="tile">
-                  <div class='title'>
-                    <h1>Monday</h1>
-                  </div>
-                  <div class="iconContainer">
-                      <img class="icon" src='https://api.weather.gov/icons/land/day/sct/tsra_hi,30?size=medium'/>
-                  </div>
-                  <div class='forecast'>
-                    <h1>Mostyly Sunny</h1>
-                  </div>
-                </div>
+                  {{#each periods}}
+                    <div class="tile">
+                      <div class='title'>
+                        <h1>{{firstWord name}}</h1>
+                      </div>
+                      <div class="iconContainer">
+                          <img class="icon" src='{{icon}}'/>
+                      </div>
+                      <div class='forecast'>
+                        <h4>{{shortForecast}}</h4>
+                      </div>
+                    </div>
+                 {{/each}}
               </div>
 
               </body>
