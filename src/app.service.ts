@@ -28,6 +28,14 @@ export class AppService {
                 "image_url": "https://api.jackkennedy.info/weatherTile/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
                 "action_data": "{\"pictureIdx\": 2}",
                 "is_playable": false
+              },
+              {
+                "title": "News",
+                "subtitle": "Headlines",
+                "image_ratio": "16by9",
+                "image_url": "https://api.jackkennedy.info/news/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
+                "action_data": "{\"pictureIdx\": 3}",
+                "is_playable": false
               }
             ]
           }

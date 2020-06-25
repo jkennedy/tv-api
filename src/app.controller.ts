@@ -52,7 +52,7 @@ export class AppController {
     let text = dateText + '\n' + timeDescription + ' ' + amPmText;
 
     var image = text2png(text, {
-      font: '20px Arial',
+      font: '18px Arial',
       color: 'white',
       bgColor: 'black',
       textAlign: 'center',
@@ -84,6 +84,109 @@ export class AppController {
     return image.data.pipe(res);
   }
 
+  @Get('news')
+  @HttpCode(HttpStatus.OK)
+  @Header('Content-Type', 'image/png')
+  @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
+  @Header('Expires', '-1')
+  @Header('Pragma', 'no-cache')
+  async getNews( @Res() res, @Query('timezone') timezone) {
+    console.log("getNews: Timezone:" + timezone);
+    let m = moment().tz(timezone);
+
+    // news api key 7ab315343ef442fcb4326b32ee4d3087
+    let url = 'http://newsapi.org/v2/top-headlines?' +
+              'country=us&' +
+              'apiKey=7ab315343ef442fcb4326b32ee4d3087';
+
+    const newsApi = await this.httpService.axiosRef({
+      url: url,
+      method: 'GET',
+      responseType: 'json',
+    });
+
+    const news = newsApi.data;
+    let articles = news.articles.slice(0,4);
+
+    const image = await nodeHtmlToImage({
+      content: {
+        articles: articles
+      },
+      html: `<html>
+              <head>
+              <style>
+              body {
+                width: 600px;
+                height: 300px;
+                margin: 0 auto;
+                padding-top: 5px;
+                background-color: black;
+              }
+
+              .list {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+              }
+
+              .article {
+                flex: 1;
+                background-color: black;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                margin: 10px;
+              }
+
+              .iconContainer * {
+                flex: 1;
+              }
+
+              .textContainer * {
+                flex: 9;
+                margin-left: 10px;
+              }
+
+              .icon {
+                width: 75px;
+                height: 75px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+              }
+
+              .description * {
+                color: white;
+                text-align: left;
+                font: 14px Arial;
+              }
+              </style>
+              </head>
+              <body>
+
+              <div class="list">
+                  {{#each articles}}
+                    <div class="article">
+                      <div class="iconContainer">
+                          <img class="icon" src='{{urlToImage}}'/>
+                      </div>
+                      <div class="textContainer">
+                        <div class='description'>
+                          <h4>{{description}}</h4>
+                        </div>
+                      </div>
+                    </div>
+                 {{/each}}
+              </div>
+
+              </body>
+              </html>
+      `
+    });
+    res.end(image, 'binary');
+  }
+
+
   @Get('weatherTile')
   @HttpCode(HttpStatus.OK)
   @Header('Content-Type', 'image/png')
@@ -114,7 +217,7 @@ export class AppController {
               <style>
               body {
                 width: 600px;
-                height: 220px;
+                height: 200px;
                 margin: 0 auto;
                 padding-top: 5px;
                 background-color: black;
