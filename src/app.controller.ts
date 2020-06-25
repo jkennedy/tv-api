@@ -106,7 +106,7 @@ export class AppController {
     });
 
     const news = newsApi.data;
-    let articles = news.articles.slice(0,4);
+    let articles = news.articles.slice(0,3);
 
     const image = await nodeHtmlToImage({
       content: {
@@ -144,7 +144,11 @@ export class AppController {
 
               .textContainer * {
                 flex: 9;
+                height: 75px;
                 margin-left: 10px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
               }
 
               .icon {
@@ -158,7 +162,7 @@ export class AppController {
               .description * {
                 color: white;
                 text-align: left;
-                font: 14px Arial;
+                font: 16px Arial;
               }
               </style>
               </head>
@@ -221,7 +225,7 @@ export class AppController {
               <style>
               body {
                 width: 600px;
-                height: 200px;
+                height: 300px;
                 margin: 0 auto;
                 padding-top: 5px;
                 background-color: black;
