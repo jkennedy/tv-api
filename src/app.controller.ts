@@ -208,6 +208,10 @@ export class AppController {
       return aString.split(' ')[0];
     })
 
+    Handlebars.registerHelper('short', function (aString) {
+      return aString.substring(0, 30);
+    })
+
     const image = await nodeHtmlToImage({
       content: {
         periods: periods
@@ -235,7 +239,7 @@ export class AppController {
                 background-color: black;
                 display: flex;
                 flex-direction: column;
-                justify-content: center;
+                justify-content: flex-start;
                 outline: 1px solid white;
                 margin: 10px;
               }
@@ -244,7 +248,7 @@ export class AppController {
                 flex: 1;
                 color: white;
                 text-align: center;
-                font: 20px Arial;
+                font: 16px Arial;
               }
 
               .iconContainer * {
@@ -258,10 +262,10 @@ export class AppController {
               }
 
               .forecast * {
-                flex: 1;
+                flex: 2;
                 color: white;
                 text-align: center;
-                font: 10px Arial;
+                font: 12px Arial;
               }
               </style>
               </head>
@@ -277,7 +281,7 @@ export class AppController {
                           <img class="icon" src='{{icon}}'/>
                       </div>
                       <div class='forecast'>
-                        <h4>{{shortForecast}}</h4>
+                        <h4>{{short shortForecast}}</h4>
                       </div>
                     </div>
                  {{/each}}
