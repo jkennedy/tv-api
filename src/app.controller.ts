@@ -1,6 +1,5 @@
 import { Controller, HttpService, Get, Header, HttpCode, HttpStatus, Res, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
-import text2png = require('text2png');
 import nodeHtmlToImage = require('node-html-to-image');
 import Handlebars = require("handlebars");
 import * as moment from 'moment-timezone';
@@ -22,8 +21,11 @@ export class AppController {
   @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
-  getTime( @Res() res, @Query('timezone') timezone) {
+  async getTime( @Res() res, @Query('timezone') timezone) {
     console.log("getTime: Timezone:" + timezone);
+    if (!timezone)
+      timezone = 'America/New_York';
+
     let m = moment().tz(timezone);
 
     const dateText = m.format('MMMM Do');
@@ -51,18 +53,84 @@ export class AppController {
 
     let text = dateText + '\n' + timeDescription + ' ' + amPmText;
 
-    var image = text2png(text, {
-      font: '18px Arial',
-      color: 'white',
-      bgColor: 'black',
-      textAlign: 'center',
-      lineSpacing: 10,
-      padding: 20,
-      output: 'stream'
+    let icon = 'https://www.weather.gov/images/tbw/graphicast/image2.png?18b05aedf0bddf33d3a5a66aab9b9ded';
+
+    const image = await nodeHtmlToImage({
+      content: {
+        text: text,
+        icon: icon
+      },
+      html: `<html>
+              <head>
+              <style>
+              body {
+                width: 600px;
+                height: 300px;
+                margin: 0 auto;
+                padding-top: 5px;
+                background-color: black;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+              }
+
+              .strip {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                flex-grow: 1;
+              }
+
+              .tile {
+                flex: 0 1 auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                margin: 10px;
+              }
+
+              .title * {
+                color: white;
+                text-align: center;
+                font: 24px Arial;
+                flex-grow: 1;
+                flex-shrink: 1;
+              }
+
+              .iconContainer * {
+                background-color: blue;
+                flex-grow: 0;
+                flex-shrink: 0;
+              }
+
+              .icon {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                max-width:90%;
+                max-height:90%
+              }
+
+              </style>
+              </head>
+              <body>
+
+              <div class="strip">
+                <div class="tile">
+                  <div class='title'>
+                    <h1>{{text}}</h1>
+                  </div>
+                  <div class="iconContainer">
+                      <img class="icon" src='{{icon}}'/>
+                  </div>
+                </div>
+              </div>
+
+              </body>
+              </html>
+      `
     });
-
-    return image.pipe(res);
-
+    res.end(image, 'binary');
   }
 
   @Get('radar')
@@ -162,7 +230,7 @@ export class AppController {
               .description * {
                 color: white;
                 text-align: left;
-                font: 16px Arial;
+                font: 20px Arial;
               }
               </style>
               </head>
@@ -191,13 +259,13 @@ export class AppController {
   }
 
 
-  @Get('weatherTile')
+  @Get('weather')
   @HttpCode(HttpStatus.OK)
   @Header('Content-Type', 'image/png')
   @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
-  async getWeatherTile( @Res() res, @Query('timezone') timezone) {
+  async getWeather( @Res() res, @Query('timezone') timezone) {
 
     const forecastRequest = await this.httpService.axiosRef({
       url: 'https://api.weather.gov/gridpoints/TBW/56,95/forecast',
