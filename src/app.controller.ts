@@ -22,7 +22,6 @@ export class AppController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getTime( @Res() res, @Query('timezone') timezone) {
-    console.log("getTime: Timezone:" + timezone);
     if (!timezone)
       timezone = 'America/New_York';
 
@@ -51,13 +50,15 @@ export class AppController {
 
     timeDescription = timeDescription + ' ' + m.format('h');
 
-    let text = dateText + '\n' + timeDescription + ' ' + amPmText;
-
     let icon = 'https://www.weather.gov/images/tbw/graphicast/image2.png?18b05aedf0bddf33d3a5a66aab9b9ded';
+    let temp = '85' + '℉';
 
     const image = await nodeHtmlToImage({
       content: {
-        text: text,
+        dateText: dateText,
+        timeDescription: timeDescription,
+        amPmText: amPmText,
+        temp: temp,
         icon: icon
       },
       html: `<html>
@@ -67,7 +68,6 @@ export class AppController {
                 width: 600px;
                 height: 300px;
                 margin: 0 auto;
-                padding-top: 5px;
                 background-color: black;
                 display: flex;
                 flex-direction: row;
@@ -77,17 +77,18 @@ export class AppController {
               .strip {
                 display: flex;
                 flex-direction: row;
-                justify-content: center;
+                justify-content: space-between;
                 flex-grow: 1;
               }
 
               .tile {
-                flex: 0 1 auto;
+                flex-grow: 1;
                 display: flex;
-                flex-direction: column;
-                justify-content: center;
+                flex-direction: row;
+                justify-content: space-between;
                 margin: 10px;
               }
+
 
               .title * {
                 color: white;
@@ -97,28 +98,35 @@ export class AppController {
                 flex-shrink: 1;
               }
 
+              .p {
+                text-align: center;
+              }
+
+              .temp {
+                font: 44px Arial;
+                text-align: center;
+              }
+
               .iconContainer * {
-                background-color: blue;
-                flex-grow: 0;
+                flex-grow: 3;
                 flex-shrink: 0;
+                background-color: blue;
               }
 
               .icon {
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                max-width:90%;
-                max-height:90%
+                max-width:100%;
+                max-height:100%;
               }
 
               </style>
               </head>
               <body>
-
               <div class="strip">
                 <div class="tile">
                   <div class='title'>
-                    <h1>{{text}}</h1>
+                    <p>{{dateText}}</p>
+                    <p>{{timeDescription}} {{amPmText}}</p>
+                    <p class="temp">{{temp}}</p>
                   </div>
                   <div class="iconContainer">
                       <img class="icon" src='{{icon}}'/>
@@ -230,7 +238,7 @@ export class AppController {
               .title * {
                 color: white;
                 text-align: left;
-                font: 18px Arial;
+                font: 20px Arial;
               }
               </style>
               </head>

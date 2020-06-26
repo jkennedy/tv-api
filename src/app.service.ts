@@ -15,7 +15,6 @@ export class AppService {
             "tiles": [
               {
                 "title": "Today",
-                "subtitle": "Time",
                 "image_ratio": "16by9",
                 "image_url": "https://api.jackkennedy.info/time/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
                 "action_data": "{\"videoIdx\": 1}",
@@ -23,7 +22,6 @@ export class AppService {
               },
               {
                 "title": "Weather",
-                "subtitle": "Forecast",
                 "image_ratio": "16by9",
                 "image_url": "https://api.jackkennedy.info/weather/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
                 "action_data": "{\"pictureIdx\": 2}",
@@ -31,7 +29,6 @@ export class AppService {
               },
               {
                 "title": "News",
-                "subtitle": "Headlines",
                 "image_ratio": "16by9",
                 "image_url": "https://api.jackkennedy.info/news/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
                 "action_data": "{\"pictureIdx\": 3}",
