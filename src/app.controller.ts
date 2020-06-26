@@ -282,14 +282,18 @@ export class AppController {
     });
 
     const forecast = forecastRequest.data;
-    let periods = forecast.properties.periods.slice(0,4);
+    let periods = forecast.properties.periods.slice(0,3);
 
     Handlebars.registerHelper('firstWord', function (aString) {
       return aString.split(' ')[0];
     })
 
+    Handlebars.registerHelper('largeIcon', function (aString) {
+      return aString.replace('medium', 'large');
+    })
+
     Handlebars.registerHelper('short', function (aString) {
-      return aString.substring(0, 30);
+      return aString.substring(0, 58);
     })
 
     const image = await nodeHtmlToImage({
@@ -303,7 +307,7 @@ export class AppController {
                 width: 600px;
                 height: 300px;
                 margin: 0 auto;
-                padding-top: 5px;
+                padding: 5px;
                 background-color: black;
               }
 
@@ -316,19 +320,21 @@ export class AppController {
               .tile {
                 width: 150px;
                 flex: 1;
-                background-color: black;
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
                 outline: 1px solid white;
-                margin: 10px;
+                margin-left: 5px;
+                margin-right: 5px;
+                margin-bottom: 5px;
+                margin-top: 5px;
               }
 
               .title * {
                 flex: 1;
                 color: white;
                 text-align: center;
-                font: 16px Arial;
+                font: 20px Arial;
               }
 
               .iconContainer * {
@@ -345,7 +351,7 @@ export class AppController {
                 flex: 2;
                 color: white;
                 text-align: center;
-                font: 12px Arial;
+                font: 18px Arial;
               }
               </style>
               </head>
@@ -358,7 +364,7 @@ export class AppController {
                         <h1>{{firstWord name}}</h1>
                       </div>
                       <div class="iconContainer">
-                          <img class="icon" src='{{icon}}'/>
+                          <img class="icon" src='{{largeIcon icon}}'/>
                       </div>
                       <div class='forecast'>
                         <h4>{{short shortForecast}}</h4>
