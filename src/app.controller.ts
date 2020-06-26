@@ -220,17 +220,17 @@ export class AppController {
               }
 
               .icon {
-                width: 75px;
-                height: 75px;
+                width: 85px;
+                height: 85px;
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
               }
 
-              .description * {
+              .title * {
                 color: white;
                 text-align: left;
-                font: 20px Arial;
+                font: 18px Arial;
               }
               </style>
               </head>
@@ -243,8 +243,8 @@ export class AppController {
                           <img class="icon" src='{{urlToImage}}'/>
                       </div>
                       <div class="textContainer">
-                        <div class='description'>
-                          <h4>{{description}}</h4>
+                        <div class='title'>
+                          <h4>{{title}}</h4>
                         </div>
                       </div>
                     </div>
