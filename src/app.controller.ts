@@ -293,7 +293,7 @@ export class AppController {
     })
 
     Handlebars.registerHelper('short', function (aString) {
-      return aString.substring(0, 58);
+      return aString.split(' ').slice(0,2).join(' ');
     })
 
     const image = await nodeHtmlToImage({
@@ -320,9 +320,6 @@ export class AppController {
               .tile {
                 width: 150px;
                 flex: 1;
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
                 outline: 1px solid white;
                 margin-left: 5px;
                 margin-right: 5px;
@@ -330,15 +327,17 @@ export class AppController {
                 margin-top: 5px;
               }
 
-              .title * {
-                flex: 1;
+              .title {
                 color: white;
                 text-align: center;
-                font: 20px Arial;
+                font: 26px Arial;
+                margin-bottom: 5px;
+                margin-top: 5px;
               }
 
-              .iconContainer * {
-                flex: 4;
+              .iconContainer {
+                margin-bottom: 10px;
+                margin-top: 10px;
               }
 
               .icon {
@@ -347,11 +346,20 @@ export class AppController {
                 margin-right: auto;
               }
 
-              .forecast * {
-                flex: 2;
+              .forecast {
                 color: white;
                 text-align: center;
-                font: 18px Arial;
+                font: 22px Arial;
+                margin-bottom: 10px;
+                margin-top: 10px;
+              }
+
+              .temp {
+                color: white;
+                text-align: center;
+                font: 40px Arial;
+                margin-bottom: 10px;
+                margin-top: 10px;
               }
               </style>
               </head>
@@ -361,13 +369,16 @@ export class AppController {
                   {{#each periods}}
                     <div class="tile">
                       <div class='title'>
-                        <h1>{{firstWord name}}</h1>
+                        {{firstWord name}}
                       </div>
                       <div class="iconContainer">
                           <img class="icon" src='{{largeIcon icon}}'/>
                       </div>
                       <div class='forecast'>
-                        <h4>{{short shortForecast}}</h4>
+                        {{short shortForecast}}
+                      </div>
+                      <div class='temp'>
+                        {{temperature}} &#8457;
                       </div>
                     </div>
                  {{/each}}
