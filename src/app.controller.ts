@@ -50,7 +50,7 @@ export class AppController {
 
     timeDescription = timeDescription + ' ' + m.format('h');
 
-    let icon = 'https://www.weather.gov/images/tbw/graphicast/image2.png?18b05aedf0bddf33d3a5a66aab9b9ded';
+    let icon = 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png';
     let temp = '85' + '℉';
 
     const image = await nodeHtmlToImage({
@@ -93,9 +93,10 @@ export class AppController {
               .title * {
                 color: white;
                 text-align: center;
-                font: 24px Arial;
+                font: 36px Arial;
                 flex-grow: 1;
                 flex-shrink: 1;
+                margin-left: 10px;
               }
 
               .p {
@@ -110,7 +111,6 @@ export class AppController {
               .iconContainer * {
                 flex-grow: 3;
                 flex-shrink: 0;
-                background-color: blue;
               }
 
               .icon {
@@ -126,7 +126,6 @@ export class AppController {
                   <div class='title'>
                     <p>{{dateText}}</p>
                     <p>{{timeDescription}} {{amPmText}}</p>
-                    <p class="temp">{{temp}}</p>
                   </div>
                   <div class="iconContainer">
                       <img class="icon" src='{{icon}}'/>
@@ -349,7 +348,7 @@ export class AppController {
               .forecast {
                 color: white;
                 text-align: center;
-                font: 22px Arial;
+                font: 20px Arial;
                 margin-bottom: 10px;
                 margin-top: 10px;
               }
