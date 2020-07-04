@@ -234,10 +234,10 @@ export class AppController {
                 margin-right: auto;
               }
 
-              .title * {
+              .title {
                 color: white;
                 text-align: left;
-                font: 20px Arial;
+                font: 22px Arial;
               }
               </style>
               </head>
@@ -251,7 +251,7 @@ export class AppController {
                       </div>
                       <div class="textContainer">
                         <div class='title'>
-                          <h4>{{title}}</h4>
+                          {{title}}
                         </div>
                       </div>
                     </div>
