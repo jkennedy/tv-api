@@ -170,9 +170,7 @@ export class AppController {
     let m = moment().tz(timezone);
 
     // news api key 7ab315343ef442fcb4326b32ee4d3087
-    let url = 'http://newsapi.org/v2/top-headlines?' +
-              'country=us&' +
-              'apiKey=7ab315343ef442fcb4326b32ee4d3087';
+    let url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCupvZG-5ko_eiXAupbDfxWw&maxResults=25&order=date&type=video&videoEmbeddable=true&key=AIzaSyCiMqN61-ATtOyJl5okdAyeTFS2ygr1sQI';
 
     const newsApi = await this.httpService.axiosRef({
       url: url,
@@ -181,7 +179,11 @@ export class AppController {
     });
 
     const news = newsApi.data;
-    let articles = news.articles.slice(0,3);
+    let articles = news.items.slice(0,3);
+
+    Handlebars.registerHelper('title', function (aString) {
+      return new Handlebars.SafeString(aString.substring(0,75));
+    })
 
     const image = await nodeHtmlToImage({
       content: {
@@ -227,8 +229,6 @@ export class AppController {
               }
 
               .icon {
-                width: 85px;
-                height: 85px;
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
@@ -237,7 +237,7 @@ export class AppController {
               .title {
                 color: white;
                 text-align: left;
-                font: 22px Arial;
+                font: 26px Arial;
               }
               </style>
               </head>
@@ -247,11 +247,11 @@ export class AppController {
                   {{#each articles}}
                     <div class="article">
                       <div class="iconContainer">
-                          <img class="icon" src='{{urlToImage}}'/>
+                          <img class="icon" src='{{snippet.thumbnails.default.url}}'/>
                       </div>
                       <div class="textContainer">
                         <div class='title'>
-                          {{title}}
+                          {{title snippet.title}}
                         </div>
                       </div>
                     </div>
