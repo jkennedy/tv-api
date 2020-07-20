@@ -11,7 +11,6 @@ export class AppController {
   @Get()
   getSections( @Query('timezone') timezone) {
     console.log("GetSections: Timezone:" + timezone);
-    // America%2FNew_York
     return this.appService.getSections(timezone);
   }
 
@@ -170,8 +169,9 @@ export class AppController {
     let m = moment().tz(timezone);
 
     // news api key 7ab315343ef442fcb4326b32ee4d3087
-    let url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCupvZG-5ko_eiXAupbDfxWw&maxResults=25&order=date&type=video&videoEmbeddable=true&key=AIzaSyCiMqN61-ATtOyJl5okdAyeTFS2ygr1sQI';
+    //let url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCupvZG-5ko_eiXAupbDfxWw&maxResults=25&order=date&type=video&videoEmbeddable=true&key=AIzaSyCiMqN61-ATtOyJl5okdAyeTFS2ygr1sQI';
 
+    /*
     const newsApi = await this.httpService.axiosRef({
       url: url,
       method: 'GET',
@@ -179,6 +179,10 @@ export class AppController {
     });
 
     const news = newsApi.data;
+    */
+
+    const news = this.appService.getNews();
+
     let articles = news.items.slice(0,3);
 
     Handlebars.registerHelper('title', function (aString) {
