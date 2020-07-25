@@ -5,6 +5,7 @@ import { UserEntity } from './entities/user.entity';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { Response } from 'express';
 import QRCode = require("qrcode");
+import * as env from "./app.environment";
 
 @Controller('google')
 export class GoogleController {
@@ -13,8 +14,10 @@ export class GoogleController {
   @Get()
   //@UseGuards(AuthGuard('google'))
   async googleAuth( @Query() params, @Res() res: Response) {
-    var uuid = params.uuid;
-    let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&access_type=offline&include_granted_scopes=true&state=${uuid}&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fgoogle%2Fredirect&response_type=code&client_id=359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com`;
+    let uuid = params.uuid;
+    let encodedBaseUrl = encodeURIComponent(env.baseUrl());
+
+    let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&access_type=offline&include_granted_scopes=true&state=${uuid}&redirect_uri=${encodedBaseUrl}%2Fgoogle%2Fredirect&response_type=code&client_id=359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com`;
 
     res.redirect(authUrl);
   }
@@ -31,8 +34,10 @@ export class GoogleController {
 
   @Get('qrcode')
   async getQRCode( @Query() params) {
-    var uuid = params.uuid;
-    let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&access_type=offline&include_granted_scopes=true&state=${uuid}&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fgoogle%2Fredirect&response_type=code&client_id=359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com`;
+    let uuid = params.uuid;
+    let encodedBaseUrl = encodeURIComponent(env.baseUrl());
+
+    let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&access_type=offline&include_granted_scopes=true&state=${uuid}&redirect_uri=${encodedBaseUrl}%2Fgoogle%2Fredirect&response_type=code&client_id=359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com`;
     const url = await QRCode.toDataURL(authUrl, { width: '500', height: '500' });
 
     return url;

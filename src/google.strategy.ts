@@ -1,6 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { config } from 'dotenv';
+import * as env from "./app.environment";
 
 import { Injectable } from '@nestjs/common';
 
@@ -13,7 +14,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: '359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com',
       clientSecret: '5qoRwh6P4cKr9y53ji8T8_gq',
-      callbackURL: 'http://localhost:3000/google/redirect',
+      callbackURL: env.baseUrl() + '/google/redirect',
       scope: ['email', 'profile', 'https://www.googleapis.com/auth/youtube.force-ssl'],
       accessType: 'offline'
     });
