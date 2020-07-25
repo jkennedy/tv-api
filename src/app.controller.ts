@@ -1,17 +1,61 @@
 import { Controller, HttpService, Get, Header, HttpCode, HttpStatus, Res, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
+import {UserEntity} from './entities/user.entity'
+import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import nodeHtmlToImage = require('node-html-to-image');
 import Handlebars = require("handlebars");
 import * as moment from 'moment-timezone';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService, private readonly httpService: HttpService) { }
+  constructor(private readonly appService: AppService, private readonly httpService: HttpService, private readonly userService: InMemoryDBService<UserEntity>) { }
+
+  @Get('test')
+  async testOAuth() {
+
+    const response = await this.httpService.axiosRef.post('https://oauth2.googleapis.com/token', {
+      client_id: '359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com',
+      client_secret: '5qoRwh6P4cKr9y53ji8T8_gq',
+      code: '4/2AEZ18UqwKeW81LZsS8ULhYJGTDYEnjr2x-GoPU1Dl4V9J5sk3-bVPGtnTENK0rDexDXNoy3AANVGxyZOqrcfrI',
+      grant_type: 'authorization_code',
+      redirect_uri: 'http://localhost:3000/google/redirect'
+    },
+    {
+       headers: {
+         'content-type': 'application/x-www-form-urlencoded'
+       }
+    }
+    ).catch((err) => {
+      console.log(err);
+    });
+
+    return response;
+  }
 
   @Get()
   getSections( @Query('timezone') timezone) {
     console.log("GetSections: Timezone:" + timezone);
     return this.appService.getSections(timezone);
+  }
+
+  @Get('youtube')
+  async getYoutube() {
+    const foundUsers = this.userService.query(
+      record => record.email === 'jack.kennedy@gmail.com',
+    );
+
+    const accessToken = foundUsers[0].accessToken;
+
+    var cnnRequest =
+      "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCupvZG-5ko_eiXAupbDfxWw&maxResults=10&order=date&type=video&videoEmbeddable=true&access_token=" + accessToken;
+
+      const newsApi = await this.httpService.axiosRef({
+        url: cnnRequest,
+        method: 'GET',
+        responseType: 'json',
+      });
+
+      return newsApi.data;
   }
 
   @Get('time')
@@ -183,10 +227,10 @@ export class AppController {
 
     const news = this.appService.getNews();
 
-    let articles = news.items.slice(0,3);
+    let articles = news.items.slice(0, 3);
 
-    Handlebars.registerHelper('title', function (aString) {
-      return new Handlebars.SafeString(aString.substring(0,75));
+    Handlebars.registerHelper('title', function(aString) {
+      return new Handlebars.SafeString(aString.substring(0, 75));
     })
 
     const image = await nodeHtmlToImage({
@@ -285,18 +329,18 @@ export class AppController {
     });
 
     const forecast = forecastRequest.data;
-    let periods = forecast.properties.periods.slice(0,3);
+    let periods = forecast.properties.periods.slice(0, 3);
 
-    Handlebars.registerHelper('firstWord', function (aString) {
+    Handlebars.registerHelper('firstWord', function(aString) {
       return aString.split(' ')[0];
     })
 
-    Handlebars.registerHelper('largeIcon', function (aString) {
+    Handlebars.registerHelper('largeIcon', function(aString) {
       return aString.replace('medium', 'large');
     })
 
-    Handlebars.registerHelper('short', function (aString) {
-      return aString.split(' ').slice(0,2).join(' ');
+    Handlebars.registerHelper('short', function(aString) {
+      return aString.split(' ').slice(0, 2).join(' ');
     })
 
     const image = await nodeHtmlToImage({
