@@ -1,4 +1,4 @@
-import { Controller, HttpService, Get, Header, HttpCode, HttpStatus, Res, Param, Query } from '@nestjs/common';
+import { Controller, HttpService, Get, Header, HttpCode, HttpStatus, Res, Param, Query, Render} from '@nestjs/common';
 import { AppService } from './app.service';
 import {UserEntity} from './entities/user.entity'
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
@@ -10,6 +10,12 @@ import * as env from "./app.environment";
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService, private readonly httpService: HttpService, private readonly userService: InMemoryDBService<UserEntity>) { }
+
+  @Get('userSettings')
+  @Render('userSettings')
+  userSettings(@Query() params) {
+    return this.appService.getUser(params.email);
+  }
 
   @Get()
   getSections( @Query('timezone') timezone) {

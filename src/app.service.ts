@@ -15,10 +15,14 @@ export class AppService {
       record => record.email === user.email
     );
 
+    console.log('getOrCreateUser');
+
     if (!foundUsers.length) {
+      console.log('creating user:' + user.email);
       userToReturn = this.userService.create(user);
     }
     else {
+      console.log('returning existing user:' + foundUsers[0]);
       userToReturn = foundUsers[0];
     }
 
@@ -33,12 +37,17 @@ export class AppService {
     return foundUsers ? foundUsers[0] : null;
   }
 
-  getCountOfUsersOnDevice(uuid: string): number {
+  getUsersForDevice(uuid: string): Array<UserEntity> {
     const foundUsers = this.userService.query(
       record => record.deviceId === uuid
     );
 
-    let allUsers = this.userService.getAll();
+    return foundUsers ? foundUsers : [];
+  }
+  getCountOfUsersOnDevice(uuid: string): number {
+    const foundUsers = this.userService.query(
+      record => record.deviceId === uuid
+    );
 
     return foundUsers ? foundUsers.length : 0;
   }

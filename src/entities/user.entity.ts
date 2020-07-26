@@ -5,6 +5,9 @@ export interface UserEntity extends InMemoryDBEntity {
   lastName: string;
   email: string;
   picture?: string;
+  zipCode?: string;
+  lat?: string;
+  long: string,
   deviceId?: string;
   accessToken?: string;
   refreshToken?: string;

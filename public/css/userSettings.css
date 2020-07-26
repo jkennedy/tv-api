@@ -1,0 +1,32 @@
+.container {
+  position: relative;
+  text-align: center;
+  color: black;
+}
+
+.bottom-right {
+  position: absolute;
+  bottom: 10%;
+  right: 10%;
+  font: 38px Arial;
+}
+
+#headerImage {
+  width: 100%;
+}
+.userProfilePictureOverlay {
+  position: absolute;
+  top: 15%;
+  right: 15%;
+  object-fit: cover;
+  border-radius: 50%;
+  height: auto;
+  width: 18%;
+
+  box-shadow: inset 0 0 5px tomato, 0 0 5px white;
+  filter: drop-shadow(5px 5px 5px rgba(0,0,0,0.9));
+}
+#map {
+  width: 250px;
+  height: 250px;
+}
