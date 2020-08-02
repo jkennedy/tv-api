@@ -13,6 +13,14 @@
       <div class="bottom-right">{{firstName}} {{lastName}}</div>
       <img class="userProfilePictureOverlay" src="{{picture}}">
     </div>
-    <div id="map"></div>
+    <div class='welcomeSection'>
+      <div class='welcomeHeader'>Welcome To MyChannel</div>
+      <div class='description'>Please allow this page to detect your location so that your channel can be personalized with the content that is most relevant.</div>
+      <div id='map'></div>
+      <div id='zipCodeSection'><input type="text" id="zipCode" name="zipCode"></div>
+      <div class='saveSection'>
+        <button class='saveButton' onclick='saveLocation()'>Save Location</button>
+      </div>
+    </div>
   </body>
 </html>

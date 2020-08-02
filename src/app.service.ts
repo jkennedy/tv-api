@@ -1,11 +1,32 @@
 import { Injectable, Logger } from '@nestjs/common';
 import {UserEntity} from './entities/user.entity';
+import {SaveLocationDto} from './dtos/saveLocation.dto'
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 
 @Injectable()
 export class AppService {
   constructor(private readonly userService: InMemoryDBService<UserEntity>) { }
 
+
+  saveLocation(location: SaveLocationDto): string {
+    console.log('app service save location');
+    let user:UserEntity = this.getUser(location.email);
+
+    console.log('save location loaded saved user:');
+    console.log(user);
+
+    user.lat = location.pos.lat;
+    user.long = location.pos.long;
+    user.address = location.address;
+    user.zipCode = location.zipCode;
+
+    this.userService.update(user);
+
+    console.log('saved user:');
+    console.log(user);
+
+    return "Location Saved";
+  }
 
   getOrCreateUser(user: UserEntity): UserEntity {
 
@@ -15,8 +36,6 @@ export class AppService {
       record => record.email === user.email
     );
 
-    console.log('getOrCreateUser');
-
     if (!foundUsers.length) {
       console.log('creating user:' + user.email);
       userToReturn = this.userService.create(user);
@@ -25,6 +44,12 @@ export class AppService {
       console.log('returning existing user:' + foundUsers[0]);
       userToReturn = foundUsers[0];
     }
+
+    console.log('get Or Create User In:');
+    console.log(user);
+
+    console.log('user out');
+    console.log(userToReturn);
 
     return userToReturn;
   }

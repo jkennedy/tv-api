@@ -1,6 +1,7 @@
-import { Controller, HttpService, Get, Header, HttpCode, HttpStatus, Res, Param, Query, Render} from '@nestjs/common';
+import { Controller, HttpService, Get, Post, Header, HttpCode, HttpStatus, Res, Param, Query, Body, Render} from '@nestjs/common';
 import { AppService } from './app.service';
 import {UserEntity} from './entities/user.entity'
+import {SaveLocationDto} from './dtos/saveLocation.dto'
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import nodeHtmlToImage = require('node-html-to-image');
 import Handlebars = require("handlebars");
@@ -15,6 +16,14 @@ export class AppController {
   @Render('userSettings')
   userSettings(@Query() params) {
     return this.appService.getUser(params.email);
+  }
+
+  @Post('saveLocation')
+  saveLocation(@Body() location: SaveLocationDto) {
+    console.log('saveLocation');
+    console.log(location);
+
+    return this.appService.saveLocation(location);
   }
 
   @Get()
