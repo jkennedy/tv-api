@@ -20,13 +20,13 @@ export class NewsService {
   async refreshNationalNews(country = 'USA') {
     let newsJSON = null;
 
-    if (env.isLocal())
-      newsJSON = this.getMockNewsYoutube()
-    else {
+  //  if (env.isLocal())
+  //    newsJSON = this.getMockNewsYoutube()
+  //  else {
       console.log('loading data from youtube: using youtube api credits')
       newsJSON = await this.getYoutube();
       console.log('youtube response:' + newsJSON);
-    }
+  //  }
 
     this.cacheService.cacheContent ('news', newsJSON, country, 4);
 
@@ -34,10 +34,15 @@ export class NewsService {
   }
 
   async getYoutube() {
+    console.log('getYouTube')
     const foundUser = this.userService.getUser('jack.kennedy@gmail.com');
+    console.log('found user');
+    console.log(foundUser);
+    let mergedVideos = [];
 
     const accessToken = foundUser.accessToken;
 
+    /*
     let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&type=video&videoEmbeddable=true';
     let cnnRequest = `${baseYouTube}&channelId=UCupvZG-5ko_eiXAupbDfxWw&access_token=${accessToken}`;
     let nbcNewsRequest = `${baseYouTube}&channelId=UCeY0bbntWzzVIaj2z3QigXg&access_token=${accessToken}`;
@@ -49,7 +54,7 @@ export class NewsService {
     const cbsNewsApi =  this.httpService.axiosRef({url: cnnRequest, method: 'GET',responseType: 'json'});
     const msnbcNewsApi =  this.httpService.axiosRef({url: cnnRequest, method: 'GET',responseType: 'json'});
 
-    let mergedVideos = [];
+
     const fetchURL = (youtubeRequest) => this.httpService.axiosRef({url: youtubeRequest, method: 'GET',responseType: 'json'});
 
     const promiseArray = [cnnRequest, nbcNewsRequest, cbsNewsRequest, msnbcNewsRequest].map(fetchURL);
@@ -64,6 +69,7 @@ export class NewsService {
         console.log('error loading youtube search api:');
         console.log(err);
     });
+    */
 
     var data = {
       items: mergedVideos
