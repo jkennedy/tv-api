@@ -42,6 +42,22 @@ export class NewsService {
 
     const accessToken = foundUser.accessToken;
 
+    let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&type=video&videoEmbeddable=true';
+    let cnnRequest = `${baseYouTube}&channelId=UCupvZG-5ko_eiXAupbDfxWw&access_token=${accessToken}`;
+    const cnnApi =  this.httpService.axiosRef({url: cnnRequest, method: 'GET',responseType: 'json'});
+    const fetchURL = (youtubeRequest) => this.httpService.axiosRef({url: youtubeRequest, method: 'GET',responseType: 'json'});
+    const promiseArray = [cnnRequest].map(fetchURL);
+    await Promise.all(promiseArray)
+    .then((responses) => {
+      console.log('got youtube result');
+      console.log(JSON.stringify(responses));
+      mergedVideos.push(responses[0].data.items);
+    })
+    .catch(function(err) {
+        console.log('error loading youtube search api:');
+        console.log(err);
+    });
+
     /*
     let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&type=video&videoEmbeddable=true';
     let cnnRequest = `${baseYouTube}&channelId=UCupvZG-5ko_eiXAupbDfxWw&access_token=${accessToken}`;
