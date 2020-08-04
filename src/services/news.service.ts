@@ -25,7 +25,7 @@ export class NewsService {
   //  else {
       console.log('loading data from youtube: using youtube api credits')
       newsJSON = await this.getYoutube();
-      console.log('youtube response:' + newsJSON);
+      console.log('youtube response:' + JSON.stringify(newsJSON));
   //  }
 
     this.cacheService.cacheContent ('news', newsJSON, country, 4);
@@ -49,7 +49,7 @@ export class NewsService {
     const promiseArray = [cnnRequest].map(fetchURL);
     await Promise.all(promiseArray)
     .then((responses) => {
-      console.log('got youtube result');
+      console.log('in getYOUTUBE: responses');
       console.log(JSON.stringify(responses));
       mergedVideos.push(responses[0].data.items);
     })
