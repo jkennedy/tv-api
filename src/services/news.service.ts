@@ -11,7 +11,7 @@ import * as env from "../app.environment";
 export class NewsService {
   constructor(private readonly cacheService: CacheService, private readonly userService: UserService, private readonly httpService: HttpService) { }
 
-  getNationalNews(country = 'USA') {
+  async getNationalNews(country = 'USA') {
     let cachedNews = this.cacheService.getCachedContent('news', country);
 
     return cachedNews ? JSON.parse(cachedNews.json) : this.refreshNationalNews(country);
@@ -20,13 +20,11 @@ export class NewsService {
   async refreshNationalNews(country = 'USA') {
     let newsJSON = null;
 
-  //  if (env.isLocal())
-  //    newsJSON = this.getMockNewsYoutube()
-  //  else {
-      console.log('loading data from youtube: using youtube api credits')
+    if (env.isLocal())
+      newsJSON = this.getMockNewsYoutube()
+    else {
       newsJSON = await this.getYoutube();
-      console.log('youtube response:' + JSON.stringify(newsJSON));
-  //  }
+    }
 
     this.cacheService.cacheContent ('news', newsJSON, country, 4);
 
@@ -34,10 +32,7 @@ export class NewsService {
   }
 
   async getYoutube() {
-    console.log('getYouTube')
     const foundUser = this.userService.getUser('jack.kennedy@gmail.com');
-    console.log('found user');
-    console.log(foundUser);
     let mergedVideos = [];
 
     const accessToken = foundUser.accessToken;
@@ -49,9 +44,7 @@ export class NewsService {
     const promiseArray = [cnnRequest].map(fetchURL);
     await Promise.all(promiseArray)
     .then((responses) => {
-      console.log('in getYOUTUBE: responses');
-      console.log(JSON.stringify(responses[0].data));
-      mergedVideos.push(responses[0].data.items);
+      mergedVideos = mergedVideos.concat(responses[0].data.items);
     })
     .catch(function(err) {
         console.log('error loading youtube search api:');

@@ -171,7 +171,7 @@ export class PreviewController {
     console.log("getNews: Timezone:" + timezone);
     let m = moment().tz(timezone);
 
-    const news = this.newsService.getNationalNews();
+    const news = await this.newsService.getNationalNews();
 
     let articles = news.items.slice(0, 3);
 
