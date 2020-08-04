@@ -50,7 +50,7 @@ export class NewsService {
     await Promise.all(promiseArray)
     .then((responses) => {
       console.log('in getYOUTUBE: responses');
-      console.log(JSON.stringify(responses));
+      console.log(JSON.stringify(responses[0].data));
       mergedVideos.push(responses[0].data.items);
     })
     .catch(function(err) {
