@@ -267,17 +267,30 @@ async function saveLocation() {
   }
 }
 
+function callRestService(request, callback) {
+    $.ajax({
+        url: request,
+        dataType: "jsonp",
+        jsonp: "jsonp",
+        success: function (r) {
+            callback(r);
+        },
+        error: function (e) {
+            alert(e.statusText);
+        }
+    });
+}
+
+function geocodeCallback(data) {
+  address = data && data.resourceSets && data.resourceSets[0].resources ? data.resourceSets[0].resources[0].address : '';
+  document.getElementById("zipCode").value = address.postalCode;
+}
+
 async function getAddressFromPosition(position) {
   let apiKey = 'AjgLGu7ECWvaCgsbbWCf1eW4X3cdvlsVakECdGIB1nZY7RSmllO26tR7xSN9bWLB';
   let requestUrl = `http://dev.virtualearth.net/REST/v1/Locations/${position.lat},${position.lng}?key=${apiKey}`
-  let response = await fetch(requestUrl);
 
-  if (response.ok) {
-    let data = await response.json();
-    console.log(data);
-    address = data && data.resourceSets && data.resourceSets[0].resources ? data.resourceSets[0].resources[0].address : '';
-    document.getElementById("zipCode").value = address.postalCode;
-  }
+  callRestService(requestUrl, geocodeCallback);
 
-  return address.formattedAddress;
+  return address ? address.formattedAddress : '';
 }
