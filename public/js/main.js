@@ -288,7 +288,7 @@ function geocodeCallback(data) {
 
 async function getAddressFromPosition(position) {
   let apiKey = 'AjgLGu7ECWvaCgsbbWCf1eW4X3cdvlsVakECdGIB1nZY7RSmllO26tR7xSN9bWLB';
-  let requestUrl = `http://dev.virtualearth.net/REST/v1/Locations/${position.lat},${position.lng}?key=${apiKey}`
+  let requestUrl = `https://dev.virtualearth.net/REST/v1/Locations/${position.lat},${position.lng}?key=${apiKey}`
 
   callRestService(requestUrl, geocodeCallback);
 
