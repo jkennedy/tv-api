@@ -1,56 +1,21 @@
 import { Controller, HttpService, Get, Post, Header, HttpCode, HttpStatus, Res, Param, Query, Body, Render} from '@nestjs/common';
-import { AppService } from './app.service';
-import {UserEntity} from './entities/user.entity'
-import {SaveLocationDto} from './dtos/saveLocation.dto'
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
+import { NewsService } from '../services/news.service';
+import { PreviewService } from '../services/preview.service';
 import nodeHtmlToImage = require('node-html-to-image');
 import Handlebars = require("handlebars");
 import * as moment from 'moment-timezone';
-import * as env from "./app.environment";
 
-@Controller()
-export class AppController {
-  constructor(private readonly appService: AppService, private readonly httpService: HttpService, private readonly userService: InMemoryDBService<UserEntity>) { }
+@Controller('preview')
+export class PreviewController {
+  constructor(private readonly previewService: PreviewService, private readonly newsService: NewsService, private readonly httpService: HttpService) { }
 
-  @Get('userSettings')
-  @Render('userSettings')
-  userSettings(@Query() params) {
-    return this.appService.getUser(params.email);
-  }
 
-  @Post('saveLocation')
-  saveLocation(@Body() location: SaveLocationDto) {
-    console.log('saveLocation');
-    console.log(location);
-
-    return this.appService.saveLocation(location);
-  }
-
-  @Get()
+  @Get('sections')
   getSections( @Query('timezone') timezone) {
-    console.log("GetSections: Timezone:" + timezone);
-    return this.appService.getSections(timezone);
+    return this.previewService.getSections(timezone);
   }
 
-  @Get('youtube')
-  async getYoutube() {
-    const foundUsers = this.userService.query(
-      record => record.email === 'jack.kennedy@gmail.com',
-    );
-
-    const accessToken = foundUsers[0].accessToken;
-
-    var cnnRequest =
-      "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCupvZG-5ko_eiXAupbDfxWw&maxResults=10&order=date&type=video&videoEmbeddable=true&access_token=" + accessToken;
-
-      const newsApi = await this.httpService.axiosRef({
-        url: cnnRequest,
-        method: 'GET',
-        responseType: 'json',
-      });
-
-      return newsApi.data;
-  }
 
   @Get('time')
   @HttpCode(HttpStatus.OK)
@@ -206,20 +171,7 @@ export class AppController {
     console.log("getNews: Timezone:" + timezone);
     let m = moment().tz(timezone);
 
-    // news api key 7ab315343ef442fcb4326b32ee4d3087
-    //let url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCupvZG-5ko_eiXAupbDfxWw&maxResults=25&order=date&type=video&videoEmbeddable=true&key=AIzaSyCiMqN61-ATtOyJl5okdAyeTFS2ygr1sQI';
-
-    /*
-    const newsApi = await this.httpService.axiosRef({
-      url: url,
-      method: 'GET',
-      responseType: 'json',
-    });
-
-    const news = newsApi.data;
-    */
-
-    const news = this.appService.getNews();
+    const news = this.newsService.getNationalNews();
 
     let articles = news.items.slice(0, 3);
 

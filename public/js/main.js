@@ -227,12 +227,14 @@ async function saveLocation() {
           alert(this.responseText);
         }
       };
-      xhttp.open("POST", "/saveLocation", true);
+      xhttp.open("POST", "/user/saveLocation", true);
       xhttp.setRequestHeader("Content-type", "application/json");
       xhttp.send(JSON.stringify(locationDto));
 
       xhttp.onload = function() {
         console.log(`done saving location: ${xhttp.status} : ${xhttp.statusText}`);
+        console.log(xhttp.response);
+        alert(xhttp.response);
       };
 
     }, function() {

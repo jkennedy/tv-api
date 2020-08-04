@@ -1,128 +1,77 @@
+import {HttpService} from '@nestjs/common';
+
 import { Injectable, Logger } from '@nestjs/common';
-import {UserEntity} from './entities/user.entity';
-import {SaveLocationDto} from './dtos/saveLocation.dto'
+import {CacheEntity} from '../entities/cache.entity';
+import {CacheService} from '../services/cache.service';
+import { UserService } from '../services/user.service';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
+import * as env from "../app.environment";
 
 @Injectable()
-export class AppService {
-  constructor(private readonly userService: InMemoryDBService<UserEntity>) { }
+export class NewsService {
+  constructor(private readonly cacheService: CacheService, private readonly userService: UserService, private readonly httpService: HttpService) { }
 
+  getNationalNews(country = 'USA') {
+    let cachedNews = this.cacheService.getCachedContent('news', country);
 
-  saveLocation(location: SaveLocationDto): string {
-    console.log('app service save location');
-    let user:UserEntity = this.getUser(location.email);
-
-    console.log('save location loaded saved user:');
-    console.log(user);
-
-    user.lat = location.pos.lat;
-    user.long = location.pos.long;
-    user.address = location.address;
-    user.zipCode = location.zipCode;
-
-    this.userService.update(user);
-
-    console.log('saved user:');
-    console.log(user);
-
-    return "Location Saved";
+    return cachedNews ? JSON.parse(cachedNews.json) : this.refreshNationalNews(country);
   }
 
-  getOrCreateUser(user: UserEntity): UserEntity {
+  async refreshNationalNews(country = 'USA') {
+    let newsJSON = null;
 
-    let userToReturn = null;
-
-    const foundUsers = this.userService.query(
-      record => record.email === user.email
-    );
-
-    if (!foundUsers.length) {
-      console.log('creating user:' + user.email);
-      userToReturn = this.userService.create(user);
-    }
+    if (env.isLocal())
+      newsJSON = this.getMockNewsYoutube()
     else {
-      console.log('returning existing user:' + foundUsers[0]);
-      userToReturn = foundUsers[0];
+      console.log('loading data from youtube: using youtube api credits')
+      newsJSON = await this.getYoutube();
     }
 
-    console.log('get Or Create User In:');
-    console.log(user);
+    this.cacheService.cacheContent ('news', newsJSON, country, 4);
 
-    console.log('user out');
-    console.log(userToReturn);
-
-    return userToReturn;
+    return newsJSON;
   }
 
-  getUser(email: string): UserEntity {
-    const foundUsers = this.userService.query(
-      record => record.email === email
-    );
+  async getYoutube() {
+    const foundUser = this.userService.getUser('jack.kennedy@gmail.com');
 
-    return foundUsers ? foundUsers[0] : null;
+    const accessToken = foundUser.accessToken;
+
+    let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&type=video&videoEmbeddable=true';
+    let cnnRequest = `${baseYouTube}&channelId=UCupvZG-5ko_eiXAupbDfxWw&access_token=${accessToken}`;
+    let nbcNewsRequest = `${baseYouTube}&channelId=UCeY0bbntWzzVIaj2z3QigXg&access_token=${accessToken}`;
+    let cbsNewsRequest = `${baseYouTube}&channelId=UC8p1vwvWtl6T73JiExfWs1g&access_token=${accessToken}`;
+    let msnbcNewsRequest = `${baseYouTube}&channelId=UCaXkIU1QidjPwiAYu6GcHjg&access_token=${accessToken}`;
+
+    const cnnApi =  this.httpService.axiosRef({url: cnnRequest, method: 'GET',responseType: 'json'});
+    const nbcNewsApi =  this.httpService.axiosRef({url: cnnRequest, method: 'GET',responseType: 'json'});
+    const cbsNewsApi =  this.httpService.axiosRef({url: cnnRequest, method: 'GET',responseType: 'json'});
+    const msnbcNewsApi =  this.httpService.axiosRef({url: cnnRequest, method: 'GET',responseType: 'json'});
+
+    let mergedVideos = [];
+    const fetchURL = (youtubeRequest) => this.httpService.axiosRef({url: youtubeRequest, method: 'GET',responseType: 'json'});
+
+    const promiseArray = [cnnRequest, nbcNewsRequest, cbsNewsRequest, msnbcNewsRequest].map(fetchURL);
+
+    await Promise.all(promiseArray)
+    .then((responses) => {
+      mergedVideos.push(responses[0].data.items);
+      mergedVideos.push(responses[1].data.items);
+      mergedVideos.push(responses[2].data.items);
+    })
+    .catch(function(err) {
+        console.log('error loading youtube search api:');
+        console.log(err);
+    });
+
+    var data = {
+      items: mergedVideos
+    }
+
+    return data;
   }
 
-  getUsersForDevice(uuid: string): Array<UserEntity> {
-    const foundUsers = this.userService.query(
-      record => record.deviceId === uuid
-    );
-
-    return foundUsers ? foundUsers : [];
-  }
-  getCountOfUsersOnDevice(uuid: string): number {
-    const foundUsers = this.userService.query(
-      record => record.deviceId === uuid
-    );
-
-    return foundUsers ? foundUsers.length : 0;
-  }
-
-  pollDeviceForNewUser(uuid: string, pollUntilUserCount: number = 1): boolean {
-    let countOfUsersOnDevice = this.getCountOfUsersOnDevice(uuid);
-
-    return countOfUsersOnDevice >= pollUntilUserCount;
-  }
-
-  getSections(timezone) {
-    Logger.log('Get Sections');
-    const expires = Date.now() + 10000;
-
-    var sections =
-      {
-        "sections": [
-          {
-            "title": "Today",
-            "tiles": [
-              {
-                "title": "Today",
-                "image_ratio": "16by9",
-                "image_url": "https://api.jackkennedy.info/time/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
-                "action_data": "{\"videoIdx\": 1}",
-                "is_playable": false
-              },
-              {
-                "title": "Weather",
-                "image_ratio": "16by9",
-                "image_url": "https://api.jackkennedy.info/weather/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
-                "action_data": "{\"pictureIdx\": 2}",
-                "is_playable": false
-              },
-              {
-                "title": "News",
-                "image_ratio": "16by9",
-                "image_url": "https://api.jackkennedy.info/news/?timezone=" + encodeURIComponent(timezone) + '&expires=' + expires,
-                "action_data": "{\"pictureIdx\": 3}",
-                "is_playable": false
-              }
-            ]
-          }
-        ]
-      };
-
-    return sections;
-  }
-
-  getNews() {
+  getMockNewsYoutube() {
     var json = {
       "kind": "youtube#searchListResponse",
       "etag": "Bg3T-m1gWTVaMWVTeuVx1E2sFZc",
