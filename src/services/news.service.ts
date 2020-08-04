@@ -25,6 +25,7 @@ export class NewsService {
     else {
       console.log('loading data from youtube: using youtube api credits')
       newsJSON = await this.getYoutube();
+      console.log('youtube response:' + newsJSON);
     }
 
     this.cacheService.cacheContent ('news', newsJSON, country, 4);

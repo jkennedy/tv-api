@@ -7,7 +7,7 @@
     <script type="text/javascript" src="js/main.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAX9uyQc2BHh1aWfmsGBuhNg4vVsAM10M0&callback=initMap"></script>
   </head>
-  <body>
+  <body onload="initialize('{{email}}')">
     <div class="container">
       <img src="My-Channel-Wide.png" alt="{{ lastName }}" style="width:100%;">
       <div class="bottom-right">{{firstName}} {{lastName}}</div>
@@ -22,5 +22,6 @@
         <button class='saveButton' onclick='saveLocation()'>Save Location</button>
       </div>
     </div>
+    <div id='notificationSection'></div>
   </body>
 </html>

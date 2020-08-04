@@ -1,4 +1,4 @@
-var map, infoWindow;
+var map, infoWindow, address, userEmail, browserPosition;
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -173,18 +173,39 @@ function initMap() {
 
   infoWindow = new google.maps.InfoWindow;
 
+  if (browserPosition)
+    updateMapToPosition(browserPosition);
+}
+
+function setBrowserPosition (position) {
+  browserPosition = {
+    lat: position.coords.latitude,
+    lng: position.coords.longitude
+  };
+
+  getAddressFromPosition(browserPosition);
+  updateMapToPosition(browserPosition);
+}
+
+function updateMapToPosition(position) {
+  if (infoWindow && position) {
+    infoWindow.setPosition(position);
+    infoWindow.setContent('Location found.');
+    infoWindow.open(map);
+    map.setCenter(position);
+  }
+}
+
+async function initialize(email) {
+    userEmail = email;
+    getPositionFromBrowser();
+}
+
+function getPositionFromBrowser() {
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
-      var pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-
-      infoWindow.setPosition(pos);
-      infoWindow.setContent('Location found.');
-      infoWindow.open(map);
-      map.setCenter(pos);
+      setBrowserPosition (position);
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     });
@@ -205,9 +226,6 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 async function saveLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(async function(position) {
-      let address = await getAddressFromLocation(position);
-      console.log('got address:' + address);
-
       let zipCode = document.getElementById("zipCode").value;
       console.log(zipCode);
 
@@ -217,25 +235,31 @@ async function saveLocation() {
           long: position.coords.longitude
         },
         zipCode: zipCode,
-        address: address,
-        email: 'jack.kennedy@gmail.com'
+        address: address.formattedAddress,
+        email: userEmail
       };
 
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          alert(this.responseText);
+          console.log(`on ready state changed: ${xhttp.status} : ${xhttp.statusText}`);
+          let notificationSection = document.getElementById("notificationSection");
+          notificationSection.innerHTML = xhttp.responseText;
+          notificationSection.className = "show";
         }
+      };
+      xhttp.onload = function() {
+         console.log(`onLoad: done saving location: ${xhttp.status} : ${xhttp.statusText}`);
+         console.log(xhttp.response);
+        let notificationSection = document.getElementById("notificationSection");
+        notificationSection.innerHTML = xhttp.responseText;
+        notificationSection.className = "show";
       };
       xhttp.open("POST", "/user/saveLocation", true);
       xhttp.setRequestHeader("Content-type", "application/json");
       xhttp.send(JSON.stringify(locationDto));
 
-      xhttp.onload = function() {
-        console.log(`done saving location: ${xhttp.status} : ${xhttp.statusText}`);
-        console.log(xhttp.response);
-        alert(xhttp.response);
-      };
+
 
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
@@ -243,17 +267,17 @@ async function saveLocation() {
   }
 }
 
-async function getAddressFromLocation(position) {
+async function getAddressFromPosition(position) {
   let apiKey = 'AjgLGu7ECWvaCgsbbWCf1eW4X3cdvlsVakECdGIB1nZY7RSmllO26tR7xSN9bWLB';
-  let requestUrl = `http://dev.virtualearth.net/REST/v1/Locations/${position.coords.latitude},${position.coords.longitude}?key=${apiKey}`
-  let address = '';
-
+  let requestUrl = `http://dev.virtualearth.net/REST/v1/Locations/${position.lat},${position.lng}?key=${apiKey}`
   let response = await fetch(requestUrl);
 
   if (response.ok) {
     let data = await response.json();
     console.log(data);
-    address = data.resourceSets[0].resources[0].address.formattedAddress;
+    address = data && data.resourceSets && data.resourceSets[0].resources ? data.resourceSets[0].resources[0].address : '';
+    document.getElementById("zipCode").value = address.postalCode;
   }
-  return address;
+
+  return address.formattedAddress;
 }
