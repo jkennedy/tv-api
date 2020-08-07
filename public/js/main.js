@@ -227,7 +227,6 @@ async function saveLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(async function(position) {
       let zipCode = document.getElementById("zipCode").value;
-      console.log(zipCode);
 
       let locationDto = {
         pos: {
@@ -236,6 +235,8 @@ async function saveLocation() {
         },
         zipCode: zipCode,
         address: address.formattedAddress,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        country: address.countryRegion,
         email: userEmail
       };
 

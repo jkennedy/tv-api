@@ -1,6 +1,6 @@
 import { Controller, HttpService, Get, Post, Header, HttpCode, HttpStatus, Res, Param, Query, Body, Render} from '@nestjs/common';
-import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { NewsService } from '../services/news.service';
+import { UserService } from '../services/user.service';
 import { PreviewService } from '../services/preview.service';
 import nodeHtmlToImage = require('node-html-to-image');
 import Handlebars = require("handlebars");
@@ -8,12 +8,12 @@ import * as moment from 'moment-timezone';
 
 @Controller('preview')
 export class PreviewController {
-  constructor(private readonly previewService: PreviewService, private readonly newsService: NewsService, private readonly httpService: HttpService) { }
+  constructor(private readonly previewService: PreviewService, private readonly userService: UserService, private readonly newsService: NewsService, private readonly httpService: HttpService) { }
 
 
   @Get('sections')
-  getSections( @Query('timezone') timezone) {
-    return this.previewService.getSections(timezone);
+  getSections(@Query() params) {
+    return this.previewService.getSections(params.uuid);
   }
 
 
@@ -23,9 +23,11 @@ export class PreviewController {
   @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
-  async getTime( @Res() res, @Query('timezone') timezone) {
-    if (!timezone)
-      timezone = 'America/New_York';
+  async getTime( @Res() res, @Query() params) {
+    let users = this.userService.getUsersForDevice(params.uuid);
+    let user = users && users.length ? users[0] : null;
+    let country = user ? user.country : 'USA'
+    let timezone = user ? user.timezone : 'America/New_York';
 
     let m = moment().tz(timezone);
 
@@ -148,9 +150,7 @@ export class PreviewController {
   @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
-  async getRadar( @Res() res, @Query('timezone') timezone) {
-    console.log("getRadar: Timezone:" + timezone);
-    let m = moment().tz(timezone);
+  async getRadar( @Res() res, @Query() params) {
 
     const image = await this.httpService.axiosRef({
       url: 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png',
@@ -167,11 +167,11 @@ export class PreviewController {
   @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
-  async getNews( @Res() res, @Query('timezone') timezone) {
-    console.log("getNews: Timezone:" + timezone);
-    let m = moment().tz(timezone);
+  async getNews( @Res() res, @Query() params) {
 
-    const news = await this.newsService.getNationalNews();
+    console.log(`preview: getNews  uuid: ${params.uuid}`)
+
+    const news = await this.newsService.getNationalNews(params.uuid);
 
     let articles = news.items.slice(0, 3);
 
@@ -266,7 +266,7 @@ export class PreviewController {
   @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
-  async getWeather( @Res() res, @Query('timezone') timezone) {
+  async getWeather( @Res() res, @Query() params) {
 
     const forecastRequest = await this.httpService.axiosRef({
       url: 'https://api.weather.gov/gridpoints/TBW/56,95/forecast',

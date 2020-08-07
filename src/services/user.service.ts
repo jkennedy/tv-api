@@ -15,10 +15,12 @@ export class UserService {
     user.long = location.pos.long;
     user.address = location.address;
     user.zipCode = location.zipCode;
+    user.country = location.country;
+    user.timezone = location.timezone;
 
     this.userService.update(user);
 
-    console.log('saved user:');
+    console.log('saved location for user:');
     console.log(user);
 
     return "Location Saved";
@@ -59,6 +61,7 @@ export class UserService {
 
     return foundUsers ? foundUsers : [];
   }
+  
   getCountOfUsersOnDevice(uuid: string): number {
     const foundUsers = this.userService.query(
       record => record.deviceId === uuid
