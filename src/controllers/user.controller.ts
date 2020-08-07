@@ -10,4 +10,19 @@ export class UserController {
   saveLocation(@Body() location: SaveLocationDto) {
     return this.userService.saveLocation(location);
   }
+
+  @Get('pollDeviceForNewUser')
+  pollDeviceForNewUser( @Query() params) {
+    return this.userService.pollDeviceForNewUser(params.uuid, params.pollUntilUserCount);
+  }
+
+  @Get('countOfUsersOnDevice')
+  getCountOfUsersOnDevice( @Query() params) {
+    return this.userService.getCountOfUsersOnDevice(params.uuid);
+  }
+
+  @Get('getUsersForDevice')
+  getUsersForDevice( @Query() params) {
+    return this.userService.getUsersForDevice(params.uuid);
+  }
 }

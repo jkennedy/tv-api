@@ -11,8 +11,8 @@ export class CacheService {
     return 3600000 * hours;
   }
 
-  cacheContent(type: string, content: any, relatedTo = '', duration = 1): CacheEntity {
-    let expires = new Date().getTime() + duration;
+  cacheContent(type: string, content: any, relatedTo = '', hours = 1): CacheEntity {
+    let expires = new Date().getTime() + this.duration(hours);
     let json = JSON.stringify(content);
 
     let cacheItem = this.getCachedContent(type, relatedTo);
@@ -41,7 +41,7 @@ export class CacheService {
 
     let cachedItem = cachedItems ? cachedItems[0] : null;
 
-    if (cachedItem && cachedItem.expires > new Date().getTime()) {
+    if (cachedItem && cachedItem.expires < new Date().getTime()) {
       console.log(`deleting expired cached item:`);
       this.cacheService.delete(cachedItem.id);
       cachedItem = null;

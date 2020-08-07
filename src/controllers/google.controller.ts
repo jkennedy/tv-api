@@ -33,21 +33,6 @@ export class GoogleController {
     res.redirect(this.getGoogleAuthUrl(params));
   }
 
-  @Get('pollDeviceForNewUser')
-  pollDeviceForNewUser( @Query() params) {
-    return this.userService.pollDeviceForNewUser(params.uuid, params.pollUntilUserCount);
-  }
-
-  @Get('countOfUsersOnDevice')
-  getCountOfUsersOnDevice( @Query() params) {
-    return this.userService.getCountOfUsersOnDevice(params.uuid);
-  }
-
-  @Get('getUsersForDevice')
-  getUsersForDevice( @Query() params) {
-    return this.userService.getUsersForDevice(params.uuid);
-  }
-
   @Get('qrcode')
   async getQRCode( @Query() params) {
 
