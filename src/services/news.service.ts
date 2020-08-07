@@ -71,10 +71,10 @@ export class NewsService {
 
     await Promise.all(promiseArray)
     .then((responses) => {
-      mergedVideos.push(responses[0].data.items);
-      mergedVideos.push(responses[1].data.items);
-      mergedVideos.push(responses[2].data.items);
-      mergedVideos.push(responses[3].data.items);
+      mergedVideos = mergedVideos.concat(responses[0].data.items);
+      mergedVideos = mergedVideos.concat(responses[1].data.items);
+      mergedVideos = mergedVideos.concat(responses[2].data.items);
+      mergedVideos = mergedVideos.concat(responses[3].data.items);
     })
     .catch(function(err) {
         console.log('error loading youtube search api:');
