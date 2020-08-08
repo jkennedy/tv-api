@@ -13,16 +13,19 @@ export class UserController {
 
   @Get('pollDeviceForNewUser')
   pollDeviceForNewUser( @Query() params) {
+    console.log(`pollDeviceForNewUser: device: ${params.uuid} pollUnitilCount: ${params.pollUntilUserCount}`);
     return this.userService.pollDeviceForNewUser(params.uuid, params.pollUntilUserCount);
   }
 
   @Get('countOfUsersOnDevice')
   getCountOfUsersOnDevice( @Query() params) {
+    console.log(`getCountOfUsersOnDevice: device: ${params.uuid}`);
     return this.userService.getCountOfUsersOnDevice(params.uuid);
   }
 
   @Get('getUsersForDevice')
   getUsersForDevice( @Query() params) {
+    console.log(`getUsersForDevice: device: ${params.uuid}`);
     return this.userService.getUsersForDevice(params.uuid);
   }
 }
