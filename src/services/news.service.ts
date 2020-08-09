@@ -11,19 +11,25 @@ import * as env from "../app.environment";
 export class NewsService {
   constructor(private readonly cacheService: CacheService, private readonly userService: UserService, private readonly httpService: HttpService) { }
 
-  async getNationalNews(country = 'USA') {
+  async getNationalNews(deviceId) {
+    let users = this.userService.getUsersForDevice(deviceId);
+    let user = users && users.length ? users[0] : null;
+    let country = user ? user.country : 'USA'
     let cachedNews = this.cacheService.getCachedContent('news', country);
 
-    return cachedNews ? JSON.parse(cachedNews.json) : this.refreshNationalNews(country);
+    return cachedNews ? JSON.parse(cachedNews.json) : this.refreshNationalNews(country, deviceId, user);
   }
 
-  async refreshNationalNews(country = 'USA') {
+  async refreshNationalNews(country = 'USA', deviceId, user) {
     let newsJSON = null;
 
-    if (env.isLocal())
-      newsJSON = this.getMockNewsYoutube()
+    if (env.isLocal() || (!user || !user.accessToken)) {
+      console.log('Using Mock News');
+      newsJSON = this.getMockNewsYoutube();
+    }
     else {
-      newsJSON = await this.getYoutube();
+      console.log('Loading Youtube News');
+      newsJSON = await this.getYoutube(user.accessToken);
     }
 
     this.cacheService.cacheContent ('news', newsJSON, country, 4);
@@ -31,11 +37,8 @@ export class NewsService {
     return newsJSON;
   }
 
-  async getYoutube() {
-    const foundUser = this.userService.getUser('jack.kennedy@gmail.com');
+  async getYoutube(accessToken) {
     let mergedVideos = [];
-
-    const accessToken = foundUser.accessToken;
 
     let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&type=video&videoEmbeddable=true';
     let cnnRequest = `${baseYouTube}&channelId=UCupvZG-5ko_eiXAupbDfxWw&access_token=${accessToken}`;

@@ -174,9 +174,7 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getNews( @Res() res, @Query() params) {
-
     console.log(`preview: getNews  uuid: ${params.uuid}`)
-
     const news = await this.newsService.getNationalNews(params.uuid);
 
     let articles = news.items.slice(0, 3);

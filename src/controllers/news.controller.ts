@@ -2,7 +2,6 @@ import { Controller, HttpService, Get, Post, Header, HttpCode, HttpStatus, Res, 
 import { AppService } from '../services/app.service';
 import { NewsService } from '../services/news.service';
 import { UserService } from '../services/user.service';
-import {UserEntity} from '../entities/user.entity'
 import {SaveLocationDto} from '../dtos/saveLocation.dto'
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import nodeHtmlToImage = require('node-html-to-image');
@@ -16,11 +15,6 @@ export class NewsController {
 
   @Get('nationalNews')
   async getNationalNews(@Query() params) {
-    let users = this.userService.getUsersForDevice(params.uuid);
-    let country = users && users.length ? users[0].country : 'USA'
-
-    console.log(`get national news  uuid: ${params.uuid} : country ${country}`)
-
-    return this.newsService.getNationalNews(country);
+    return this.newsService.getNationalNews(params.uuid);
   }
 }
