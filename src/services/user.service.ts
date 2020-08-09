@@ -26,21 +26,30 @@ export class UserService {
     return "Location Saved";
   }
 
-  getOrCreateUser(user: UserEntity): UserEntity {
-
+  updateOrCreateUser(userIn: UserEntity): UserEntity {
     let userToReturn = null;
 
     const foundUsers = this.userService.query(
-      record => record.email === user.email
+      record => record.email === userIn.email
     );
 
     if (!foundUsers.length) {
-      user.country = 'USA';
-      userToReturn = this.userService.create(user);
+      userToReturn = this.userService.create(userIn);
     }
     else {
-      console.log('returning existing user:' + foundUsers[0]);
       userToReturn = foundUsers[0];
+      userToReturn.picture = userIn.picuture;
+      userToReturn.zipCode = userIn.zipCode;
+      userToReturn.address = userIn.address;
+      userToReturn.country = userIn.country;
+      userToReturn.timezone = userIn.timezone;
+      userToReturn.lat = userIn.lat;
+      userToReturn.long = userIn.long;
+      userToReturn.deviceId = userIn.deviceId;
+      userToReturn.accessToken = userIn.accessToken;
+      userToReturn.refreshToken = userIn.refreshToken;
+
+      this.userService.update(userToReturn);
     }
 
     return userToReturn;
@@ -61,7 +70,7 @@ export class UserService {
 
     return foundUsers ? foundUsers : [];
   }
-  
+
   getCountOfUsersOnDevice(uuid: string): number {
     const foundUsers = this.userService.query(
       record => record.deviceId === uuid

@@ -50,7 +50,7 @@ export class GoogleController {
     if (query.state)
       user.deviceId = query.state;
 
-    this.userService.getOrCreateUser({...user, id: new Date().getTime()});
+    this.userService.updateOrCreateUser({...user, id: new Date().getTime()});
 
     res.redirect('../userSettings?email=' + user.email);
 }
