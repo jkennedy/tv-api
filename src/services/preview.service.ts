@@ -37,7 +37,7 @@ export class PreviewService {
               {
                 "title": "News",
                 "image_ratio": "16by9",
-                "news": `${baseUrl}/preview/news/?uuid=${deviceId}&expires=${expires}`,
+                "image_url": `${baseUrl}/preview/news/?uuid=${deviceId}&expires=${expires}`,
                 "action_data": "{\"pictureIdx\": 3}",
                 "is_playable": false
               }
