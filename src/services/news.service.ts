@@ -14,13 +14,13 @@ export class NewsService {
   async getNationalNews(deviceId) {
     let users = this.userService.getUsersForDevice(deviceId);
     let user = users && users.length ? users[0] : null;
-    let country = user ? user.country : 'USA'
+    let country = user ? user.country : 'UNKNOWN'
     let cachedNews = this.cacheService.getCachedContent('news', country);
 
     return cachedNews ? JSON.parse(cachedNews.json) : this.refreshNationalNews(country, deviceId, user);
   }
 
-  async refreshNationalNews(country = 'USA', deviceId, user) {
+  async refreshNationalNews(country = 'UNKNOWN', deviceId, user) {
     let newsJSON = null;
 
     if (env.isLocal() || (!user || !user.accessToken)) {

@@ -31,7 +31,6 @@ export class PreviewController {
     console.log('xxxx get getTime: ' + params.uuid);
     let users = this.userService.getUsersForDevice(params.uuid);
     let user = users && users.length ? users[0] : null;
-    let country = user ? user.country :  'USA';
     let timezone = user ? user.timezone : 'America/New_York';
 
     console.log('get time: timezone: ' + timezone);
