@@ -9,7 +9,6 @@ export class PreviewService {
 
 
   getSections(deviceId) {
-    Logger.log('Get Sections');
     const expires = Date.now() + 10000;
     const baseUrl = env.baseUrl();
     const encodedDeviceId = encodeURIComponent(deviceId);
