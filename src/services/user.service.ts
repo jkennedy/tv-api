@@ -38,7 +38,7 @@ export class UserService {
     }
     else {
       userToReturn = foundUsers[0];
-      userToReturn.picture = userIn.picuture;
+      userToReturn.picture = userIn.picture;
       userToReturn.zipCode = userIn.zipCode;
       userToReturn.address = userIn.address;
       userToReturn.country = userIn.country;
