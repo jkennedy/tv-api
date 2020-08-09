@@ -24,21 +24,21 @@ export class PreviewService {
               {
                 "title": "Today",
                 "image_ratio": "16by9",
-                "image_url": `https://${baseUrl}/preview/time/?uuid=${deviceId}&expires=${expires}`,
+                "image_url": `${baseUrl}/preview/time/?uuid=${deviceId}&expires=${expires}`,
                 "action_data": "{\"videoIdx\": 1}",
                 "is_playable": false
               },
               {
                 "title": "Weather",
                 "image_ratio": "16by9",
-                "image_url": `https://${baseUrl}/preview/weather/?uuid=${deviceId}&expires=${expires}`,
+                "image_url": `${baseUrl}/preview/weather/?uuid=${deviceId}&expires=${expires}`,
                 "action_data": "{\"pictureIdx\": 2}",
                 "is_playable": false
               },
               {
                 "title": "News",
                 "image_ratio": "16by9",
-                "news": `https://${baseUrl}/preview/weather/?uuid=${deviceId}&expires=${expires}`,
+                "news": `${baseUrl}/preview/weather/?uuid=${deviceId}&expires=${expires}`,
                 "action_data": "{\"pictureIdx\": 3}",
                 "is_playable": false
               }
