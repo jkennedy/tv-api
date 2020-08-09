@@ -59,7 +59,7 @@ export class PreviewController {
 
     timeDescription = timeDescription + ' ' + m.format('h');
 
-    console.log('preview: getTime: lastTime:' timeDescription);
+    console.log('preview: getTime: lastTime:' + timeDescription);
 
     let icon = 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png';
     let temp = '85' + '℉';
