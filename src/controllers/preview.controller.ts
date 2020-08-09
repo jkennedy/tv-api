@@ -28,12 +28,12 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getTime( @Res() res, @Query() params) {
-    console.log('xxxx get getTime: ' + params.uuid);
+    console.log('get getTime: ' + params.uuid);
     let users = this.userService.getUsersForDevice(params.uuid);
     let user = users && users.length ? users[0] : null;
     let timezone = user ? user.timezone : 'America/New_York';
 
-    console.log('get time: timezone: ' + timezone);
+    console.log('timezone: ' + timezone);
     let m = moment().tz(timezone);
 
     const dateText = m.format('MMMM Do');
@@ -58,6 +58,8 @@ export class PreviewController {
     }
 
     timeDescription = timeDescription + ' ' + m.format('h');
+
+    console.log('preview: getTime: lastTime:' timeDescription);
 
     let icon = 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png';
     let temp = '85' + '℉';
