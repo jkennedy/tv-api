@@ -28,7 +28,7 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getTime( @Res() res, @Query() params) {
-    console.log(' get getTime: ' + params.uuid);
+    console.log('xxxx get getTime: ' + params.uuid);
     let users = this.userService.getUsersForDevice(params.uuid);
     let user = users && users.length ? users[0] : null;
     let country = user ? user.country : 'USA'
