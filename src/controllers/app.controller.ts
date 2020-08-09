@@ -10,4 +10,9 @@ export class AppController {
     return this.userService.getUser(params.email);
   }
 
+  @Get('logInfo')
+  logInfo (@Query() params) {
+    console.log('logInfo---------------------------------');
+    console.log(params.info);
+  }
 }
