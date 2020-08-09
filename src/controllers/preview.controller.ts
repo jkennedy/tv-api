@@ -13,7 +13,11 @@ export class PreviewController {
 
   @Get('sections')
   getSections(@Query() params) {
-    return this.previewService.getSections(params.uuid);
+    console.log(' get sections: ' + params.uuid);
+    let sections =  this.previewService.getSections(params.uuid);
+    console.log('returning sections');
+    console.log(sections);
+    return sections;
   }
 
 
@@ -24,6 +28,7 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getTime( @Res() res, @Query() params) {
+    console.log(' get getTime: ' + params.uuid);
     let users = this.userService.getUsersForDevice(params.uuid);
     let user = users && users.length ? users[0] : null;
     let country = user ? user.country : 'USA'
@@ -151,7 +156,7 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getRadar( @Res() res, @Query() params) {
-
+    console.log(' get radar: ' + params.uuid);
     const image = await this.httpService.axiosRef({
       url: 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png',
       method: 'GET',
@@ -268,6 +273,7 @@ export class PreviewController {
   @Header('Pragma', 'no-cache')
   async getWeather( @Res() res, @Query() params) {
 
+    console.log(' get weather: ' + params.uuid);
     const forecastRequest = await this.httpService.axiosRef({
       url: 'https://api.weather.gov/gridpoints/TBW/56,95/forecast',
       method: 'GET',
