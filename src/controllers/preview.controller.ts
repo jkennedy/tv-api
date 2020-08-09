@@ -16,7 +16,7 @@ export class PreviewController {
     console.log(' get sections: ' + params.uuid);
     let sections =  this.previewService.getSections(params.uuid);
     console.log('returning sections');
-    console.log(JSON.stringify(sections);
+    console.log(JSON.stringify(sections));
     return sections;
   }
 
