@@ -15,6 +15,7 @@ export class NewsController {
 
   @Get('nationalNews')
   async getNationalNews(@Query() params) {
+    console.log('getNationalNews: ' + params.uuid);
     return this.newsService.getNationalNews(params.uuid);
   }
 }

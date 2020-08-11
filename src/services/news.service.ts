@@ -17,12 +17,16 @@ export class NewsService {
     let country = user ? user.country : 'UNKNOWN'
     let cachedNews = this.cacheService.getCachedContent('news', country);
 
+    console.log('service getNationalNews: country: ' + country + ' user:' + user);
+
     return cachedNews ? JSON.parse(cachedNews.json) : this.refreshNationalNews(country, deviceId, user);
   }
 
   async refreshNationalNews(country = 'UNKNOWN', deviceId, user) {
     let newsJSON = null;
 
+
+    console.log('service refreshNationalNews: country: ' + country + ' user:' + user);
     if (env.isLocal() || (!user || !user.accessToken)) {
       console.log('Using Mock News');
       newsJSON = this.getMockNewsYoutube();
@@ -39,6 +43,8 @@ export class NewsService {
 
   async getYoutube(accessToken) {
     let mergedVideos = [];
+
+    console.log('service getYoutubeNews: accessToken:' + accessToken);
 
     let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&type=video&videoEmbeddable=true';
     let cnnRequest = `${baseYouTube}&channelId=UCupvZG-5ko_eiXAupbDfxWw&access_token=${accessToken}`;
