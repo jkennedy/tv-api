@@ -13,7 +13,7 @@ export class GoogleController {
     let uuid = params.uuid;
     let encodedBaseUrl = encodeURIComponent(env.baseUrl() + '/google/redirect');
 
-    let oldUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&access_type=offline&include_granted_scopes=true&state=${uuid}&redirect_uri=${encodedBaseUrl}%2Fgoogle%2Fredirect&response_type=code&client_id=359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com`;
+  //  let oldUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&access_type=offline&include_granted_scopes=true&state=${uuid}&redirect_uri=${encodedBaseUrl}%2Fgoogle%2Fredirect&response_type=code&client_id=359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com`;
 
     let googleBase = 'https://accounts.google.com/o/oauth2/v2/auth';
     let scopes = 'scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly';
@@ -26,7 +26,7 @@ export class GoogleController {
 
     console.log('getGoogleAuthUrl');
     console.log(authUrl);
-    
+
     return authUrl;
   }
 
@@ -55,6 +55,8 @@ export class GoogleController {
 
     console.log('google auth redirect handler');
     console.log(user);
+    console.log('query:');
+    console.log(query);
 
     this.userService.updateOrCreateUser({...user, id: new Date().getTime()});
 
