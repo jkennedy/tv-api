@@ -1,10 +1,11 @@
-import { Controller, HttpService, Get, Post, Header, HttpCode, HttpStatus, Res, Param, Query, Body, Render} from '@nestjs/common';
+import { Controller, Get, Post, Header, HttpCode, HttpStatus, Res, Param, Query, Body, Render} from '@nestjs/common';
 import { UserService } from '../services/user.service';
+import {AuthService} from '../services/auth.service';
 import {SaveLocationDto} from '../dtos/saveLocation.dto'
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService, private readonly httpService: HttpService) { }
+  constructor(private readonly userService: UserService, private readonly authService: AuthService) { }
 
   @Post('saveLocation')
   saveLocation(@Body() location: SaveLocationDto) {
@@ -24,5 +25,12 @@ export class UserController {
   @Get('getUsersForDevice')
   getUsersForDevice( @Query() params) {
     return this.userService.getUsersForDevice(params.uuid);
+  }
+
+  @Get('testRefreshToken')
+  testRefreshToken (@Query() params) {
+    let user = this.userService.getUser(params.email);
+    let refreshToken = user.refreshToken;
+    this.authService.refreshAccessToken(refreshToken);
   }
 }

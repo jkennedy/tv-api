@@ -10,8 +10,9 @@ export interface UserEntity extends InMemoryDBEntity {
   country?: string;
   timezone?: string;
   lat?: number;
-  long?: number,
+  long?: number;
   deviceId?: string;
   accessToken?: string;
   refreshToken?: string;
+  tokenExpires?: number;
 }

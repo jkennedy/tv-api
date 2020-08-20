@@ -1,23 +1,105 @@
+html, body {
+  /* IE 10-11 didn't like using min-height */
+  height: 100%;
+}
 body {
-	border-style: solid;
+  display: flex;
+  flex-direction: column;
 }
-.container {
-  position: relative;
-  text-align: center;
-  color: black;
+.content {
+  flex: 1 0 auto; /* Prevent Chrome, Opera, and Safari from letting these items shrink to smaller than their content's default minimum size. */
+  padding: 20px;
+}
+.footer {
+  flex-shrink: 0; /* Prevent Chrome, Opera, and Safari from letting these items shrink to smaller than their content's default minimum size. */
+  padding: 2%;
+}
+.header {
+  flex-shrink: 0; /* Prevent Chrome, Opera, and Safari from letting these items shrink to smaller than their content's default minimum size. */
+  padding: 2%;
 }
 
-.bottom-right {
-  position: absolute;
-  bottom: 10%;
-  right: 10%;
-  font: 38px Arial;
+#userSection {
+	  margin-top: 75px;
+
+	  text-align: center;
 }
 
-#headerImage {
+#locationSection {
+	  margin-top: 75px;
+}
+
+.userProfilePictureOverlay {
+  object-fit: cover;
+  border-radius: 50%;
+  height: auto;
+  /* width: 35%; */
+  box-shadow: inset 0 0 5px tomato, 0 0 5px white;
+  filter: drop-shadow(5px 5px 5px rgba(0,0,0,0.9));
+}
+#map {
+  width: 75%;
+  height: 35%;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.welcomeSection {
   width: 100%;
+  margin-top: 50px;
+}
+.welcomeHeader {
+  font: Arial;
+  font-size: 4em;
+  text-align: center;
+}
+.description {
+  font: Arial;
+	font-size: 1.7em;
+  margin-top: 30px;
+  text-align: center;
+}
+.saveSection {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#zipCodeSection{
+  display: flex;
+  align-items: center;
+
+  justify-content: center;
+  margin-top: 20px;
+}
+#zipDesc{
+  text-align: center;
+	font-size: 2em;
+	margin-right: 20px;
+}
+#zipCode {
+  font-size: 2em;
 }
 
+.userName {
+  font: Arial;
+	font-size: 1.7em;
+  text-align: center;
+  margin-top: 20px;
+}
+.userEmail {
+  font: Arial;
+	font-size: 1.7em;
+  text-align: center;
+}
+
+.saveButton {
+  font:  Arial;
+	font-size: 2em;
+  padding: 15px 32px;
+  border-radius: 8px;
+  text-align: center;
+}
 #notificationSection {
  visibility: hidden;
  min-width: 250px;
@@ -38,60 +120,27 @@ body {
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
   animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
-.userProfilePictureOverlay {
-  position: absolute;
-  top: 15%;
-  right: 15%;
-  object-fit: cover;
-  border-radius: 50%;
-  height: auto;
-  width: 18%;
 
-  box-shadow: inset 0 0 5px tomato, 0 0 5px white;
-  filter: drop-shadow(5px 5px 5px rgba(0,0,0,0.9));
+* {
+  box-sizing: border-box;
 }
-#map {
-  width: 75%;
-  height: 60%;
-  margin-top: 50px;
-  margin-left: auto;
-  margin-right: auto;
+body {
+  margin: 0;
+  font: 16px Sans-Serif;
 }
-.welcomeSection {
-  width: 100%;
-  height: 1100px;
-  margin-top: 100px;
+h1 {
+  margin: 0 0 20px 0;
 }
-.welcomeHeader {
-  font: 38px Arial;
-  text-align: center;
+p {
+  margin: 0 0 20px 0;
 }
-.description {
-  font: 28px Arial;
-  text-align: center;
-  margin-top: 50px;
-  margin-left: 50px;
-  margin-right: 50px;
+footer {
+  background: gray;
 }
-.saveSection {
-  margin-top: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+header {
+  background: gray;
 }
-#zipCodeSection{
-	text-align: center;
-	margin-top: 20px;
-}
-#zipCode {
-  font: 28px Arial;
-}
-.saveButton {
-  font: 28px Arial;
-  padding: 15px 32px;
-  border-radius: 8px;
-  text-align: center;
-}
+
 @-webkit-keyframes fadein {
   from {bottom: 0; opacity: 0;}
   to {bottom: 30px; opacity: 1;}

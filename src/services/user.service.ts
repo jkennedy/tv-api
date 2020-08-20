@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import {UserEntity} from '../entities/user.entity';
+import {AuthService} from './auth.service';
 import {SaveLocationDto} from '../dtos/saveLocation.dto'
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userService: InMemoryDBService<UserEntity>) { }
+  constructor(private readonly userService: InMemoryDBService<UserEntity>, private readonly authService: AuthService) { }
 
 
   saveLocation(location: SaveLocationDto): string {
@@ -26,6 +27,10 @@ export class UserService {
     return "Location Saved";
   }
 
+  getAcessTokenExpiration (accessToken): number {
+    return new Date().getTime() + (3500 * 1000);
+  }
+
   updateOrCreateUser(userIn: UserEntity): UserEntity {
     let userToReturn = null;
 
@@ -33,7 +38,10 @@ export class UserService {
       record => record.email === userIn.email
     );
 
+    userIn.tokenExpires = this.getAcessTokenExpiration(userIn.accessToken);
+
     if (!foundUsers.length) {
+      userIn.id = new Date().getTime();
       userToReturn = this.userService.create(userIn);
     }
     else {
@@ -48,6 +56,7 @@ export class UserService {
       userToReturn.deviceId = userIn.deviceId;
       userToReturn.accessToken = userIn.accessToken;
       userToReturn.refreshToken = userIn.refreshToken;
+      userToReturn.tokenExpires = userIn.tokenExpires;
 
       this.userService.update(userToReturn);
     }
@@ -83,5 +92,22 @@ export class UserService {
     let countOfUsersOnDevice = this.getCountOfUsersOnDevice(uuid);
 
     return countOfUsersOnDevice >= pollUntilUserCount;
+  }
+
+  async confirmFreshAccessToken(userIn: UserEntity): Promise<UserEntity> {
+    console.log ('confirming fresh access token: userIn token:' + userIn.accessToken);
+
+    if (userIn.accessToken && userIn.refreshToken && userIn.tokenExpires < new Date().getTime()) {
+      console.log('detected expired access token, refreshing with auth service');
+      let accessToken = await this.authService.refreshAccessToken(userIn.refreshToken);
+      userIn.accessToken = accessToken;
+      userIn.tokenExpires = await this.getAcessTokenExpiration(userIn.accessToken);
+      this.userService.update(userIn);
+   }
+
+
+    console.log ('done confirming access token, new access token: ' + userIn.accessToken);
+
+    return userIn;
   }
 }

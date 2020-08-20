@@ -9,20 +9,29 @@
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAX9uyQc2BHh1aWfmsGBuhNg4vVsAM10M0&callback=initMap"></script>
   </head>
   <body onload="initialize('{{email}}')">
-    <div class="container">
-      <img src="My-Channel-Wide.png" alt="{{ lastName }}" style="width:100%;">
-      <div class="bottom-right">{{firstName}} {{lastName}}</div>
-      <img class="userProfilePictureOverlay" src="{{picture}}">
-    </div>
-    <div class='welcomeSection'>
-      <div class='welcomeHeader'>Welcome To MyChannel</div>
-      <div class='description'>Please allow this page to detect your location so that your channel can be personalized with the content that is most relevant.</div>
-      <div id='map'></div>
-      <div id='zipCodeSection'><input type="text" id="zipCode" name="zipCode"></div>
-      <div class='saveSection'>
-        <button class='saveButton' onclick='saveLocation()'>Save Location</button>
+    <header class="header"></header>
+    <div class="content">
+      <div class='welcomeSection'>
+        <div class='welcomeHeader'>Welcome To MyChannel</div>
+        <div class='description'>Please allow this page to detect your location to personalize your channel.</div>
       </div>
+      <div id="userSection">
+        <img class="userProfilePictureOverlay" src="{{picture}}">
+        <div class="userName">{{firstName}} {{lastName}}</div>
+        <div class="userEmail">{{email}}</div>
+      </div>
+      <div id='locationSection'>
+        <div id='zipCodeSection'>
+          <div id='zipDesc'>Zip Code:</div>
+          <input type="text" id="zipCode" name="zipCode"/>
+        </div>
+        <div class='saveSection'>
+          <button class='saveButton' onclick='saveLocation()'>Save Location</button>
+        </div>
+      </div>
+      <div id='map'></div>
     </div>
+     <footer class="footer"></footer>
     <div id='notificationSection'></div>
   </body>
 </html>

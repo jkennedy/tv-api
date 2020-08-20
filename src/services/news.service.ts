@@ -4,12 +4,13 @@ import { Injectable, Logger } from '@nestjs/common';
 import {CacheEntity} from '../entities/cache.entity';
 import {CacheService} from '../services/cache.service';
 import { UserService } from '../services/user.service';
+import { AuthService } from '../services/auth.service';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import * as env from "../app.environment";
 
 @Injectable()
 export class NewsService {
-  constructor(private readonly cacheService: CacheService, private readonly userService: UserService, private readonly httpService: HttpService) { }
+  constructor(private readonly cacheService: CacheService, private readonly userService: UserService, private readonly httpService: HttpService, private readonly authService: AuthService) { }
 
   async getNationalNews(deviceId) {
     let users = this.userService.getUsersForDevice(deviceId);
@@ -25,7 +26,6 @@ export class NewsService {
   async refreshNationalNews(country = 'UNKNOWN', deviceId, user) {
     let newsJSON = null;
 
-
     console.log('service refreshNationalNews: country: ' + country + ' user:' + user);
     if (env.isLocal() || (!user || !user.accessToken)) {
       console.log('Using Mock News');
@@ -33,10 +33,11 @@ export class NewsService {
     }
     else {
       console.log('Loading Youtube News');
+      user = await this.userService.confirmFreshAccessToken(user);
       newsJSON = await this.getYoutube(user.accessToken);
     }
 
-    this.cacheService.cacheContent ('news', newsJSON, country, 4);
+    this.cacheService.cacheContent ('news', newsJSON, country, 1);
 
     return newsJSON;
   }
