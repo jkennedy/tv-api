@@ -18,6 +18,7 @@ export class CacheService {
     let cacheItem = this.getCachedContent(type, relatedTo);
 
     if (!cacheItem) {
+      console.log('Creating New Cached Item: ' + type);
       cacheItem = this.cacheService.create({
         type: type,
         json: json,
@@ -38,6 +39,7 @@ export class CacheService {
     let cachedItem = cachedItems ? cachedItems[0] : null;
 
     if (cachedItem && cachedItem.expires < new Date().getTime()) {
+      console.log('expiring catched item: ' + cachedItem.type + ' time since expired: ' + (new Date().getTime() - cachedItem.expires));
       this.cacheService.delete(cachedItem.id);
       cachedItem = null;
     }

@@ -32,7 +32,7 @@ export class NewsService {
       newsJSON = await this.getYoutube(user.accessToken);
     }
 
-    this.cacheService.cacheContent ('news', newsJSON, country, 1);
+    this.cacheService.cacheContent ('news', newsJSON, country, 3);
 
     return newsJSON;
   }
@@ -72,6 +72,12 @@ export class NewsService {
         console.log(cbsNewsRequest);
         console.log(msnbcNewsRequest);
     });
+
+    // return the mock news if Youtube API failed
+    if (!(mergedVideos && mergedVideos.length)) {
+        console.log('Youtube Response Empty: Returning Mock News');
+        mergedVideos = this.getMockNewsYoutube().items;
+    }
 
     var data = {
       items: mergedVideos
