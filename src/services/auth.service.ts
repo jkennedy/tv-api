@@ -18,13 +18,10 @@ export class AuthService {
     let accessType = 'access_type=offline';
     let includeScopes = 'include_granted_scopes=true';
     let responseType = 'response_type=code';
-    //let clientId = 'client_id=359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com';
-    let prompt = 'prompt=consent';
+    //let prompt = 'prompt=consent';
+    //&${prompt}
 
-    let authUrl = `${googleBase}?${scopes}&${accessType}&${includeScopes}&${prompt}&state=${uuid}&redirect_uri=${encodedBaseUrl}&${responseType}&${clientId}`;
-
-    console.log('getGoogleAuthUrl');
-    console.log(authUrl);
+    let authUrl = `${googleBase}?${scopes}&${accessType}&${includeScopes}&state=${uuid}&redirect_uri=${encodedBaseUrl}&${responseType}&${clientId}`;
 
     return authUrl;
   }
@@ -36,12 +33,6 @@ export class AuthService {
     let clientSecret = '5qoRwh6P4cKr9y53ji8T8_gq';
     let grantType = 'refresh_token';
     let dataString = `client_id=${encodeURIComponent(clientId)}&client_secret=${encodeURIComponent(clientSecret)}&grant_type=${grantType}&refresh_token=${encodeURIComponent(refreshToken)}`;
-
-    console.log(' Auth Service: clientId = ' + clientId);
-    console.log(' Auth Service: client_secret = ' + clientSecret);
-    console.log(' Auth Service: refreshToken =  ' + refreshToken);
-    console.log(' data string:');
-    console.log(dataString);
 
     let accessTokenDetailRequest = this.httpService.axiosRef({
       url: url,
@@ -56,13 +47,10 @@ export class AuthService {
     await accessTokenDetailRequest
     .then((response) => {
       tokenResponse = response.data;
-
-      console.log(' refresh token response: ');
-      console.log(JSON.stringify(tokenResponse));
     })
     .catch(function(err) {
         console.log('error loading refresh token');
-        console.log(err);
+        console.log(err.message);
     });
 
     return tokenResponse ? tokenResponse.access_token : '';

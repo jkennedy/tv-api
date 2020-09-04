@@ -21,9 +21,6 @@ export class UserService {
 
     this.userService.update(user);
 
-    console.log('saved location for user:');
-    console.log(user);
-
     return "Location Saved";
   }
 
@@ -95,7 +92,6 @@ export class UserService {
   }
 
   async confirmFreshAccessToken(userIn: UserEntity): Promise<UserEntity> {
-    console.log ('confirming fresh access token: userIn token:' + userIn.accessToken);
 
     if (userIn.accessToken && userIn.refreshToken && userIn.tokenExpires < new Date().getTime()) {
       console.log('detected expired access token, refreshing with auth service');
@@ -104,9 +100,6 @@ export class UserService {
       userIn.tokenExpires = await this.getAcessTokenExpiration(userIn.accessToken);
       this.userService.update(userIn);
    }
-
-
-    console.log ('done confirming access token, new access token: ' + userIn.accessToken);
 
     return userIn;
   }

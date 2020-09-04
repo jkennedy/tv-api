@@ -1,181 +1,4 @@
-var map, infoWindow, address, userEmail, browserPosition;
-
-function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {
-      lat: -34.397,
-      lng: 150.644
-    },
-    zoom: 10,
-    styles: [{
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#f5f5f5"
-        }]
-      },
-      {
-        "elementType": "labels.icon",
-        "stylers": [{
-          "visibility": "off"
-        }]
-      },
-      {
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#616161"
-        }]
-      },
-      {
-        "elementType": "labels.text.stroke",
-        "stylers": [{
-          "color": "#f5f5f5"
-        }]
-      },
-      {
-        "featureType": "administrative.land_parcel",
-        "stylers": [{
-          "visibility": "off"
-        }]
-      },
-      {
-        "featureType": "administrative.land_parcel",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#bdbdbd"
-        }]
-      },
-      {
-        "featureType": "administrative.neighborhood",
-        "stylers": [{
-          "visibility": "off"
-        }]
-      },
-      {
-        "featureType": "poi",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#eeeeee"
-        }]
-      },
-      {
-        "featureType": "poi",
-        "elementType": "labels.text",
-        "stylers": [{
-          "visibility": "off"
-        }]
-      },
-      {
-        "featureType": "poi",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#757575"
-        }]
-      },
-      {
-        "featureType": "poi.park",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#e5e5e5"
-        }]
-      },
-      {
-        "featureType": "poi.park",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#9e9e9e"
-        }]
-      },
-      {
-        "featureType": "road",
-        "stylers": [{
-          "visibility": "off"
-        }]
-      },
-      {
-        "featureType": "road",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#ffffff"
-        }]
-      },
-      {
-        "featureType": "road",
-        "elementType": "labels",
-        "stylers": [{
-          "visibility": "off"
-        }]
-      },
-      {
-        "featureType": "road.arterial",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#757575"
-        }]
-      },
-      {
-        "featureType": "road.highway",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#dadada"
-        }]
-      },
-      {
-        "featureType": "road.highway",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#616161"
-        }]
-      },
-      {
-        "featureType": "road.local",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#9e9e9e"
-        }]
-      },
-      {
-        "featureType": "transit.line",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#e5e5e5"
-        }]
-      },
-      {
-        "featureType": "transit.station",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#eeeeee"
-        }]
-      },
-      {
-        "featureType": "water",
-        "elementType": "geometry",
-        "stylers": [{
-          "color": "#c9c9c9"
-        }]
-      },
-      {
-        "featureType": "water",
-        "elementType": "labels.text",
-        "stylers": [{
-          "visibility": "off"
-        }]
-      },
-      {
-        "featureType": "water",
-        "elementType": "labels.text.fill",
-        "stylers": [{
-          "color": "#9e9e9e"
-        }]
-      }
-    ]
-  });
-
-  infoWindow = new google.maps.InfoWindow;
-
-  if (browserPosition)
-    updateMapToPosition(browserPosition);
-}
+var infoWindow, address, userEmail, browserPosition;
 
 function setBrowserPosition (position) {
   browserPosition = {
@@ -184,16 +7,6 @@ function setBrowserPosition (position) {
   };
 
   getAddressFromPosition(browserPosition);
-  updateMapToPosition(browserPosition);
-}
-
-function updateMapToPosition(position) {
-  if (infoWindow && position) {
-    infoWindow.setPosition(position);
-    infoWindow.setContent('Location found.');
-    infoWindow.open(map);
-    map.setCenter(position);
-  }
 }
 
 async function initialize(email) {
@@ -243,15 +56,12 @@ async function saveLocation() {
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          console.log(`on ready state changed: ${xhttp.status} : ${xhttp.statusText}`);
           let notificationSection = document.getElementById("notificationSection");
           notificationSection.innerHTML = xhttp.responseText;
           notificationSection.className = "show";
         }
       };
       xhttp.onload = function() {
-         console.log(`onLoad: done saving location: ${xhttp.status} : ${xhttp.statusText}`);
-         console.log(xhttp.response);
         let notificationSection = document.getElementById("notificationSection");
         notificationSection.innerHTML = xhttp.responseText;
         notificationSection.className = "show";
@@ -259,7 +69,6 @@ async function saveLocation() {
       xhttp.open("POST", "/user/saveLocation", true);
       xhttp.setRequestHeader("Content-type", "application/json");
       xhttp.send(JSON.stringify(locationDto));
-
 
 
     }, function() {

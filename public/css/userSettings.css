@@ -113,7 +113,7 @@ body {
  z-index: 1;
  left: 50%;
  bottom: 30px;
- font-size: 17px;
+ font-size: 2em;
 }
 #notificationSection.show {
   visibility: visible;

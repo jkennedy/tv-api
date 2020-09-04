@@ -13,10 +13,7 @@ export class PreviewController {
 
   @Get('sections')
   getSections(@Query() params) {
-    console.log(' get sections: ' + params.uuid);
     let sections =  this.previewService.getSections(params.uuid);
-    console.log('returning sections xxx');
-    console.log(JSON.stringify(sections));
     return sections;
   }
 
@@ -28,12 +25,10 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getTime( @Res() res, @Query() params) {
-    console.log('get getTime: ' + params.uuid);
     let users = this.userService.getUsersForDevice(params.uuid);
     let user = users && users.length ? users[0] : null;
-    let timezone = user ? user.timezone : 'America/New_York';
+    let timezone = user && user.timezone ? user.timezone : 'America/New_York';
 
-    console.log('timezone: ' + timezone);
     let m = moment().tz(timezone);
 
     const dateText = m.format('MMMM Do');
@@ -58,8 +53,6 @@ export class PreviewController {
     }
 
     timeDescription = timeDescription + ' ' + m.format('h');
-
-    console.log('preview: getTime: lastTime:' + timeDescription);
 
     let icon = 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png';
     let temp = '85' + '℉';
@@ -158,7 +151,6 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getRadar( @Res() res, @Query() params) {
-    console.log(' get radar: ' + params.uuid);
     const image = await this.httpService.axiosRef({
       url: 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png',
       method: 'GET',
@@ -175,7 +167,6 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getNews( @Res() res, @Query() params) {
-    console.log(`preview: getNews  uuid: ${params.uuid}`)
     const news = await this.newsService.getNationalNews(params.uuid);
 
     let articles = news.items.slice(0, 3);
@@ -272,8 +263,6 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getWeather( @Res() res, @Query() params) {
-
-    console.log(' get weather: ' + params.uuid);
     const forecastRequest = await this.httpService.axiosRef({
       url: 'https://api.weather.gov/gridpoints/TBW/56,95/forecast',
       method: 'GET',
