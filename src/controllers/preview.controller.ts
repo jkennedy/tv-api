@@ -72,7 +72,7 @@ export class PreviewController {
                 width: 600px;
                 height: 300px;
                 margin: 0 auto;
-                background-color: #4158D0;
+                background-color: #091e87;
                 display: flex;
                 flex-direction: row;
                 justify-content: center;
@@ -187,7 +187,7 @@ export class PreviewController {
                 height: 300px;
                 margin: 0 auto;
                 padding-top: 5px;
-                background-color: #FFCC70;
+                background-color: #946104;
               }
 
               .list {
@@ -198,7 +198,7 @@ export class PreviewController {
 
               .article {
                 flex: 1;
-                background-color: #FFCC70;
+                background-color: #946104;
                 display: flex;
                 flex-direction: row;
                 justify-content: center;
@@ -296,7 +296,7 @@ export class PreviewController {
                 height: 300px;
                 margin: 0 auto;
                 padding: 5px;
-                background-color: #C850C0;
+                background-color: #54034f;
               }
 
               .strip {
