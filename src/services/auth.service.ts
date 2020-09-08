@@ -18,10 +18,10 @@ export class AuthService {
     let accessType = 'access_type=offline';
     let includeScopes = 'include_granted_scopes=true';
     let responseType = 'response_type=code';
-    //let prompt = 'prompt=consent';
+    let prompt = 'prompt=consent';
     //&${prompt}
 
-    let authUrl = `${googleBase}?${scopes}&${accessType}&${includeScopes}&state=${uuid}&redirect_uri=${encodedBaseUrl}&${responseType}&${clientId}`;
+    let authUrl = `${googleBase}?${scopes}&${accessType}&${includeScopes}&state=${uuid}&redirect_uri=${encodedBaseUrl}&${responseType}&${clientId}&${prompt}`;
 
     return authUrl;
   }
