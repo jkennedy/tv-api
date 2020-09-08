@@ -25,7 +25,7 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getTime( @Res() res, @Query() params) {
-    let users = this.userService.getUsersForDevice(params.uuid);
+    let users = await this.userService.getUsersForDevice(params.uuid);
     let user = users && users.length ? users[0] : null;
     let timezone = user && user.timezone ? user.timezone : 'America/New_York';
 
@@ -72,7 +72,7 @@ export class PreviewController {
                 width: 600px;
                 height: 300px;
                 margin: 0 auto;
-                background-color: #091e87;
+                background-color: #061147;
                 display: flex;
                 flex-direction: row;
                 justify-content: center;
@@ -187,7 +187,7 @@ export class PreviewController {
                 height: 300px;
                 margin: 0 auto;
                 padding-top: 5px;
-                background-color: #946104;
+                background-color: #061147;
               }
 
               .list {
@@ -198,7 +198,7 @@ export class PreviewController {
 
               .article {
                 flex: 1;
-                background-color: #946104;
+                background-color: #061147;
                 display: flex;
                 flex-direction: row;
                 justify-content: center;
@@ -296,7 +296,7 @@ export class PreviewController {
                 height: 300px;
                 margin: 0 auto;
                 padding: 5px;
-                background-color: #54034f;
+                background-color: #061147;
               }
 
               .strip {

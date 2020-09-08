@@ -26,14 +26,14 @@ export class GoogleController {
 
   @Get('redirect')
   @UseGuards(AuthGuard('google'))
-  googleAuthRedirect( @Req() req, @Res() res: Response) {
+  async googleAuthRedirect( @Req() req, @Res() res: Response) {
     let user = req.user;
     let query = req.query;
 
     if (query.state)
       user.deviceId = query.state;
 
-    this.userService.updateOrCreateUser({...user, id: new Date().getTime()});
+    await this.userService.updateOrCreateUser({...user});
 
     res.redirect('../userSettings?email=' + user.email);
 }

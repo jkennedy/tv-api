@@ -11,11 +11,16 @@ import { NewsService } from './services/news.service';
 import { PreviewService } from './services/preview.service';
 import { UserService } from './services/user.service';
 import { GoogleStrategy } from './strategies/google.strategy'
-import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
 import { PassportModule } from '@nestjs/passport';
+import { FirebaseAdminModule } from '@aginix/nestjs-firebase-admin'
+import * as admin from 'firebase-admin'
 
 @Module({
-  imports:[HttpModule, InMemoryDBModule.forRoot({})],
+  imports:[HttpModule, FirebaseAdminModule.forRootAsync({
+      useFactory: () => ({
+        credential: admin.credential.applicationDefault()
+      })
+    })],
   controllers: [AppController, GoogleController, NewsController, PreviewController, UserController],
   providers: [AuthService, AppService, CacheService, NewsService, PreviewService, UserService, GoogleStrategy],
 })

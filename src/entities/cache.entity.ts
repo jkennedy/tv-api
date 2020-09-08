@@ -1,8 +1,8 @@
-import { InMemoryDBEntity } from '@nestjs-addons/in-memory-db';
 
-export interface CacheEntity extends InMemoryDBEntity {
+export interface CacheEntity {
   type: string;
   json: string;
   expires: number;
   relatedTo?: string;
+  id: string;
 }

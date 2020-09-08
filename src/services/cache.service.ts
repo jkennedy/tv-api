@@ -1,46 +1,63 @@
 import { Injectable, Logger } from '@nestjs/common';
 import {CacheEntity} from '../entities/cache.entity';
-import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
+import { FirebaseFirestoreService } from '@aginix/nestjs-firebase-admin';
 
 @Injectable()
 export class CacheService {
-  constructor(private readonly cacheService: InMemoryDBService<CacheEntity>) { }
+  constructor(private readonly fireStore: FirebaseFirestoreService) { }
+
+  createCacheItem (cacheItem: CacheEntity) {
+    this.fireStore.collection('cache').doc(cacheItem.id).set({...cacheItem});
+  }
+
+  deleteCacheItem (id) {
+    this.fireStore.collection('cache').doc(id).delete();
+  }
 
   duration(hours: number) {
     hours = hours && hours > 0 ? hours : 1;
     return 3600000 * hours;
   }
 
-  cacheContent(type: string, content: any, relatedTo = '', hours = 1): CacheEntity {
+  async cacheContent(type: string, content: any, relatedTo = '', hours = 1): Promise<CacheEntity> {
     let expires = new Date().getTime() + this.duration(hours);
     let json = JSON.stringify(content);
 
-    let cacheItem = this.getCachedContent(type, relatedTo);
+    let cacheItem = await this.getCachedContent(type, relatedTo);
 
     if (!cacheItem) {
-      console.log('Creating New Cached Item: ' + type);
-      cacheItem = this.cacheService.create({
+      cacheItem = {
         type: type,
         json: json,
         expires: expires,
         relatedTo: relatedTo,
-        id: new Date().getTime()
-      });
+        id: '' + new Date().getTime()
+      };
+
+      this.createCacheItem(cacheItem);
     }
 
     return cacheItem;
   }
 
-  getCachedContent (type: string, relatedTo = ''): CacheEntity {
-    let cachedItems = this.cacheService.query(
-        record => record.relatedTo === relatedTo && type === type
-    );
+  async getCachedContent (type: string, relatedTo = ''): Promise<CacheEntity> {
+    const cacheRef = this.fireStore.collection('cache');
+    const cachedItems = [];
+
+    cacheRef.where('relatedTo', '==', relatedTo);
+    cacheRef.where('type', '==', type);
+
+    const queryRef = await cacheRef.get();
+
+    queryRef.forEach(doc => {
+      cachedItems.push(doc.data());
+    });
 
     let cachedItem = cachedItems ? cachedItems[0] : null;
 
     if (cachedItem && cachedItem.expires < new Date().getTime()) {
       console.log('expiring catched item: ' + cachedItem.type + ' time since expired: ' + (new Date().getTime() - cachedItem.expires));
-      this.cacheService.delete(cachedItem.id);
+      this.deleteCacheItem(cachedItem.id);
       cachedItem = null;
     }
 

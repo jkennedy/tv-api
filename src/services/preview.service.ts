@@ -1,11 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {UserEntity} from '../entities/user.entity';
-import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import * as env from "../app.environment";
 
 @Injectable()
 export class PreviewService {
-  constructor(private readonly userService: InMemoryDBService<UserEntity>) { }
+  constructor() { }
 
 
   getSections(deviceId) {

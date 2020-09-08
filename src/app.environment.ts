@@ -1,4 +1,4 @@
-const local = false;
+const local = true;
 
 export function baseUrl() {
   return local ? 'http://localhost:3000' : 'https://api.mychannel.rocks';

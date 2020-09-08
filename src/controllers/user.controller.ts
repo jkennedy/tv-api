@@ -9,6 +9,7 @@ export class UserController {
 
   @Post('saveLocation')
   saveLocation(@Body() location: SaveLocationDto) {
+    console.log('---------- Save Location In');
     return this.userService.saveLocation(location);
   }
 
@@ -28,8 +29,8 @@ export class UserController {
   }
 
   @Get('testRefreshToken')
-  testRefreshToken (@Query() params) {
-    let user = this.userService.getUser(params.email);
+  async testRefreshToken (@Query() params) {
+    let user = await this.userService.getUser(params.email);
     let refreshToken = user.refreshToken;
     this.authService.refreshAccessToken(refreshToken);
   }

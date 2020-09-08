@@ -1,11 +1,9 @@
 import {HttpService} from '@nestjs/common';
-
 import { Injectable, Logger } from '@nestjs/common';
 import {CacheEntity} from '../entities/cache.entity';
 import {CacheService} from '../services/cache.service';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
-import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import * as env from "../app.environment";
 
 @Injectable()
@@ -13,10 +11,10 @@ export class NewsService {
   constructor(private readonly cacheService: CacheService, private readonly userService: UserService, private readonly httpService: HttpService, private readonly authService: AuthService) { }
 
   async getNationalNews(deviceId) {
-    let users = this.userService.getUsersForDevice(deviceId);
+    let users = await this.userService.getUsersForDevice(deviceId);
     let user = users && users.length ? users[0] : null;
     let country = user ? user.country : 'UNKNOWN'
-    let cachedNews = this.cacheService.getCachedContent('news', country);
+    let cachedNews = await this.cacheService.getCachedContent('news', country);
 
     return cachedNews ? JSON.parse(cachedNews.json) : this.refreshNationalNews(country, deviceId, user);
   }
