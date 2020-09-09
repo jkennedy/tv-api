@@ -25,13 +25,13 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getTime( @Res() res, @Query() params) {
-    let users = await this.userService.getUsersForDevice(params.uuid);
+    let users = params.uuid ? await this.userService.getUsersForDevice(params.uuid) : null;
     let user = users && users.length ? users[0] : null;
     let timezone = user && user.timezone ? user.timezone : 'America/New_York';
 
     let m = moment().tz(timezone);
 
-    const dateText = m.format('MMMM Do');
+    const dateText = m.format('MMM Do');
     const amPmText = m.format('a');
     const minutes = m.minutes();
 
@@ -54,7 +54,11 @@ export class PreviewController {
 
     timeDescription = timeDescription + ' ' + m.format('h');
 
-    let icon = 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png';
+    //let icon = 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png';
+
+    let mapBackgroundImage = 'https://radar.weather.gov/ridge/Overlays/County/Short/TBW_County_Short.gif';
+    let radarImage = 'https://radar.weather.gov/ridge/RadarImg/N0R/TBW_N0R_0.gif';
+
     let temp = '85' + '℉';
 
     const image = await nodeHtmlToImage({
@@ -63,80 +67,72 @@ export class PreviewController {
         timeDescription: timeDescription,
         amPmText: amPmText,
         temp: temp,
-        icon: icon
+        mapBackgroundImage: mapBackgroundImage,
+        radarImage: radarImage,
       },
       html: `<html>
               <head>
               <style>
-              body {
-                width: 600px;
-                height: 300px;
-                margin: 0 auto;
-                background-color: #061147;
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-              }
-
-              .strip {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                flex-grow: 1;
-              }
-
-              .tile {
-                flex-grow: 1;
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                margin: 10px;
-              }
-
-
-              .title * {
-                color: white;
-                text-align: center;
-                font: 36px Arial;
-                flex-grow: 1;
-                flex-shrink: 1;
-                margin-left: 10px;
-              }
-
-              .p {
-                text-align: center;
-              }
-
-              .temp {
-                font: 44px Arial;
-                text-align: center;
-              }
-
-              .iconContainer * {
-                flex-grow: 3;
-                flex-shrink: 0;
-              }
-
-              .icon {
-                max-width:100%;
-                max-height:100%;
-              }
-
+                body {
+                  width: 600px;
+                  height: 300px;
+                  background-color: #061147;
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: center;
+                }
+                #previewSection {
+                  width: 600px;
+                  height: 300px;
+                  position: absolute;
+                }
+                #leftTile {
+                  position: absolute;
+                  width: 60%
+                  left: 0px;
+                  top: 0px;
+                  display: flex;
+                  flex-direction: column;
+                  padding-left: 30px;
+                }
+                #rightTile {
+                  position: absolute;
+                  top: 0px;
+                  left: 50%;
+                  width: 50%;
+                  height: 100%;
+                }
+                #date {
+                  margin-top: 80px;
+                  color: white;
+                  text-align: center;
+                  font: 70px Arial;
+                  text-shadow: 2px 2px 4px #000000;
+                }
+                #time {
+                  color: white;
+                  text-align: center;
+                  font: 55px Arial;
+                  text-shadow: 2px 2px 4px #000000;
+                }
+                .mapImage {
+                  width: auto;
+                  height: 100%;
+                  position: absolute;
+                }
               </style>
               </head>
               <body>
-              <div class="strip">
-                <div class="tile">
-                  <div class='title'>
-                    <p>{{dateText}}</p>
-                    <p>{{timeDescription}} {{amPmText}}</p>
+                <div id="previewSection">
+                  <div id="leftTile">
+                    <div id="date">{{dateText}}</div>
+                    <div id="time">{{timeDescription}} {{amPmText}}</div>
                   </div>
-                  <div class="iconContainer">
-                      <img class="icon" src='{{icon}}'/>
+                  <div id="rightTile">
+                    <img class="mapImage" src='{{mapBackgroundImage}}'/>
+                    <img class="mapImage" src='{{radarImage}}'/>
                   </div>
                 </div>
-              </div>
-
               </body>
               </html>
       `
