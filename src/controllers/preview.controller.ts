@@ -32,19 +32,18 @@ export class PreviewController {
     let m = moment().tz(timezone);
 
     const dateText = m.format('MMM Do');
-    const amPmText = m.format('a');
     const minutes = m.minutes();
 
     let timeDescription = '';
 
     if (minutes <= 10)
-      timeDescription = "About";
+      timeDescription = ":00";
     else if (minutes >= 10 && minutes < 20)
-      timeDescription = "Quarter After";
+      timeDescription = ":15";
     else if (minutes >= 20 && minutes < 40)
-      timeDescription = "Half Past ";
+      timeDescription = ":30";
     else if (minutes >= 40 && minutes < 50) {
-      timeDescription = "Quarter Til";
+      timeDescription = ":45";
       m.hours(m.hour() + 1);
     }
     else if (minutes >= 50 && minutes < 60) {
@@ -52,7 +51,7 @@ export class PreviewController {
       m.hours(m.hour() + 1);
     }
 
-    timeDescription = timeDescription + ' ' + m.format('h');
+    timeDescription =  'About ' + m.format('h') + timeDescription;
 
     //let icon = 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png';
 
@@ -65,7 +64,6 @@ export class PreviewController {
       content: {
         dateText: dateText,
         timeDescription: timeDescription,
-        amPmText: amPmText,
         temp: temp,
         mapBackgroundImage: mapBackgroundImage,
         radarImage: radarImage,
@@ -126,7 +124,7 @@ export class PreviewController {
                 <div id="previewSection">
                   <div id="leftTile">
                     <div id="date">{{dateText}}</div>
-                    <div id="time">{{timeDescription}} {{amPmText}}</div>
+                    <div id="time">{{timeDescription}}</div>
                   </div>
                   <div id="rightTile">
                     <img class="mapImage" src='{{mapBackgroundImage}}'/>
