@@ -44,32 +44,26 @@ export class PreviewController {
       timeDescription = ":30";
     else if (minutes >= 40 && minutes < 50) {
       timeDescription = ":45";
-      m.hours(m.hour() + 1);
     }
     else if (minutes >= 50 && minutes < 60) {
-      timeDescription = "Almost";
+      timeDescription = ":55";
       m.hours(m.hour() + 1);
     }
 
     timeDescription =  'About ' + m.format('h') + timeDescription;
-
-    //let icon = 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png';
-
     let mapBackgroundImage = 'https://radar.weather.gov/ridge/Overlays/County/Short/TBW_County_Short.gif';
     let radarImage = 'https://radar.weather.gov/ridge/RadarImg/N0R/TBW_N0R_0.gif';
-
-    let temp = '85' + '℉';
 
     const image = await nodeHtmlToImage({
       content: {
         dateText: dateText,
         timeDescription: timeDescription,
-        temp: temp,
         mapBackgroundImage: mapBackgroundImage,
         radarImage: radarImage,
       },
       html: `<html>
               <head>
+              <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
               <style>
                 body {
                   width: 600px;
@@ -78,6 +72,7 @@ export class PreviewController {
                   display: flex;
                   flex-direction: row;
                   justify-content: center;
+                  font-family: 'Raleway', sans-serif;
                 }
                 #previewSection {
                   width: 600px;
@@ -104,13 +99,13 @@ export class PreviewController {
                   margin-top: 80px;
                   color: white;
                   text-align: center;
-                  font: 70px Arial;
+                  font: 70px Raleway;
                   text-shadow: 2px 2px 4px #000000;
                 }
                 #time {
                   color: white;
                   text-align: center;
-                  font: 55px Arial;
+                  font: 55px Raleway;
                   text-shadow: 2px 2px 4px #000000;
                 }
                 .mapImage {
@@ -138,22 +133,6 @@ export class PreviewController {
     res.end(image, 'binary');
   }
 
-  @Get('radar')
-  @HttpCode(HttpStatus.OK)
-  @Header('Content-Type', 'image/png')
-  @Header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
-  @Header('Expires', '-1')
-  @Header('Pragma', 'no-cache')
-  async getRadar( @Res() res, @Query() params) {
-    const image = await this.httpService.axiosRef({
-      url: 'https://radar.weather.gov/ridge/lite/N0R/TBW_2.png',
-      method: 'GET',
-      responseType: 'stream',
-    });
-
-    return image.data.pipe(res);
-  }
-
   @Get('news')
   @HttpCode(HttpStatus.OK)
   @Header('Content-Type', 'image/png')
@@ -163,7 +142,7 @@ export class PreviewController {
   async getNews( @Res() res, @Query() params) {
     const news = await this.newsService.getNationalNews(params.uuid);
 
-    let articles = news.items.slice(0, 3);
+    let articles = news.items.slice(0, 2);
 
     Handlebars.registerHelper('title', function(aString) {
       return new Handlebars.SafeString(aString.substring(0, 75));
@@ -175,12 +154,12 @@ export class PreviewController {
       },
       html: `<html>
               <head>
+              <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
               <style>
               body {
                 width: 600px;
                 height: 300px;
                 margin: 0 auto;
-                padding-top: 5px;
                 background-color: #061147;
               }
 
@@ -188,11 +167,12 @@ export class PreviewController {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
+                margin-top: 10px;
+                margin-bottom: 10px;
               }
 
               .article {
                 flex: 1;
-                background-color: #061147;
                 display: flex;
                 flex-direction: row;
                 justify-content: center;
@@ -213,15 +193,17 @@ export class PreviewController {
               }
 
               .icon {
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
+                  height: 130px;
+                  width: auto;
               }
 
               .title {
                 color: white;
+                margin-top: 15px;
+                margin-left: 15px;
                 text-align: left;
-                font: 26px Arial;
+                font: 28px Raleway;
+                text-shadow: 2px 2px 4px #000000;
               }
               </style>
               </head>
@@ -231,7 +213,7 @@ export class PreviewController {
                   {{#each articles}}
                     <div class="article">
                       <div class="iconContainer">
-                          <img class="icon" src='{{snippet.thumbnails.default.url}}'/>
+                          <img class="icon" src='{{snippet.thumbnails.medium.url}}'/>
                       </div>
                       <div class="textContainer">
                         <div class='title'>
@@ -263,6 +245,28 @@ export class PreviewController {
       responseType: 'json',
     });
 
+    const weatherIcons = new Map();
+
+    // standard icons simple name
+    weatherIcons.set('day', 'fas fa-sun fa-10');
+    weatherIcons.set('night', 'fas fa-moon fa-10');
+    weatherIcons.set('cloud-day', 'fas fa-cloud-sun fa-10');
+    weatherIcons.set('cloud-night', 'fas fa-cloud-moon fa-10');
+    weatherIcons.set('rain-day', 'fas fa-cloud-sun-rain fa-10');
+    weatherIcons.set('rain-night', 'fas fa-cloud-moon-rain fa-10');
+
+    // weather service icon url mappings - cloud-night
+    weatherIcons.set('https://api.weather.gov/icons/land/night/sct', 'fas fa-cloud-moon fa-10');
+
+    // weather service icon url mappings - day
+    weatherIcons.set('https://api.weather.gov/icons/land/day/sct/tsra_hi', 'fas fa-sun fa-10');
+
+    // weather service icon url mappings - rain-day
+    weatherIcons.set('https://api.weather.gov/icons/land/day/tsra_hi', 'fas fa-cloud-sun-rain fa-10');
+
+    // weather service icon url mappings - rain-night
+    weatherIcons.set('https://api.weather.gov/icons/land/night/tsra_hi', 'fas fa-cloud-moon-rain fa-10');
+
     const forecast = forecastRequest.data;
     let periods = forecast.properties.periods.slice(0, 3);
 
@@ -278,71 +282,89 @@ export class PreviewController {
       return aString.split(' ').slice(0, 2).join(' ');
     })
 
+    Handlebars.registerHelper('weatherIcon', function(iconUrl) {
+      let iconSection = iconUrl.substring(0,iconUrl.indexOf('?'));
+      if (iconSection.indexOf(','))
+        iconSection = iconUrl.substring(0,iconSection.indexOf(','));
+
+      let faIcon = weatherIcons.get(iconSection);
+      return weatherIcons.get(iconSection);
+    })
+
     const image = await nodeHtmlToImage({
       content: {
-        periods: periods
+        periods: periods,
+        weatherIcons: weatherIcons,
       },
       html: `<html>
               <head>
+                <script src="https://kit.fontawesome.com/1687ffb569.js" crossorigin="anonymous"></script>
+                <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
               <style>
-              body {
-                width: 600px;
-                height: 300px;
-                margin: 0 auto;
-                padding: 5px;
-                background-color: #061147;
-              }
+                body {
+                  width: 600px;
+                  height: 300px;
+                  margin: 0 auto;
+                  padding: 5px;
+                  background-color: #061147;
+                }
 
-              .strip {
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-              }
+                .strip {
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: center;
+                  height: 100%;
+                }
 
-              .tile {
-                width: 150px;
-                flex: 1;
-                outline: 1px solid white;
-                margin-left: 5px;
-                margin-right: 5px;
-                margin-bottom: 5px;
-                margin-top: 5px;
-              }
+                .tile {
+                  width: 150px;
+                  flex: 1;
+                  outline: 1px solid white;
+                  margin-left: 5px;
+                  margin-right: 5px;
+                  margin-bottom: 5px;
+                  margin-top: 5px;
+                }
 
-              .title {
-                color: white;
-                text-align: center;
-                font: 26px Arial;
-                margin-bottom: 5px;
-                margin-top: 5px;
-              }
+                .title {
+                  color: white;
+                  text-align: center;
+                  font: 36px Raleway;
+                  text-shadow: 2px 2px 4px #000000;
+                  margin-bottom: 5px;
+                  margin-top: 5px;
+                }
+                .iconContainer {
+                  margin-bottom: 10px;
+                  margin-top: 10px;
+                  color: white;
+                  font-size: 90px;
+                  text-align: center;
+                }
 
-              .iconContainer {
-                margin-bottom: 10px;
-                margin-top: 10px;
-              }
+                .icon {
+                  display: block;
+                  margin-left: auto;
+                  margin-right: auto;
+                  color: white;
+                  margin-top: 20px;
+                  margin-bottom: 20px;
+                }
 
-              .icon {
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-              }
+                .forecast {
+                  color: white;
+                  text-align: center;
+                  font: 30px Raleway;
+                  text-shadow: 2px 2px 4px #000000;
+                  margin-top: 10px;
+                }
 
-              .forecast {
-                color: white;
-                text-align: center;
-                font: 20px Arial;
-                margin-bottom: 10px;
-                margin-top: 10px;
-              }
-
-              .temp {
-                color: white;
-                text-align: center;
-                font: 40px Arial;
-                margin-bottom: 10px;
-                margin-top: 10px;
-              }
+                .temp {
+                  color: white;
+                  text-align: center;
+                  font: 48px Arial;
+                  margin-bottom: 15px;
+                }
               </style>
               </head>
               <body>
@@ -354,7 +376,7 @@ export class PreviewController {
                         {{firstWord name}}
                       </div>
                       <div class="iconContainer">
-                          <img class="icon" src='{{largeIcon icon}}'/>
+                        <i class="{{weatherIcon icon}}"></i>
                       </div>
                       <div class='forecast'>
                         {{short shortForecast}}

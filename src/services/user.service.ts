@@ -96,17 +96,15 @@ export class UserService {
   }
 
   async getUsersForDevice(deviceId: string): Promise<Array<UserEntity>> {
-    const usersRef = this.fireStore.collection('users');
     const foundUsers = [];
 
-    console.log('getting users for device:' + deviceId);
-    const queryRef = await usersRef.where('deviceId', '==', deviceId).get();
-
-    queryRef.forEach(doc => {
-      foundUsers.push(doc.data());
-    });
-
-    console.log('found users:' + foundUsers);
+    if (deviceId) {
+      const usersRef = this.fireStore.collection('users');
+      const queryRef = await usersRef.where('deviceId', '==', deviceId).get();
+      queryRef.forEach(doc => {
+        foundUsers.push(doc.data());
+      });
+    }
 
     return foundUsers ? foundUsers : [];
   }
