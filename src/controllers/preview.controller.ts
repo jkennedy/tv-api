@@ -63,7 +63,7 @@ export class PreviewController {
       },
       html: `<html>
               <head>
-              <link href="https://fonts.googleapis.com/css2?family=:wght@100&display=swap" rel="stylesheet">
+              <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
               <style>
                 body {
                   width: 600px;
@@ -72,7 +72,6 @@ export class PreviewController {
                   display: flex;
                   flex-direction: row;
                   justify-content: center;
-                  font-family: 'Raleway', sans-serif;
                 }
                 #previewSection {
                   width: 600px;
@@ -101,14 +100,12 @@ export class PreviewController {
                   text-align: center;
                   font: 70px Raleway;
                   font-weight: bolder;
-                  text-shadow: 2px 2px 4px #000000;
                 }
                 #time {
                   color: white;
                   text-align: center;
                   font: 55px Raleway;
                   font-weight: bolder;
-                  text-shadow: 2px 2px 4px #000000;
                 }
                 .mapImage {
                   width: auto;
@@ -206,7 +203,6 @@ export class PreviewController {
                 text-align: left;
                 font: 28px Raleway;
                 font-weight: bolder;
-                text-shadow: 2px 2px 4px #000000;
               }
               </style>
               </head>
@@ -302,9 +298,11 @@ export class PreviewController {
 
       if (!faIcon)
         faIcon = iconUrl.indexOf('day') ? weatherIcons.get('day') : weatherIcons.get('night');
-        
+
       return weatherIcons.get(iconSection);
     })
+
+    // drop shadow - text-shadow: 2px 2px 4px #000000;
 
     const image = await nodeHtmlToImage({
       content: {
@@ -346,7 +344,7 @@ export class PreviewController {
                   text-align: center;
                   font: 36px Raleway;
                   font-weight: bolder;
-                  text-shadow: 2px 2px 4px #000000;
+
                   margin-bottom: 5px;
                   margin-top: 5px;
                 }
@@ -372,7 +370,6 @@ export class PreviewController {
                   text-align: center;
                   font: 30px Raleway;
                   font-weight: bolder;
-                  text-shadow: 2px 2px 4px #000000;
                   margin-top: 10px;
                 }
 
