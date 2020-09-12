@@ -28,7 +28,7 @@ export class ChannelService {
           {
             "name": "Local Weather",
             "icon": `${baseUrl}/image/channels/local-weather.jpg`,
-            "route": "/news/localWeather",
+            "route": "/channel/localWeather",
             "description": "Current Events From Around Town"
           },
           {
@@ -45,8 +45,12 @@ export class ChannelService {
     return channels;
   }
 
-  getComedy() {
-    return this.getMockComedyVideoList();
+  getComedy(deviceId) {
+    return this.getMockComedyCentralVideoList();
+  }
+
+  getLocalWeather(deviceId) {
+    return this.getMockLocalWeatherVideoList();
   }
 
   getMockComedyVideoList() {
@@ -79,6 +83,66 @@ export class ChannelService {
     return json;
   }
 
+  getMockLocalWeatherVideoList() {
+    var json = {
+      "kind": "youtube#playlistItemListResponse",
+      "etag": "w0t0X1w_70PMZ8HBjrqX1qodOJ0",
+      "nextPageToken": "CAUQAA",
+      "items": [
+        {
+          "kind": "youtube#playlistItem",
+          "etag": "IO30UR9sIu9_9wc0hVsENOEIJ8A",
+          "id": {
+            "kind": "youtube#video",
+            "videoId": "C2ynRwd0cEY"
+          },
+          "snippet": {
+            "publishedAt": "2020-08-11T13:43:23Z",
+            "channelId": "UCwWhs_6x42TyRM4Wstoq8HA",
+            "title": "LIVE RADAR: Tropical Storm Sally now in the Gulf of Mexico",
+            "description": "Tropical Depression 19 has strengthened to become the season's next named storm: Tropical Storm Sally. It's forecast to become a hurricane before landfall along the northern Gulf Coast.",
+            "thumbnails": {
+              "default": {
+                "url": "https://i.ytimg.com/vi/C2ynRwd0cEY/default_live.jpg",
+                "width": 120,
+                "height": 90
+              },
+              "medium": {
+                "url": "https://i.ytimg.com/vi/C2ynRwd0cEY/mqdefault_live.jpg",
+                "width": 320,
+                "height": 180
+              },
+              "high": {
+                "url": "https://i.ytimg.com/vi/C2ynRwd0cEY/hqdefault_live.jpg",
+                "width": 480,
+                "height": 360
+              },
+              "standard": {
+                "url": "https://i.ytimg.com/vi/C2ynRwd0cEY/sddefault_live.jpg",
+                "width": 640,
+                "height": 480
+              },
+              "maxres": {
+                "url": "https://i.ytimg.com/vi/kKl8CGL3V38/maxresdefault.jpg",
+                "width": 1280,
+                "height": 720
+              }
+            },
+            "channelTitle": "10 Tampa Bay",
+            "playlistId": "PLeskMkEaHJYdkot0OF9XGx7TnXPwP-B8s",
+            "position": 0
+          }
+        }
+      ],
+      "pageInfo": {
+        "totalResults": 1489,
+        "resultsPerPage": 5
+      }
+    };
+
+    return json;
+  }
+
   getMockComedyCentralVideoList() {
     var json = {
       "kind": "youtube#playlistItemListResponse",
@@ -88,12 +152,15 @@ export class ChannelService {
         {
           "kind": "youtube#playlistItem",
           "etag": "IO30UR9sIu9_9wc0hVsENOEIJ8A",
-          "id": "UExlc2tNa0VhSEpZZGtvdDBPRjlYR3g3VG5YUHdQLUI4cy40RDdDMDM3QzEzMjk1QTRF",
+          "id": {
+            "kind": "youtube#video",
+            "videoId": "kKl8CGL3V38"
+          },
           "snippet": {
             "publishedAt": "2020-08-11T13:43:23Z",
             "channelId": "UCwWhs_6x42TyRM4Wstoq8HA",
             "title": "Drunk History: Trump Edition | The Daily Show",
-            "description": "Previously on #DrunkHistoryTrump #DailyShow #Trump\n\nSubscribe to The Daily Show:\nhttps://www.youtube.com/channel/UCwWhs_6x42TyRM4Wstoq8HA/?sub_confirmation=1 \n\nFollow The Daily Show:\nTwitter: https://twitter.com/TheDailyShow\nFacebook: https://www.facebook.com/thedailyshow\nInstagram: https://www.instagram.com/thedailyshow\n\nWatch full episodes of The Daily Show for free: http://www.cc.com/shows/the-daily-show-with-trevor-noah/full-episodes\n\nFollow Comedy Central:\nTwitter: https://twitter.com/ComedyCentral\nFacebook: https://www.facebook.com/ComedyCentral\nInstagram: https://www.instagram.com/comedycentral\n\nAbout The Daily Show:\nTrevor Noah and The Daily Show correspondents tackle the biggest stories in news, politics and pop culture.\n\nThe Daily Show with Trevor Noah airs weeknights at 11/10c on Comedy Central.",
+            "description": "Previously on #DrunkHistoryTrump ",
             "thumbnails": {
               "default": {
                 "url": "https://i.ytimg.com/vi/kKl8CGL3V38/default.jpg",
@@ -123,22 +190,21 @@ export class ChannelService {
             },
             "channelTitle": "The Daily Show with Trevor Noah",
             "playlistId": "PLeskMkEaHJYdkot0OF9XGx7TnXPwP-B8s",
-            "position": 0,
-            "resourceId": {
-              "kind": "youtube#video",
-              "videoId": "kKl8CGL3V38"
-            }
+            "position": 0
           }
         },
         {
           "kind": "youtube#playlistItem",
           "etag": "VtVeVhKDJGSZuVBeGDL6CSFo-Lg",
-          "id": "UExlc2tNa0VhSEpZZGtvdDBPRjlYR3g3VG5YUHdQLUI4cy5DMEJEMDE5MDlCRkJFRUFC",
+          "id": {
+            "kind": "youtube#video",
+            "videoId": "xVK36F5OmjQ"
+          },
           "snippet": {
             "publishedAt": "2020-08-07T22:56:49Z",
             "channelId": "UCwWhs_6x42TyRM4Wstoq8HA",
             "title": "Timothy Snyder - A Guide to Maintaining Democracy in \"On Tyranny\" | The Daily Show",
-            "description": "Yale history professor and \"On Tyranny\" author Timothy Snyder weighs in on what the rise of European fascism can teach Americans about preserving democracy. #DailyShow #TrevorNoah #TimothySnyder\n\nOriginally aired May, 15, 2017.\n\nSubscribe to The Daily Show:\nhttps://www.youtube.com/channel/UCwWhs_6x42TyRM4Wstoq8HA/?sub_confirmation=1 \n\nFollow The Daily Show:\nTwitter: https://twitter.com/TheDailyShow\nFacebook: https://www.facebook.com/thedailyshow\nInstagram: https://www.instagram.com/thedailyshow\n\nWatch full episodes of The Daily Show for free: http://www.cc.com/shows/the-daily-show-with-trevor-noah/full-episodes\n\nFollow Comedy Central:\nTwitter: https://twitter.com/ComedyCentral\nFacebook: https://www.facebook.com/ComedyCentral\nInstagram: https://www.instagram.com/comedycentral\n\nAbout The Daily Show:\nTrevor Noah and The Daily Show correspondents tackle the biggest stories in news, politics and pop culture.\n\nThe Daily Show with Trevor Noah airs weeknights at 11/10c on Comedy Central.",
+            "description": "Yale history professor and \"On Tyranny\" author Timothy Snyder weighs in on what the rise of European fascism can teach Americans about preserving democracy.",
             "thumbnails": {
               "default": {
                 "url": "https://i.ytimg.com/vi/xVK36F5OmjQ/default.jpg",
@@ -168,22 +234,21 @@ export class ChannelService {
             },
             "channelTitle": "The Daily Show with Trevor Noah",
             "playlistId": "PLeskMkEaHJYdkot0OF9XGx7TnXPwP-B8s",
-            "position": 1,
-            "resourceId": {
-              "kind": "youtube#video",
-              "videoId": "xVK36F5OmjQ"
-            }
+            "position": 1
           }
         },
         {
           "kind": "youtube#playlistItem",
           "etag": "Z-oCIctsepRYd_f1abhvfZUeHwA",
-          "id": "UExlc2tNa0VhSEpZZGtvdDBPRjlYR3g3VG5YUHdQLUI4cy43MUJBQkJGMzI1RTQ2Q0Q0",
+          "id": {
+            "kind": "youtube#video",
+            "videoId": "BoHFjVR9Xyo"
+          },
           "snippet": {
             "publishedAt": "2020-07-31T22:09:06Z",
             "channelId": "UCwWhs_6x42TyRM4Wstoq8HA",
             "title": "One Year Ago: The El Paso & Dayton Shootings | The Daily Show",
-            "description": "One year ago today, a white nationalist killed 23 people in a Walmart in El Paso, Texas with an AK-47. What has America done since to stop the next one?  #DailyShow #TrevorNoah #Throwback\n\nSubscribe to The Daily Show:\nhttps://www.youtube.com/channel/UCwWhs_6x42TyRM4Wstoq8HA/?sub_confirmation=1 \n\nFollow The Daily Show:\nTwitter: https://twitter.com/TheDailyShow\nFacebook: https://www.facebook.com/thedailyshow\nInstagram: https://www.instagram.com/thedailyshow\n\nWatch full episodes of The Daily Show for free: http://www.cc.com/shows/the-daily-show-with-trevor-noah/full-episodes\n\nFollow Comedy Central:\nTwitter: https://twitter.com/ComedyCentral\nFacebook: https://www.facebook.com/ComedyCentral\nInstagram: https://www.instagram.com/comedycentral\n\nAbout The Daily Show:\nTrevor Noah and The Daily Show correspondents tackle the biggest stories in news, politics and pop culture.\n\nThe Daily Show with Trevor Noah airs weeknights at 11/10c on Comedy Central.",
+            "description": "One year ago today, a white nationalist killed 23 people in a Walmart in El Paso, Texas with an AK-47. What has America done since to stop the next one?",
             "thumbnails": {
               "default": {
                 "url": "https://i.ytimg.com/vi/BoHFjVR9Xyo/default.jpg",
@@ -213,22 +278,21 @@ export class ChannelService {
             },
             "channelTitle": "The Daily Show with Trevor Noah",
             "playlistId": "PLeskMkEaHJYdkot0OF9XGx7TnXPwP-B8s",
-            "position": 2,
-            "resourceId": {
-              "kind": "youtube#video",
-              "videoId": "BoHFjVR9Xyo"
-            }
+            "position": 2
           }
         },
         {
           "kind": "youtube#playlistItem",
           "etag": "MsXVGqGx3eaVhDrw36_lTIALRww",
-          "id": "UExlc2tNa0VhSEpZZGtvdDBPRjlYR3g3VG5YUHdQLUI4cy4zQzMxMjVBMkQ0MDBCQjQx",
+          "id": {
+            "kind": "youtube#video",
+            "videoId": "clWZTm9atwc"
+          },
           "snippet": {
             "publishedAt": "2020-06-05T23:30:58Z",
             "channelId": "UCwWhs_6x42TyRM4Wstoq8HA",
             "title": "A Look Back at the Police Killing & Trial Verdict of Philando Castile | The Daily Show",
-            "description": "A look back at the police killing of Philando Castile and the verdict in the trial that followed. #DailyShow #TrevorNoah\n\nSubscribe to The Daily Show:\nhttps://www.youtube.com/channel/UCwWhs_6x42TyRM4Wstoq8HA/?sub_confirmation=1 \n\nFollow The Daily Show:\nTwitter: https://twitter.com/TheDailyShow\nFacebook: https://www.facebook.com/thedailyshow\nInstagram: https://www.instagram.com/thedailyshow\n\nWatch full episodes of The Daily Show for free: http://www.cc.com/shows/the-daily-show-with-trevor-noah/full-episodes\n\nFollow Comedy Central:\nTwitter: https://twitter.com/ComedyCentral\nFacebook: https://www.facebook.com/ComedyCentral\nInstagram: https://www.instagram.com/comedycentral\n\nAbout The Daily Show:\nTrevor Noah and The Daily Show correspondents tackle the biggest stories in news, politics and pop culture.\n\nThe Daily Show with Trevor Noah airs weeknights at 11/10c on Comedy Central.",
+            "description": "A look back at the police killing of Philando Castile and the verdict in the trial that followed.",
             "thumbnails": {
               "default": {
                 "url": "https://i.ytimg.com/vi/clWZTm9atwc/default.jpg",
@@ -258,22 +322,21 @@ export class ChannelService {
             },
             "channelTitle": "The Daily Show with Trevor Noah",
             "playlistId": "PLeskMkEaHJYdkot0OF9XGx7TnXPwP-B8s",
-            "position": 3,
-            "resourceId": {
-              "kind": "youtube#video",
-              "videoId": "clWZTm9atwc"
-            }
+            "position": 3
           }
         },
         {
           "kind": "youtube#playlistItem",
           "etag": "3afoyhvptvuUDqAxYLwgGNtPMog",
-          "id": "UExlc2tNa0VhSEpZZGtvdDBPRjlYR3g3VG5YUHdQLUI4cy44REQ3NjhCNDk4RkM1QzI0",
+          "id": {
+            "kind": "youtube#video",
+            "videoId": "fVa-HAsB-xQ"
+          },
           "snippet": {
             "publishedAt": "2020-06-03T16:20:25Z",
             "channelId": "UCwWhs_6x42TyRM4Wstoq8HA",
             "title": "Trevor Breaks Down Reparations & White Privilege - Between the Scenes | The Daily Show",
-            "description": "A look back at Trevor's answer to an audience member's question about reparations and white privilege. #DailyShow #TrevorNoah #BetweenTheScenes\n\nSubscribe to The Daily Show:\nhttps://www.youtube.com/channel/UCwWhs_6x42TyRM4Wstoq8HA/?sub_confirmation=1 \n\nFollow The Daily Show:\nTwitter: https://twitter.com/TheDailyShow\nFacebook: https://www.facebook.com/thedailyshow\nInstagram: https://www.instagram.com/thedailyshow\n\nWatch full episodes of The Daily Show for free: http://www.cc.com/shows/the-daily-show-with-trevor-noah/full-episodes\n\nFollow Comedy Central:\nTwitter: https://twitter.com/ComedyCentral\nFacebook: https://www.facebook.com/ComedyCentral\nInstagram: https://www.instagram.com/comedycentral\n\nAbout The Daily Show:\nTrevor Noah and The Daily Show correspondents tackle the biggest stories in news, politics and pop culture.\n\nThe Daily Show with Trevor Noah airs weeknights at 11/10c on Comedy Central.",
+            "description": "A look back at Trevor's answer to an audience member's question about reparations and white privilege",
             "thumbnails": {
               "default": {
                 "url": "https://i.ytimg.com/vi/fVa-HAsB-xQ/default.jpg",
@@ -303,11 +366,7 @@ export class ChannelService {
             },
             "channelTitle": "The Daily Show with Trevor Noah",
             "playlistId": "PLeskMkEaHJYdkot0OF9XGx7TnXPwP-B8s",
-            "position": 4,
-            "resourceId": {
-              "kind": "youtube#video",
-              "videoId": "fVa-HAsB-xQ"
-            }
+            "position": 4
           }
         }
       ],
