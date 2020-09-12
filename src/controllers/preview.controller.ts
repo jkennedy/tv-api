@@ -63,7 +63,7 @@ export class PreviewController {
       },
       html: `<html>
               <head>
-              <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
+              <link href="https://fonts.googleapis.com/css2?family=:wght@100&display=swap" rel="stylesheet">
               <style>
                 body {
                   width: 600px;
@@ -100,12 +100,14 @@ export class PreviewController {
                   color: white;
                   text-align: center;
                   font: 70px Raleway;
+                  font-weight: bolder;
                   text-shadow: 2px 2px 4px #000000;
                 }
                 #time {
                   color: white;
                   text-align: center;
                   font: 55px Raleway;
+                  font-weight: bolder;
                   text-shadow: 2px 2px 4px #000000;
                 }
                 .mapImage {
@@ -203,6 +205,7 @@ export class PreviewController {
                 margin-left: 15px;
                 text-align: left;
                 font: 28px Raleway;
+                font-weight: bolder;
                 text-shadow: 2px 2px 4px #000000;
               }
               </style>
@@ -257,15 +260,23 @@ export class PreviewController {
 
     // weather service icon url mappings - cloud-night
     weatherIcons.set('https://api.weather.gov/icons/land/night/sct', 'fas fa-cloud-moon fa-10');
+    weatherIcons.set('https://api.weather.gov/icons/land/night/bkn', 'fas fa-cloud-moon fa-10');
 
     // weather service icon url mappings - day
     weatherIcons.set('https://api.weather.gov/icons/land/day/sct/tsra_hi', 'fas fa-sun fa-10');
+    weatherIcons.set('https://api.weather.gov/icons/land/day/sct/skc', 'fas fa-sun fa-10');
 
     // weather service icon url mappings - rain-day
+    weatherIcons.set('https://api.weather.gov/icons/land/day/tsra', 'fas fa-cloud-sun-rain fa-10');
     weatherIcons.set('https://api.weather.gov/icons/land/day/tsra_hi', 'fas fa-cloud-sun-rain fa-10');
+    weatherIcons.set('https://api.weather.gov/icons/land/day/tsra_sct', 'fas fa-cloud-sun-rain fa-10');
+
 
     // weather service icon url mappings - rain-night
+    weatherIcons.set('https://api.weather.gov/icons/land/night/tsra', 'fas fa-cloud-moon-rain fa-10');
     weatherIcons.set('https://api.weather.gov/icons/land/night/tsra_hi', 'fas fa-cloud-moon-rain fa-10');
+    weatherIcons.set('https://api.weather.gov/icons/land/night/tsra_sct', 'fas fa-cloud-moon-rain fa-10');
+
 
     const forecast = forecastRequest.data;
     let periods = forecast.properties.periods.slice(0, 3);
@@ -288,6 +299,10 @@ export class PreviewController {
         iconSection = iconUrl.substring(0,iconSection.indexOf(','));
 
       let faIcon = weatherIcons.get(iconSection);
+
+      if (!faIcon)
+        faIcon = iconUrl.indexOf('day') ? weatherIcons.get('day') : weatherIcons.get('night');
+        
       return weatherIcons.get(iconSection);
     })
 
@@ -330,6 +345,7 @@ export class PreviewController {
                   color: white;
                   text-align: center;
                   font: 36px Raleway;
+                  font-weight: bolder;
                   text-shadow: 2px 2px 4px #000000;
                   margin-bottom: 5px;
                   margin-top: 5px;
@@ -355,6 +371,7 @@ export class PreviewController {
                   color: white;
                   text-align: center;
                   font: 30px Raleway;
+                  font-weight: bolder;
                   text-shadow: 2px 2px 4px #000000;
                   margin-top: 10px;
                 }
