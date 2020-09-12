@@ -29,7 +29,6 @@ export class UserService {
     let userSnap = await userDoc.get();
     let userEntity = userSnap.exists ? this.dataToUserEntity (userSnap.data()) : null;
 
-    console.log(' got user entity: ' + JSON.stringify(userEntity));
     return userEntity;
   }
 

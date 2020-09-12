@@ -9,9 +9,7 @@ export class AppController {
   @Get('userSettings')
   @Render('userSettings')
   async userSettings(@Query() params) {
-    console.log(' userSettings controller: email in: ' + params.email);
     let user = await this.userService.getUser(params.email);
-    console.log('found user: ' + JSON.stringify(user));
     return user;
   }
 
@@ -29,15 +27,5 @@ export class AppController {
   @Get('collection')
   async collection() {
     return this.appService.collection();
-  }
-
-  @Get('createCities')
-  async createCities() {
-    return this.appService.createCities();
-  }
-
-  @Get('getCity')
-  async getCity() {
-    return this.appService.getCity();
   }
 }

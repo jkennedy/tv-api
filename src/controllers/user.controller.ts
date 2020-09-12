@@ -9,7 +9,6 @@ export class UserController {
 
   @Post('saveLocation')
   saveLocation(@Body() location: SaveLocationDto) {
-    console.log('---------- Save Location In');
     return this.userService.saveLocation(location);
   }
 

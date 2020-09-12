@@ -3,12 +3,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import {CacheEntity} from '../entities/cache.entity';
 import {CacheService} from '../services/cache.service';
 import { UserService } from '../services/user.service';
-import { AuthService } from '../services/auth.service';
 import * as env from "../app.environment";
 
 @Injectable()
 export class NewsService {
-  constructor(private readonly cacheService: CacheService, private readonly userService: UserService, private readonly httpService: HttpService, private readonly authService: AuthService) { }
+  constructor(private readonly cacheService: CacheService, private readonly userService: UserService, private readonly httpService: HttpService) { }
 
   async getNationalNews(deviceId) {
     let users = await this.userService.getUsersForDevice(deviceId);
