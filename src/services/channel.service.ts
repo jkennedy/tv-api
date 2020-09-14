@@ -17,19 +17,25 @@ export class ChannelService {
             "name": "National News",
             "icon": `${baseUrl}/image/channels/national-news.jpg`,
             "route": "/news/nationalNews",
-            "description": "Current Events For the Nation"
+            "description": "Current Events For the Nation",
+            "palette": ['#1a200d', '#b4b0bd', '#876849'],
+            "id": "nationalNewsId"
           },
           {
             "name": "Local News",
             "icon": `${baseUrl}/image/channels/local-news.jpg`,
             "route": "/news/localNews",
-            "description": "Current Events From Around Town"
+            "description": "Current Events From Around Town",
+            "palette": ['#6088af', '#0f2134', '#e9f0e6'],
+            "id": "localNewsId"
           },
           {
             "name": "Local Weather",
             "icon": `${baseUrl}/image/channels/local-weather.jpg`,
             "route": "/channel/localWeather",
-            "description": "Current Events From Around Town"
+            "description": "Current Events From Around Town",
+            "palette": ['#331b45', '#9a5965', '#7454c2'],
+            "id": "localWeatherId"
           },
           {
             "name": "Comedy",
@@ -37,7 +43,9 @@ export class ChannelService {
             "route": "/channel/comedy",
             "channelSource": "youtube",
             "channelId": "UCUsN5ZwHx2kILm84-jPDeXw",
-            "description": "Latest Funny Videos"
+            "description": "Latest Funny Videos",
+            "palette": ['#810405', '#ef1d1f', '#140101'],
+            "id": "comedyId"
           }
         ]
       };

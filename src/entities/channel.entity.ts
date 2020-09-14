@@ -6,5 +6,6 @@ export class ChannelEntity {
              public description: string,
              public channelSource: string,
              public channelId: string,
+             public palette: string[],
              public id: string) {}
 }
