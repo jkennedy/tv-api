@@ -13,6 +13,7 @@ export class PreviewController {
 
   @Get('sections')
   getSections(@Query() params) {
+    console.log('TV Refreshing Sections: ' + new Date().toLocaleTimeString());
     let sections =  this.previewService.getSections(params.uuid);
     return sections;
   }
@@ -25,6 +26,7 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getTime( @Res() res, @Query() params) {
+    console.log('TV Refreshing Time Preview: ' + new Date().toLocaleTimeString());
     let users = params.uuid ? await this.userService.getUsersForDevice(params.uuid) : null;
     let user = users && users.length ? users[0] : null;
     let timezone = user && user.timezone ? user.timezone : 'America/New_York';
@@ -139,6 +141,7 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getNews( @Res() res, @Query() params) {
+    console.log('TV Refreshing News Preview: ' + new Date().toLocaleTimeString());
     const news = await this.newsService.getNationalNews(params.uuid);
 
     let articles = news.items.slice(0, 2);
@@ -238,6 +241,7 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getWeather( @Res() res, @Query() params) {
+    console.log('TV Refreshing News Preview: ' + new Date().toLocaleTimeString());
     const forecastRequest = await this.httpService.axiosRef({
       url: 'https://api.weather.gov/gridpoints/TBW/56,95/forecast',
       method: 'GET',
@@ -266,12 +270,14 @@ export class PreviewController {
     weatherIcons.set('https://api.weather.gov/icons/land/day/tsra', 'fas fa-cloud-sun-rain fa-10');
     weatherIcons.set('https://api.weather.gov/icons/land/day/tsra_hi', 'fas fa-cloud-sun-rain fa-10');
     weatherIcons.set('https://api.weather.gov/icons/land/day/tsra_sct', 'fas fa-cloud-sun-rain fa-10');
+    weatherIcons.set('https://api.weather.gov/icons/land/day/rain_showers', 'fas fa-cloud-sun-rain fa-10');
 
 
     // weather service icon url mappings - rain-night
     weatherIcons.set('https://api.weather.gov/icons/land/night/tsra', 'fas fa-cloud-moon-rain fa-10');
     weatherIcons.set('https://api.weather.gov/icons/land/night/tsra_hi', 'fas fa-cloud-moon-rain fa-10');
     weatherIcons.set('https://api.weather.gov/icons/land/night/tsra_sct', 'fas fa-cloud-moon-rain fa-10');
+    weatherIcons.set('https://api.weather.gov/icons/land/night/rain_showers', 'fas fa-cloud-moon-rain fa-10');
 
 
     const forecast = forecastRequest.data;
