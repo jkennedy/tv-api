@@ -56,7 +56,7 @@ export class CacheService {
     let cachedItem = cachedItems ? cachedItems[0] : null;
 
     if (cachedItem && cachedItem.expires < new Date().getTime()) {
-      console.log('expiring catched item: ' + cachedItem.type + ' time since expired: ' + (new Date().getTime() - cachedItem.expires));
+      console.log('expiring catched item: ' + cachedItem.type + ' expired at ' + new Date(cachedItem.expires).toLocaleDateString());
       this.deleteCacheItem(cachedItem.id);
       cachedItem = null;
     }
