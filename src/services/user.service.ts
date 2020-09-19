@@ -11,7 +11,7 @@ export class UserService {
 
   dataToUserEntity (data): UserEntity {
     return new UserEntity(data.firstName, data.lastName, data.email, data.picture, data.zipCode, data.address, data.country, data.timezone, data.lat, data.long,
-      data.deviceId, data.accessToken, data.refreshToken, data.tokenExpires);
+      data.devices, data.accessToken, data.refreshToken, data.tokenExpires);
   }
 
   userToData (user: UserEntity) {
@@ -83,7 +83,7 @@ export class UserService {
       userToReturn.timezone = userIn.timezone;
       userToReturn.lat = userIn.lat;
       userToReturn.long = userIn.long;
-      userToReturn.deviceId = userIn.deviceId;
+      userToReturn.devices = userToReturn.devices ? userToReturn.devices.concat(userIn.devices) : userIn.devices;
       userToReturn.accessToken = userIn.accessToken;
       userToReturn.refreshToken = userIn.refreshToken;
       userToReturn.tokenExpires = userIn.tokenExpires;
@@ -99,7 +99,7 @@ export class UserService {
 
     if (deviceId) {
       const usersRef = this.fireStore.collection('users');
-      const queryRef = await usersRef.where('deviceId', '==', deviceId).get();
+      const queryRef = await usersRef.where('devices', 'array-contains', deviceId).get();
       queryRef.forEach(doc => {
         foundUsers.push(doc.data());
       });
@@ -132,22 +132,3 @@ export class UserService {
     return userIn;
   }
 }
-
-/*
-userEntityConverter = {
- toFirestore(user: UserEntity): firebase.firestore.DocumentData {
-   return {firstName: user.firstName, lastName: user.lastName, email: user.email, picture: user.picture, zipCode: user.zipCode,
-           address: user.address, country: user.country, timezone: user.timezone, lat: user.lat, long: user.long,
-           deviceId: user.deviceId, accessToken:user.accessToken, refreshToken: user.refreshToken, tokenExpires: user.tokenExpires
-     };
- },
- fromFirestore(
-   snapshot: firebase.firestore.QueryDocumentSnapshot,
-   options: firebase.firestore.SnapshotOptions
- ): UserEntity {
-   const data = snapshot.data(options)!;
-   return new UserEntity(data.firstName, data.lastName, data.email, data.picture, data.zipCode, data.address, data.country, data.timezone, data.lat, data.long,
-     data.deviceId, data.accessToken, data.refreshToken, data.tokenExpires);
- }
-};
-*/

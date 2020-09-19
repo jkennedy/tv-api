@@ -27,9 +27,8 @@ export class NewsService {
     else {
       user = await this.userService.confirmFreshAccessToken(user);
       newsJSON = await this.getYoutube(user.accessToken);
+      this.cacheService.cacheContent ('news', newsJSON, country, 3);
     }
-
-    this.cacheService.cacheContent ('news', newsJSON, country, 3);
 
     return newsJSON;
   }

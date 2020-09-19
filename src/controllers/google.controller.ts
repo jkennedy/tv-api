@@ -31,7 +31,7 @@ export class GoogleController {
     let query = req.query;
 
     if (query.state)
-      user.deviceId = query.state;
+      user.devices = [query.state];
 
     await this.userService.updateOrCreateUser({...user});
 

@@ -10,7 +10,7 @@ export class UserEntity {
              public timezone?: string,
              public lat?: number,
              public long?: number,
-             public deviceId?: string,
+             public devices?: string[],
              public accessToken?: string,
              public refreshToken?: string,
              public tokenExpires?: number) {}
