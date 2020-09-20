@@ -47,6 +47,7 @@ export class NewsService {
       user = await this.userService.confirmFreshAccessToken(user);
       newsJSON = await this.getYoutube(user.accessToken);
       this.cacheService.cacheContent ('news', newsJSON, country, 3);
+      this.generateNewsPreviewImage (newsJSON, true);
     }
 
     return newsJSON;
@@ -104,7 +105,7 @@ export class NewsService {
   }
 
 
-  async generateNewsPreviewImage (news) {
+  async generateNewsPreviewImage (news, overwrite = false): Promise<any> {
     let articles = news.items.slice(0, 2);
 
     Handlebars.registerHelper('title', function(aString) {
@@ -114,98 +115,101 @@ export class NewsService {
     let cachePath = './public/image/cache/news.png';
     let image;
 
-    fs.readFile(cachePath, async function(err, data) {
-        image = data;
+    return new Promise(function(resolve, reject){
+      fs.readFile(cachePath, async function(err, data) {
+          image = data;
 
-        if (err) {
-          console.log('error loading cached image: ' + err);
-          console.log('generating new image file');
+          if (err || overwrite) {
+            console.log('Generating Fresh News Preview Image');
 
-          image = await nodeHtmlToImage({
-            content: {
-              articles: articles
-            },
-            output: cachePath,
-            html: `<html>
-                    <head>
-                    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
-                    <style>
-                    body {
-                      width: 600px;
-                      height: 300px;
-                      margin: 0 auto;
-                      background-color: #061147;
-                    }
+            image = await nodeHtmlToImage({
+              content: {
+                articles: articles
+              },
+              output: cachePath,
+              html: `<html>
+                      <head>
+                      <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
+                      <style>
+                      body {
+                        width: 600px;
+                        height: 300px;
+                        margin: 0 auto;
+                        background-color: #061147;
+                      }
 
-                    .list {
-                      display: flex;
-                      flex-direction: column;
-                      justify-content: center;
-                      margin-top: 10px;
-                      margin-bottom: 10px;
-                    }
+                      .list {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        margin-top: 10px;
+                        margin-bottom: 10px;
+                      }
 
-                    .article {
-                      flex: 1;
-                      display: flex;
-                      flex-direction: row;
-                      justify-content: center;
-                      margin: 10px;
-                    }
+                      .article {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: center;
+                        margin: 10px;
+                      }
 
-                    .iconContainer * {
-                      flex: 1;
-                    }
+                      .iconContainer * {
+                        flex: 1;
+                      }
 
-                    .textContainer * {
-                      flex: 9;
-                      height: 75px;
-                      margin-left: 10px;
-                      display: flex;
-                      flex-direction: column;
-                      justify-content: center;
-                    }
+                      .textContainer * {
+                        flex: 9;
+                        height: 75px;
+                        margin-left: 10px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                      }
 
-                    .icon {
-                        height: 130px;
-                        width: auto;
-                    }
+                      .icon {
+                          height: 130px;
+                          width: auto;
+                      }
 
-                    .title {
-                      color: white;
-                      margin-top: 15px;
-                      margin-left: 15px;
-                      text-align: left;
-                      font: 28px Raleway;
-                      font-weight: bolder;
-                    }
-                    </style>
-                    </head>
-                    <body>
+                      .title {
+                        color: white;
+                        margin-top: 15px;
+                        margin-left: 15px;
+                        text-align: left;
+                        font: 28px Raleway;
+                        font-weight: bolder;
+                      }
+                      </style>
+                      </head>
+                      <body>
 
-                    <div class="list">
-                        {{#each articles}}
-                          <div class="article">
-                            <div class="iconContainer">
-                                <img class="icon" src='{{snippet.thumbnails.medium.url}}'/>
-                            </div>
-                            <div class="textContainer">
-                              <div class='title'>
-                                {{title snippet.title}}
+                      <div class="list">
+                          {{#each articles}}
+                            <div class="article">
+                              <div class="iconContainer">
+                                  <img class="icon" src='{{snippet.thumbnails.medium.url}}'/>
+                              </div>
+                              <div class="textContainer">
+                                <div class='title'>
+                                  {{title snippet.title}}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                       {{/each}}
-                    </div>
+                         {{/each}}
+                      </div>
 
-                    </body>
-                    </html>
-            `
-          });
-        }
+                      </body>
+                      </html>
+              `
+            });
+          }
 
-        return image;
+          resolve(image);
+      });
     });
+
+
   }
 
   getMockNewsYoutube() {
