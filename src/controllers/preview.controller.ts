@@ -5,6 +5,7 @@ import { PreviewService } from '../services/preview.service';
 import nodeHtmlToImage = require('node-html-to-image');
 import Handlebars = require("handlebars");
 import * as moment from 'moment-timezone';
+import * as fs from 'fs';
 
 @Controller('preview')
 export class PreviewController {
@@ -150,87 +151,101 @@ export class PreviewController {
       return new Handlebars.SafeString(aString.substring(0, 75));
     })
 
-    const image = await nodeHtmlToImage({
-      content: {
-        articles: articles
-      },
-      html: `<html>
-              <head>
-              <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
-              <style>
-              body {
-                width: 600px;
-                height: 300px;
-                margin: 0 auto;
-                background-color: #061147;
-              }
+    let cachePath = './public/image/cache/news.png';
+    let image;
 
-              .list {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                margin-top: 10px;
-                margin-bottom: 10px;
-              }
+    fs.readFile(cachePath, async function(err, data) {
+        image = data;
 
-              .article {
-                flex: 1;
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-                margin: 10px;
-              }
+        if (err) {
+          console.log('error loading cached image: ' + err);
+          console.log('generating new image file');
 
-              .iconContainer * {
-                flex: 1;
-              }
+          image = await nodeHtmlToImage({
+            content: {
+              articles: articles
+            },
+            output: cachePath,
+            html: `<html>
+                    <head>
+                    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
+                    <style>
+                    body {
+                      width: 600px;
+                      height: 300px;
+                      margin: 0 auto;
+                      background-color: #061147;
+                    }
 
-              .textContainer * {
-                flex: 9;
-                height: 75px;
-                margin-left: 10px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-              }
+                    .list {
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: center;
+                      margin-top: 10px;
+                      margin-bottom: 10px;
+                    }
 
-              .icon {
-                  height: 130px;
-                  width: auto;
-              }
+                    .article {
+                      flex: 1;
+                      display: flex;
+                      flex-direction: row;
+                      justify-content: center;
+                      margin: 10px;
+                    }
 
-              .title {
-                color: white;
-                margin-top: 15px;
-                margin-left: 15px;
-                text-align: left;
-                font: 28px Raleway;
-                font-weight: bolder;
-              }
-              </style>
-              </head>
-              <body>
+                    .iconContainer * {
+                      flex: 1;
+                    }
 
-              <div class="list">
-                  {{#each articles}}
-                    <div class="article">
-                      <div class="iconContainer">
-                          <img class="icon" src='{{snippet.thumbnails.medium.url}}'/>
-                      </div>
-                      <div class="textContainer">
-                        <div class='title'>
-                          {{title snippet.title}}
-                        </div>
-                      </div>
+                    .textContainer * {
+                      flex: 9;
+                      height: 75px;
+                      margin-left: 10px;
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: center;
+                    }
+
+                    .icon {
+                        height: 130px;
+                        width: auto;
+                    }
+
+                    .title {
+                      color: white;
+                      margin-top: 15px;
+                      margin-left: 15px;
+                      text-align: left;
+                      font: 28px Raleway;
+                      font-weight: bolder;
+                    }
+                    </style>
+                    </head>
+                    <body>
+
+                    <div class="list">
+                        {{#each articles}}
+                          <div class="article">
+                            <div class="iconContainer">
+                                <img class="icon" src='{{snippet.thumbnails.medium.url}}'/>
+                            </div>
+                            <div class="textContainer">
+                              <div class='title'>
+                                {{title snippet.title}}
+                              </div>
+                            </div>
+                          </div>
+                       {{/each}}
                     </div>
-                 {{/each}}
-              </div>
 
-              </body>
-              </html>
-      `
+                    </body>
+                    </html>
+            `
+          });
+        }
+        
+        res.end(image, 'binary');
     });
-    res.end(image, 'binary');
   }
 
 
@@ -241,7 +256,7 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getWeather( @Res() res, @Query() params) {
-    console.log('TV Refreshing News Preview: ' + new Date().toLocaleTimeString());
+    console.log('TV Refreshing Weather Preview: ' + new Date().toLocaleTimeString());
     const forecastRequest = await this.httpService.axiosRef({
       url: 'https://api.weather.gov/gridpoints/TBW/56,95/forecast',
       method: 'GET',

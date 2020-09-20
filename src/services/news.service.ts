@@ -3,22 +3,41 @@ import { Injectable, Logger } from '@nestjs/common';
 import {CacheEntity} from '../entities/cache.entity';
 import {CacheService} from '../services/cache.service';
 import { UserService } from '../services/user.service';
+import { Interval } from '@nestjs/schedule';
+import Handlebars = require("handlebars");
+import nodeHtmlToImage = require('node-html-to-image');
 import * as env from "../app.environment";
+import * as moment from 'moment-timezone';
+import * as fs from 'fs';
+
 
 @Injectable()
 export class NewsService {
   constructor(private readonly cacheService: CacheService, private readonly userService: UserService, private readonly httpService: HttpService) { }
 
+
+  @Interval(14400000)
+  async automaticallyRefreshNationalNews() {
+    console.log('Interval - Automatically Refreshing National News: ' +  new Date().toLocaleTimeString());
+    let country = 'United States';
+    let user = await this.userService.getUserForCountry(country);
+    this.getNationalNewsForUser(user);
+  }
+
   async getNationalNews(deviceId) {
     let users = await this.userService.getUsersForDevice(deviceId);
     let user = users && users.length ? users[0] : null;
+    return this.getNationalNewsForUser(user);
+  }
+
+  async getNationalNewsForUser(user) {
     let country = user ? user.country : 'UNKNOWN'
     let cachedNews = await this.cacheService.getCachedContent('news', country);
 
-    return cachedNews ? JSON.parse(cachedNews.json) : this.refreshNationalNews(country, deviceId, user);
+    return cachedNews ? JSON.parse(cachedNews.json) : this.refreshNationalNews(country, user);
   }
 
-  async refreshNationalNews(country = 'UNKNOWN', deviceId, user) {
+  async refreshNationalNews(country = 'UNKNOWN', user) {
     let newsJSON = null;
 
     if (env.isLocal() || (!user || !user.accessToken)) {
@@ -82,6 +101,111 @@ export class NewsService {
     }
 
     return data;
+  }
+
+
+  async generateNewsPreviewImage (news) {
+    let articles = news.items.slice(0, 2);
+
+    Handlebars.registerHelper('title', function(aString) {
+      return new Handlebars.SafeString(aString.substring(0, 75));
+    })
+
+    let cachePath = './public/image/cache/news.png';
+    let image;
+
+    fs.readFile(cachePath, async function(err, data) {
+        image = data;
+
+        if (err) {
+          console.log('error loading cached image: ' + err);
+          console.log('generating new image file');
+
+          image = await nodeHtmlToImage({
+            content: {
+              articles: articles
+            },
+            output: cachePath,
+            html: `<html>
+                    <head>
+                    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100&display=swap" rel="stylesheet">
+                    <style>
+                    body {
+                      width: 600px;
+                      height: 300px;
+                      margin: 0 auto;
+                      background-color: #061147;
+                    }
+
+                    .list {
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: center;
+                      margin-top: 10px;
+                      margin-bottom: 10px;
+                    }
+
+                    .article {
+                      flex: 1;
+                      display: flex;
+                      flex-direction: row;
+                      justify-content: center;
+                      margin: 10px;
+                    }
+
+                    .iconContainer * {
+                      flex: 1;
+                    }
+
+                    .textContainer * {
+                      flex: 9;
+                      height: 75px;
+                      margin-left: 10px;
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: center;
+                    }
+
+                    .icon {
+                        height: 130px;
+                        width: auto;
+                    }
+
+                    .title {
+                      color: white;
+                      margin-top: 15px;
+                      margin-left: 15px;
+                      text-align: left;
+                      font: 28px Raleway;
+                      font-weight: bolder;
+                    }
+                    </style>
+                    </head>
+                    <body>
+
+                    <div class="list">
+                        {{#each articles}}
+                          <div class="article">
+                            <div class="iconContainer">
+                                <img class="icon" src='{{snippet.thumbnails.medium.url}}'/>
+                            </div>
+                            <div class="textContainer">
+                              <div class='title'>
+                                {{title snippet.title}}
+                              </div>
+                            </div>
+                          </div>
+                       {{/each}}
+                    </div>
+
+                    </body>
+                    </html>
+            `
+          });
+        }
+
+        return image;
+    });
   }
 
   getMockNewsYoutube() {

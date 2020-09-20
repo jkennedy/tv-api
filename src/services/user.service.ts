@@ -32,6 +32,18 @@ export class UserService {
     return userEntity;
   }
 
+  async getUserForCountry (country: string) {
+    let user;
+
+    const usersRef = this.fireStore.collection('users');
+    const queryRef = await usersRef.where('country', '==', country).limit(1).get();
+    queryRef.forEach(doc => {
+      user = doc.data();
+    });
+
+    return user;
+  }
+
   async createUser (user: UserEntity):  Promise <UserEntity> {
     let result = await this.fireStore.collection('users').doc(user.email).set(this.userToData(user));
     return user;

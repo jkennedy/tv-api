@@ -15,6 +15,7 @@ import { UserService } from './services/user.service';
 import { GoogleStrategy } from './strategies/google.strategy'
 import { PassportModule } from '@nestjs/passport';
 import { FirebaseAdminModule } from '@aginix/nestjs-firebase-admin'
+import { ScheduleModule } from '@nestjs/schedule';
 import * as admin from 'firebase-admin'
 
 @Module({
@@ -22,7 +23,7 @@ import * as admin from 'firebase-admin'
       useFactory: () => ({
         credential: admin.credential.applicationDefault()
       })
-    })],
+    }), ScheduleModule.forRoot()],
   controllers: [AppController, GoogleController, NewsController, PreviewController, UserController, ChannelController],
   providers: [AuthService, AppService, CacheService, NewsService, PreviewService, UserService, ChannelService, GoogleStrategy],
 })
