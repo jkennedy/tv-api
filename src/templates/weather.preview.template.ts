@@ -32,9 +32,8 @@ export const WEATHER_PREVIEW_TEMPLATE =
           .title {
             color: white;
             text-align: center;
-            font: 36px Raleway;
+            font: 34px Raleway;
             font-weight: bolder;
-
             margin-bottom: 5px;
             margin-top: 5px;
           }
@@ -83,7 +82,7 @@ export const WEATHER_PREVIEW_TEMPLATE =
                   <i class="{{weatherIcon icon}}"></i>
                 </div>
                 <div class='forecast'>
-                  {{short shortForecast}}
+                  {{{shortWrap shortForecast}}}
                 </div>
                 <div class='temp'>
                   {{temperature}} &#8457;
@@ -108,11 +107,13 @@ export const WEATHER_GOV_ICON_MAPPINGS = new Map([
   ['https://api.weather.gov/icons/land/day/sct/tsra_hi', 'fas fa-sun fa-10'],
   ['https://api.weather.gov/icons/land/day/sct/skc', 'fas fa-sun fa-10'],
   ['https://api.weather.gov/icons/land/day/wind_sct', 'fas fa-sun fa-10'],
+  ['https://api.weather.gov/icons/land/day/bkn', 'fas fa-sun fa-10'],
   ['https://api.weather.gov/icons/land/day/tsra', 'fas fa-cloud-sun-rain fa-10'],
   ['https://api.weather.gov/icons/land/day/tsra_hi', 'fas fa-cloud-sun-rain fa-10'],
   ['https://api.weather.gov/icons/land/day/tsra_sct', 'fas fa-cloud-sun-rain fa-10'],
   ['https://api.weather.gov/icons/land/day/rain_showers', 'fas fa-cloud-sun-rain fa-10'],
   ['https://api.weather.gov/icons/land/day/sct/rain_showers', 'fas fa-cloud-sun-rain fa-10'],
+  ['https://api.weather.gov/icons/land/day/bkn/rain_showers', 'fas fa-cloud-sun-rain fa-10'],
   ['https://api.weather.gov/icons/land/night/tsra', 'fas fa-cloud-moon-rain fa-10'],
   ['https://api.weather.gov/icons/land/night/tsra_hi', 'fas fa-cloud-moon-rain fa-10'],
   ['https://api.weather.gov/icons/land/night/tsra_sct', 'fas fa-cloud-moon-rain fa-10'],

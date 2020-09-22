@@ -147,7 +147,7 @@ export class PreviewService {
     let periods = forecast.properties.periods.slice(0, 3);
 
     Handlebars.registerHelper('firstWord', function(aString) {
-      return aString.split(' ')[0];
+      return aString.startsWith ('This') ? aString.split(' ')[1] : aString.split(' ')[0];
     })
 
     Handlebars.registerHelper('largeIcon', function(aString) {
@@ -156,6 +156,10 @@ export class PreviewService {
 
     Handlebars.registerHelper('short', function(aString) {
       return aString.split(' ').slice(0, 2).join(' ');
+    })
+
+    Handlebars.registerHelper('shortWrap', function(aString) {
+      return aString.split(' ').slice(0, 2).join('<br>');
     })
 
     Handlebars.registerHelper('weatherIcon', function(iconUrl) {
