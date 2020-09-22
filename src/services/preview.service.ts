@@ -1,16 +1,25 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, HttpService } from '@nestjs/common';
+import { UserService } from '../services/user.service';
+import Handlebars = require("handlebars");
+import nodeHtmlToImage = require('node-html-to-image');
 import * as env from "../app.environment";
+import * as fs from 'fs';
+import * as moment from 'moment-timezone';
+
+import { NEWS_PREVIEW_TEMPLATE } from '../templates/news.preview.template';
+import { TIME_PREVIEW_TEMPLATE } from '../templates/time.preview.template';
+import { WEATHER_PREVIEW_TEMPLATE } from '../templates/weather.preview.template';
+import { WEATHER_GOV_ICON_MAPPINGS } from '../templates/weather.preview.template';
+
 
 @Injectable()
 export class PreviewService {
-  constructor() { }
-
+  constructor(private readonly userService: UserService, private readonly httpService: HttpService) { }
 
   getSections(deviceId) {
     const expires = Date.now() + 10000;
     const baseUrl = env.baseUrl();
     const encodedDeviceId = encodeURIComponent(deviceId);
-
 
     var sections =
       {
@@ -45,5 +54,135 @@ export class PreviewService {
       };
 
     return sections;
+  }
+
+  async generateNewsPreviewImage (news, overwrite = false): Promise<any> {
+    let articles = news.items.slice(0, 2);
+
+    Handlebars.registerHelper('title', function(aString) {
+      return new Handlebars.SafeString(aString.substring(0, 75));
+    })
+
+    let cachePath = './public/image/cache/news.png';
+    let image;
+
+    return new Promise(function(resolve, reject){
+      fs.readFile(cachePath, async function(err, data) {
+          image = data;
+
+          if (err || overwrite) {
+            console.log('Generating Fresh News Preview Image');
+
+            image = await nodeHtmlToImage({
+              content: {
+                articles: articles
+              },
+              html: NEWS_PREVIEW_TEMPLATE,
+              output: cachePath,
+            });
+          }
+
+          resolve(image);
+      });
+    });
+  }
+
+  async generateTimePreviewImage(deviceId): Promise<any> {
+    let users = deviceId ? await this.userService.getUsersForDevice(deviceId) : null;
+    let user = users && users.length ? users[0] : null;
+    let timezone = user && user.timezone ? user.timezone : 'America/New_York';
+
+    let m = moment().tz(timezone);
+
+    const dateText = m.format('MMM Do');
+    const minutes = m.minutes();
+
+    let timeDescription = '';
+
+    if (minutes <= 10)
+      timeDescription = ":00";
+    else if (minutes >= 10 && minutes < 20)
+      timeDescription = ":15";
+    else if (minutes >= 20 && minutes < 40)
+      timeDescription = ":30";
+    else if (minutes >= 40 && minutes < 50) {
+      timeDescription = ":45";
+    }
+    else if (minutes >= 50 && minutes < 60) {
+      timeDescription = ":55";
+      m.hours(m.hour() + 1);
+    }
+
+    timeDescription =  'About ' + m.format('h') + timeDescription;
+    let mapBackgroundImage = 'https://radar.weather.gov/ridge/Overlays/County/Short/TBW_County_Short.gif';
+    let radarImage = 'https://radar.weather.gov/ridge/RadarImg/N0R/TBW_N0R_0.gif';
+
+    return new Promise(function(resolve, reject){
+      const image = nodeHtmlToImage({
+        content: {
+          dateText: dateText,
+          timeDescription: timeDescription,
+          mapBackgroundImage: mapBackgroundImage,
+          radarImage: radarImage,
+        },
+        html: TIME_PREVIEW_TEMPLATE
+      });
+
+      resolve(image);
+    });
+  }
+
+  async generateWeatherPreviewImage (deviceId): Promise<any> {
+    const forecastRequest = await this.httpService.axiosRef({
+      url: 'https://api.weather.gov/gridpoints/TBW/56,95/forecast',
+      method: 'GET',
+      responseType: 'json',
+    }).catch(err => {
+      console.log(`Error generating weather preview ${err}`);
+      return null;
+    });
+
+    let weatherIcons = WEATHER_GOV_ICON_MAPPINGS;
+    const forecast = forecastRequest.data;
+    let periods = forecast.properties.periods.slice(0, 3);
+
+    Handlebars.registerHelper('firstWord', function(aString) {
+      return aString.split(' ')[0];
+    })
+
+    Handlebars.registerHelper('largeIcon', function(aString) {
+      return aString.replace('medium', 'large');
+    })
+
+    Handlebars.registerHelper('short', function(aString) {
+      return aString.split(' ').slice(0, 2).join(' ');
+    })
+
+    Handlebars.registerHelper('weatherIcon', function(iconUrl) {
+      let iconSection = iconUrl.substring(0,iconUrl.indexOf('?'));
+
+      if (iconSection.indexOf(',') > 0)
+        iconSection = iconUrl.substring(0,iconSection.indexOf(','));
+
+      let faIcon = weatherIcons.get(iconSection);
+
+      if (!faIcon || !faIcon.length) {
+        faIcon = iconUrl.indexOf('day') > 0 ? weatherIcons.get('day') : weatherIcons.get('night');
+        console.log(' missing weather icon for: ' + iconUrl);
+      }
+      return faIcon;
+    })
+
+    return new Promise(function(resolve, reject){
+      const image = nodeHtmlToImage({
+        content: {
+          periods: periods,
+          weatherIcons:  WEATHER_GOV_ICON_MAPPINGS,
+        },
+        html: WEATHER_PREVIEW_TEMPLATE
+      });
+
+      resolve(image);
+    });
   }
 }
