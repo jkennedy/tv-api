@@ -1,17 +1,17 @@
-import {HttpService} from '@nestjs/common';
-import { Injectable, Logger } from '@nestjs/common';
-import {CacheEntity} from '../entities/cache.entity';
-import {CacheService} from '../services/cache.service';
+import { HttpService, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from 'nestjs-config';
+import { CacheEntity } from '../entities/cache.entity';
+import { CacheService } from '../services/cache.service';
 import { UserService } from '../services/user.service';
 import { PreviewService } from '../services/preview.service';
 import { Interval } from '@nestjs/schedule';
-import * as env from "../app.environment";
 import * as moment from 'moment-timezone';
 import { MOCK_YOUTUBE_NEWS } from '../mocks/news.youtube';
 
 @Injectable()
 export class NewsService {
-  constructor(private readonly cacheService: CacheService, private readonly userService: UserService, private readonly httpService: HttpService, private readonly previewService: PreviewService) { }
+  constructor(private readonly cacheService: CacheService, private readonly userService: UserService,
+    private readonly httpService: HttpService, private readonly previewService: PreviewService, private readonly config: ConfigService) { }
 
   @Interval(14400000)
   async automaticallyRefreshNationalNews() {
@@ -37,7 +37,7 @@ export class NewsService {
   async refreshNationalNews(country = 'UNKNOWN', user) {
     let newsJSON = null;
 
-    if (env.isLocal() || (!user || !user.accessToken)) {
+    if (this.config._isLocal() || (!user || !user.accessToken)) {
       newsJSON = this.getMockNewsYoutube();
     }
     else {

@@ -16,14 +16,21 @@ import { GoogleStrategy } from './strategies/google.strategy'
 import { PassportModule } from '@nestjs/passport';
 import { FirebaseAdminModule } from '@aginix/nestjs-firebase-admin'
 import { ScheduleModule } from '@nestjs/schedule';
+import { ConfigModule } from 'nestjs-config';
 import * as admin from 'firebase-admin'
+import * as path from 'path';
 
 @Module({
-  imports:[HttpModule, FirebaseAdminModule.forRootAsync({
+  imports:[
+    HttpModule,
+    ScheduleModule.forRoot(),
+    ConfigModule.load(path.resolve(__dirname, 'config', '**/!(*.d).{ts,js}')),
+    FirebaseAdminModule.forRootAsync({
       useFactory: () => ({
         credential: admin.credential.applicationDefault()
       })
-    }), ScheduleModule.forRoot()],
+    }),
+  ],
   controllers: [AppController, GoogleController, NewsController, PreviewController, UserController, ChannelController],
   providers: [AuthService, AppService, CacheService, NewsService, PreviewService, UserService, ChannelService, GoogleStrategy],
 })

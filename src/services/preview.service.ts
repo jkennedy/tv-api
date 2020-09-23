@@ -1,8 +1,8 @@
 import { Injectable, Logger, HttpService } from '@nestjs/common';
+import { ConfigService } from 'nestjs-config';
 import { UserService } from '../services/user.service';
 import Handlebars = require("handlebars");
 import nodeHtmlToImage = require('node-html-to-image');
-import * as env from "../app.environment";
 import * as fs from 'fs';
 import * as moment from 'moment-timezone';
 
@@ -14,11 +14,11 @@ import { WEATHER_GOV_ICON_MAPPINGS } from '../templates/weather.preview.template
 
 @Injectable()
 export class PreviewService {
-  constructor(private readonly userService: UserService, private readonly httpService: HttpService) { }
+  constructor(private readonly userService: UserService, private readonly httpService: HttpService, private readonly config: ConfigService) { }
 
   getSections(deviceId) {
     const expires = Date.now() + 10000;
-    const baseUrl = env.baseUrl();
+    const baseUrl = this.config._baseUrl();
     const encodedDeviceId = encodeURIComponent(deviceId);
 
     var sections =

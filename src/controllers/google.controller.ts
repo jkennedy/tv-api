@@ -4,7 +4,6 @@ import { AuthService } from '../services/auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import QRCode = require("qrcode");
-import * as env from "../app.environment";
 
 @Controller('google')
 export class GoogleController {

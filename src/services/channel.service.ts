@@ -1,14 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as env from "../app.environment";
+import { ConfigService } from 'nestjs-config';
 
 @Injectable()
 export class ChannelService {
-  constructor() { }
+  constructor(private readonly config: ConfigService) { }
 
  // comedy central channel https://www.youtube.com/channel/UCUsN5ZwHx2kILm84-jPDeXw
 
   getChannels(deviceId) {
-    const baseUrl = env.baseUrl();
+    const baseUrl = this.config._baseUrl();
 
     var channels =
       {

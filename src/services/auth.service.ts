@@ -1,14 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService} from '@nestjs/common';
-import * as env from "../app.environment";
+import { ConfigService } from 'nestjs-config';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly httpService: HttpService) { }
+  constructor(private readonly httpService: HttpService, private readonly config: ConfigService) { }
 
   getAuthUrl(params): string {
     let uuid = params.uuid;
-    let encodedBaseUrl = encodeURIComponent(env.baseUrl() + '/google/redirect');
+    let encodedBaseUrl = encodeURIComponent(this.config._baseUrl() + '/google/redirect');
 
     let clientId = 'client_id=359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com';
   //  let oldUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&access_type=offline&include_granted_scopes=true&state=${uuid}&redirect_uri=${encodedBaseUrl}%2Fgoogle%2Fredirect&response_type=code&client_id=359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com`;
