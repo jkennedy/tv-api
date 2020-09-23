@@ -15,7 +15,8 @@ export default {
     },
 
     baseUrl() {
-        let portSegment = this.get('express.port') ? ':' + this.get('express.port') : '';
+        let isLocal = this.get('express.environment') === 'local';
+        let portSegment = isLocal && this.get('express.port') ? ':' + this.get('express.port') : '';
         return this.get('express.protocol') + '://' + this.get('express.host') + portSegment;
     }
 }
