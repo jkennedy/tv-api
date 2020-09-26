@@ -104,6 +104,7 @@ export const WEATHER_GOV_ICON_MAPPINGS = new Map([
   ['https://api.weather.gov/icons/land/night/sct', 'fas fa-cloud-moon fa-10'],
   ['https://api.weather.gov/icons/land/night/bkn', 'fas fa-cloud-moon fa-10'],
   ['https://api.weather.gov/icons/land/night/wind_sct', 'fas fa-cloud-moon fa-10'],
+  ['https://api.weather.gov/icons/land/day/sct', 'fas fa-sun fa-10'],
   ['https://api.weather.gov/icons/land/day/sct/tsra_hi', 'fas fa-sun fa-10'],
   ['https://api.weather.gov/icons/land/day/sct/skc', 'fas fa-sun fa-10'],
   ['https://api.weather.gov/icons/land/day/wind_sct', 'fas fa-sun fa-10'],

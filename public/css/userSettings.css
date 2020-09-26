@@ -80,7 +80,21 @@ body {
 #zipCode {
   font-size: 2em;
 }
+#deviceCodeSection{
+  display: flex;
+  align-items: center;
 
+  justify-content: center;
+  margin-top: 20px;
+}
+#deviceCodeDesc{
+  text-align: center;
+	font-size: 2em;
+	margin-right: 20px;
+}
+#deviceCode {
+  font-size: 2em;
+}
 .userName {
   font: Arial;
 	font-size: 1.7em;

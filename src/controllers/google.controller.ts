@@ -16,7 +16,7 @@ export class GoogleController {
   }
 
   @Get('qrcode')
-  async getQRCode( @Query() params) {
+  async getQRCode ( @Query() params) {
 
     const url = await QRCode.toDataURL(this.authService.getAuthUrl(params), { width: '500', height: '500' });
 
@@ -32,6 +32,7 @@ export class GoogleController {
     if (query.state)
       user.devices = [query.state];
 
+    console.log('google auth redirect: creating or updating user');
     await this.userService.updateOrCreateUser({...user});
 
     res.redirect('../userSettings?email=' + user.email);

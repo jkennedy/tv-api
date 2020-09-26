@@ -36,12 +36,13 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.open(map);
 }
 
-async function saveLocation() {
+async function completeRegistration() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(async function(position) {
       let zipCode = document.getElementById("zipCode").value;
+      let deviceCode = document.getElementById("deviceCode").value;
 
-      let locationDto = {
+      let registrationDto = {
         pos: {
           lat: position.coords.latitude,
           long: position.coords.longitude
@@ -50,7 +51,8 @@ async function saveLocation() {
         address: address.formattedAddress,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         country: address.countryRegion,
-        email: userEmail
+        email: userEmail,
+        deviceCode: deviceCode
       };
 
       var xhttp = new XMLHttpRequest();
@@ -66,9 +68,9 @@ async function saveLocation() {
         notificationSection.innerHTML = xhttp.responseText;
         notificationSection.className = "show";
       };
-      xhttp.open("POST", "/user/saveLocation", true);
+      xhttp.open("POST", "/user/completeRegistration", true);
       xhttp.setRequestHeader("Content-type", "application/json");
-      xhttp.send(JSON.stringify(locationDto));
+      xhttp.send(JSON.stringify(registrationDto));
 
 
     }, function() {

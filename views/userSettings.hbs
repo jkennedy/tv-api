@@ -21,12 +21,16 @@
         <div class="userEmail">{{email}}</div>
       </div>
       <div id='locationSection'>
+        <div id='deviceCodeSection'>
+          <div id='deviceCodeDesc'>Device Code:</div>
+          <input type="text" id="deviceCode" name="deviceCode"/>
+        </div>
         <div id='zipCodeSection'>
           <div id='zipDesc'>Zip Code:</div>
           <input type="text" id="zipCode" name="zipCode"/>
         </div>
         <div class='saveSection'>
-          <button class='saveButton' onclick='saveLocation()'>Save Location</button>
+          <button class='saveButton' onclick='completeRegistration()'>Complete Registration</button>
         </div>
       </div>
     <!--  <div id='map'></div> -->

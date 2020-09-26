@@ -1,4 +1,4 @@
-export class SaveLocationDto {
+export class UserRegistrationDto {
   pos: {
     lat: number,
     long: number
@@ -8,4 +8,5 @@ export class SaveLocationDto {
   timezone: string;
   country: string;
   email: string;
+  deviceCode: string;
 }

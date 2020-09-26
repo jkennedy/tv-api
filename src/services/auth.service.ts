@@ -10,18 +10,18 @@ export class AuthService {
     let uuid = params.uuid;
     let encodedBaseUrl = encodeURIComponent(this.config._baseUrl() + '/google/redirect');
 
-    let clientId = 'client_id=359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com';
-  //  let oldUrl = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&access_type=offline&include_granted_scopes=true&state=${uuid}&redirect_uri=${encodedBaseUrl}%2Fgoogle%2Fredirect&response_type=code&client_id=359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com`;
-
+    let clientId =  'client_id=' + this.config.get('auth.clientId');
     let googleBase = 'https://accounts.google.com/o/oauth2/v2/auth';
-    let scopes = 'scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly';
+    let scopes = 'scope=' + encodeURIComponent('https://www.googleapis.com/auth/youtube.readonly');
     let accessType = 'access_type=offline';
     let includeScopes = 'include_granted_scopes=true';
     let responseType = 'response_type=code';
     let prompt = 'prompt=consent';
-    //&${prompt}
 
-    let authUrl = `${googleBase}?${scopes}&${accessType}&${includeScopes}&state=${uuid}&redirect_uri=${encodedBaseUrl}&${responseType}&${clientId}&${prompt}`;
+    let authUrl = `${googleBase}?${scopes}&${accessType}&${includeScopes}&state=${uuid}&redirect_uri=${encodedBaseUrl}&${responseType}&${clientId}`;
+
+    if (this.config._shouldPromptForConsent())
+      authUrl += `&${prompt}`;
 
     return authUrl;
   }
@@ -29,8 +29,8 @@ export class AuthService {
   async refreshAccessToken(refreshToken): Promise<string> {
     let url = `https://oauth2.googleapis.com/token`;
     let tokenResponse;
-    let clientId = '359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com';
-    let clientSecret = '5qoRwh6P4cKr9y53ji8T8_gq';
+    let clientId = this.config.get('auth.clientId');
+    let clientSecret = this.config.get('auth.clientSecret');
     let grantType = 'refresh_token';
     let dataString = `client_id=${encodeURIComponent(clientId)}&client_secret=${encodeURIComponent(clientSecret)}&grant_type=${grantType}&refresh_token=${encodeURIComponent(refreshToken)}`;
 
@@ -55,21 +55,4 @@ export class AuthService {
 
     return tokenResponse ? tokenResponse.access_token : '';
   }
-
-
-/*
-  getAccessTokenDetails (authToken) {
-    let url = `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`;
-
-    const accessTokenDetailRequest = await this.httpService.axiosRef({
-      url: url,
-      method: 'GET',
-      responseType: 'json',
-    });
-
-    const details = accessTokenDetailRequest;
-
-
-  }
-  */
 }

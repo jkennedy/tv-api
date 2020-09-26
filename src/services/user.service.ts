@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {UserEntity} from '../entities/user.entity';
-import {AuthService} from './auth.service';
-import {SaveLocationDto} from '../dtos/saveLocation.dto'
+import { UserEntity } from '../entities/user.entity';
+import { AuthService } from './auth.service';
+import { UserRegistrationDto } from '../dtos/userRegistration.dto'
 import { FirebaseFirestoreService } from '@aginix/nestjs-firebase-admin';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class UserService {
 
   dataToUserEntity (data): UserEntity {
     return new UserEntity(data.firstName, data.lastName, data.email, data.picture, data.zipCode, data.address, data.country, data.timezone, data.lat, data.long,
-      data.devices, data.accessToken, data.refreshToken, data.tokenExpires);
+      data.devices, data.deviceCode,  data.accessToken, data.refreshToken, data.tokenExpires);
   }
 
   userToData (user: UserEntity) {
@@ -54,22 +54,24 @@ export class UserService {
     return user;
   }
 
-  async saveLocation(location: SaveLocationDto): Promise<string> {
-    let user = await this.getUser(location.email);
+  async completeRegistration(userRegistration: UserRegistrationDto): Promise<string> {
+    let user = await this.getUser(userRegistration.email);
 
-    if (!user)
+    if (!user || !(user.deviceCode == userRegistration.deviceCode))
       return null;
 
-    user.lat = location.pos.lat;
-    user.long = location.pos.long;
-    user.address = location.address;
-    user.zipCode = location.zipCode;
-    user.country = location.country;
-    user.timezone = location.timezone;
+    user.lat = userRegistration.pos.lat;
+    user.long = userRegistration.pos.long;
+    user.address = userRegistration.address;
+    user.zipCode = userRegistration.zipCode;
+    user.country = userRegistration.country;
+    user.timezone = userRegistration.timezone;
+
+    delete user.deviceCode;
 
     await this.updateUser(user);
 
-    return "Location Saved";
+    return "Registratin Complete";
   }
 
   getAcessTokenExpiration (accessToken): number {
@@ -84,6 +86,7 @@ export class UserService {
     userIn.tokenExpires = this.getAcessTokenExpiration(userIn.accessToken);
 
     if (!foundUser) {
+      userIn.deviceCode = '0u812';
       userToReturn = this.createUser(userIn);
     }
     else {
@@ -96,6 +99,7 @@ export class UserService {
       userToReturn.lat = userIn.lat;
       userToReturn.long = userIn.long;
       userToReturn.devices = userToReturn.devices ? userToReturn.devices.concat(userIn.devices) : userIn.devices;
+      userToReturn.deviceCode = userToReturn.deviceCode ? userToReturn.deviceCode : '0u813';
       userToReturn.accessToken = userIn.accessToken;
       userToReturn.refreshToken = userIn.refreshToken;
       userToReturn.tokenExpires = userIn.tokenExpires;
@@ -130,6 +134,17 @@ export class UserService {
     let countOfUsersOnDevice = await this.getCountOfUsersOnDevice(uuid);
 
     return countOfUsersOnDevice >= pollUntilUserCount;
+  }
+
+  async pollForDeviceVerificationCode(uuid: string): Promise<any> {
+    const foundUsers = await this.getUsersForDevice(uuid);
+    let deviceCode;
+
+    for (const user of foundUsers) {
+      deviceCode = deviceCode ? deviceCode : user.deviceCode;
+    }
+
+    return {deviceCode: deviceCode};
   }
 
   async confirmFreshAccessToken(userIn: UserEntity): Promise<UserEntity> {

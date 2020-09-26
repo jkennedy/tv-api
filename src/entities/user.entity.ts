@@ -11,6 +11,7 @@ export class UserEntity {
              public lat?: number,
              public long?: number,
              public devices?: string[],
+             public deviceCode?: string,
              public accessToken?: string,
              public refreshToken?: string,
              public tokenExpires?: number) {}

@@ -8,10 +8,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   constructor(private readonly config: ConfigService) {
     super({
-      clientID: '359440454777-4hecg7ig1iloj5u1q2iaanuqb9gj6f7d.apps.googleusercontent.com',
-      clientSecret: '5qoRwh6P4cKr9y53ji8T8_gq',
+      clientID: config.get('auth.clientId'),
+      clientSecret: config.get('auth.clientSecret'),
       callbackURL: config._baseUrl() + '/google/redirect',
-      scope: ['email', 'profile', 'https://www.googleapis.com/auth/youtube.force-ssl'],
+      scope: ['email', 'profile', 'https://www.googleapis.com/auth/youtube.readonly'],
       accessType: 'offline'
     });
   }
