@@ -12,26 +12,6 @@ export class UserController {
     return this.userService.completeRegistration(registration);
   }
 
-  @Get('pollDeviceForNewUser')
-  pollDeviceForNewUser( @Query() params) {
-    return this.userService.pollDeviceForNewUser(params.uuid, params.pollUntilUserCount);
-  }
-
-  @Get('pollForDeviceVerificationCode')
-  pollForDeviceVerificationCode( @Query() params) {
-    return this.userService.pollForDeviceVerificationCode(params.uuid);
-  }
-
-  @Get('countOfUsersOnDevice')
-  getCountOfUsersOnDevice( @Query() params) {
-    return this.userService.getCountOfUsersOnDevice(params.uuid);
-  }
-
-  @Get('getUsersForDevice')
-  getUsersForDevice( @Query() params) {
-    return this.userService.getUsersForDevice(params.uuid);
-  }
-
   @Get('testRefreshToken')
   async testRefreshToken (@Query() params) {
     let user = await this.userService.getUser(params.email);

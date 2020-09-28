@@ -13,6 +13,12 @@ export class AppController {
     return user;
   }
 
+  @Get('auth')
+  @Render('auth')
+  async auth(@Query() params) {
+    
+  }
+
   @Get('logInfo')
   logInfo (@Query() params) {
     console.log('logInfo---------------------------------');

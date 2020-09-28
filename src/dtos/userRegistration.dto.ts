@@ -8,5 +8,5 @@ export class UserRegistrationDto {
   timezone: string;
   country: string;
   email: string;
-  deviceCode: string;
+  registrationCode: string;
 }

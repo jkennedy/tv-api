@@ -30,9 +30,8 @@ export class GoogleController {
     let query = req.query;
 
     if (query.state)
-      user.devices = [query.state];
+      user.device = query.state;
 
-    console.log('google auth redirect: creating or updating user');
     await this.userService.updateOrCreateUser({...user});
 
     res.redirect('../userSettings?email=' + user.email);

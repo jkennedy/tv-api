@@ -1,3 +1,6 @@
+import { GeoPoint } from '../types/geopoint.type';
+import { WeatherPoint } from '../types/weatherpoint.type';
+
 export class UserEntity {
 
  constructor(public firstName: string,
@@ -10,8 +13,9 @@ export class UserEntity {
              public timezone?: string,
              public lat?: number,
              public long?: number,
-             public devices?: string[],
-             public deviceCode?: string,
+             public geoPoint?: GeoPoint,
+             public weatherPoint?: WeatherPoint,
+             public device?: string,
              public accessToken?: string,
              public refreshToken?: string,
              public tokenExpires?: number) {}

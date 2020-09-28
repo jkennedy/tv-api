@@ -40,7 +40,7 @@ async function completeRegistration() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(async function(position) {
       let zipCode = document.getElementById("zipCode").value;
-      let deviceCode = document.getElementById("deviceCode").value;
+      let registrationCode = document.getElementById("registrationCode").value;
 
       let registrationDto = {
         pos: {
@@ -52,7 +52,7 @@ async function completeRegistration() {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         country: address.countryRegion,
         email: userEmail,
-        deviceCode: deviceCode
+        registrationCode: registrationCode
       };
 
       var xhttp = new XMLHttpRequest();

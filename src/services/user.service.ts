@@ -1,23 +1,57 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { UserEntity } from '../entities/user.entity';
+import { GeoPoint } from '../types/geopoint.type';
+import { WeatherPoint } from '../types/weatherpoint.type';
 import { AuthService } from './auth.service';
+import { DeviceService } from './device.service';
 import { UserRegistrationDto } from '../dtos/userRegistration.dto'
 import { FirebaseFirestoreService } from '@aginix/nestjs-firebase-admin';
+import { Queue, Job } from 'bull';
+import { InjectQueue } from '@nestjs/bull';
+import * as firebaseAdmin from 'firebase-admin';
+import * as _ from "lodash";
 
 @Injectable()
 export class UserService {
 
-  constructor(private readonly fireStore: FirebaseFirestoreService, private readonly authService: AuthService) { }
+  constructor(
+      private readonly fireStore: FirebaseFirestoreService,
+      private readonly authService: AuthService,
+      private readonly deviceService: DeviceService,
+      @InjectQueue('mychannel') private mychannelQueue: Queue
+  ) { }
+
+   async handleUserUpdated(userIn): Promise<UserEntity> {
+     let foundUser = await this.getUser(userIn.email);
+
+     if (foundUser) {
+       let user = {
+         ...foundUser,
+         ...userIn
+       }
+
+       return await this.updateUser(user);
+     }
+   }
+
+   async generateQueueEvent (event: string, entity: UserEntity) {
+       const job = await this.mychannelQueue.add(event, {
+         id: entity.email,
+         entity: entity
+       });
+  }
 
   dataToUserEntity (data): UserEntity {
     return new UserEntity(data.firstName, data.lastName, data.email, data.picture, data.zipCode, data.address, data.country, data.timezone, data.lat, data.long,
-      data.devices, data.deviceCode,  data.accessToken, data.refreshToken, data.tokenExpires);
+      data.geoPoint, data.weatherPoint, data.device, data.accessToken, data.refreshToken, data.tokenExpires);
   }
 
   userToData (user: UserEntity) {
-    return {
-      ...user
-    }
+    let userToStore = {...user};
+    if (user.geoPoint)
+      userToStore.geoPoint = new firebaseAdmin.firestore.GeoPoint(user.geoPoint.latitude,user.geoPoint.longitude);
+
+    return userToStore;
   }
 
   async getUser(email: string): Promise <UserEntity> {
@@ -55,21 +89,24 @@ export class UserService {
   }
 
   async completeRegistration(userRegistration: UserRegistrationDto): Promise<string> {
-    let user = await this.getUser(userRegistration.email);
 
-    if (!user || !(user.deviceCode == userRegistration.deviceCode))
-      return null;
+    let user = await this.getUser(userRegistration.email);
+    let device = await this.deviceService.get(user.device);
+
+    if (!user || !device || !(device.registrationCode == userRegistration.registrationCode))
+      return "Invalid Registration Code";
 
     user.lat = userRegistration.pos.lat;
     user.long = userRegistration.pos.long;
+    user.geoPoint = new GeoPoint(user.lat, user.long);
     user.address = userRegistration.address;
     user.zipCode = userRegistration.zipCode;
     user.country = userRegistration.country;
     user.timezone = userRegistration.timezone;
 
-    delete user.deviceCode;
-
     await this.updateUser(user);
+
+    this.generateQueueEvent('userRegistered', user);
 
     return "Registratin Complete";
   }
@@ -79,15 +116,15 @@ export class UserService {
   }
 
   async updateOrCreateUser(userIn: UserEntity): Promise<UserEntity> {
-    let userToReturn = null;
+    let userToReturn: UserEntity  = null;
 
     const foundUser = await this.getUser(userIn.email);
 
     userIn.tokenExpires = this.getAcessTokenExpiration(userIn.accessToken);
 
     if (!foundUser) {
-      userIn.deviceCode = '0u812';
-      userToReturn = this.createUser(userIn);
+      userToReturn = await this.createUser(userIn);
+      this.generateQueueEvent('userCreated', userToReturn);
     }
     else {
       userToReturn = foundUser;
@@ -98,8 +135,9 @@ export class UserService {
       userToReturn.timezone = userIn.timezone;
       userToReturn.lat = userIn.lat;
       userToReturn.long = userIn.long;
-      userToReturn.devices = userToReturn.devices ? userToReturn.devices.concat(userIn.devices) : userIn.devices;
-      userToReturn.deviceCode = userToReturn.deviceCode ? userToReturn.deviceCode : '0u813';
+      userToReturn.geoPoint = userIn.geoPoint;
+      userToReturn.weatherPoint = userIn.weatherPoint;
+      userToReturn.device = userIn.device;
       userToReturn.accessToken = userIn.accessToken;
       userToReturn.refreshToken = userIn.refreshToken;
       userToReturn.tokenExpires = userIn.tokenExpires;
@@ -110,12 +148,12 @@ export class UserService {
     return userToReturn;
   }
 
-  async getUsersForDevice(deviceId: string): Promise<Array<UserEntity>> {
+  async getUsers(ids: string[]): Promise<Array<UserEntity>> {
     const foundUsers = [];
 
-    if (deviceId) {
+    if (ids) {
       const usersRef = this.fireStore.collection('users');
-      const queryRef = await usersRef.where('devices', 'array-contains', deviceId).get();
+      const queryRef = await usersRef.where('email', 'in', ids).get();
       queryRef.forEach(doc => {
         foundUsers.push(doc.data());
       });
@@ -124,28 +162,6 @@ export class UserService {
     return foundUsers ? foundUsers : [];
   }
 
-  async getCountOfUsersOnDevice(uuid: string): Promise<number> {
-    const foundUsers = await this.getUsersForDevice(uuid);
-
-    return foundUsers ? foundUsers.length : 0;
-  }
-
-  async pollDeviceForNewUser(uuid: string, pollUntilUserCount: number = 1): Promise<boolean> {
-    let countOfUsersOnDevice = await this.getCountOfUsersOnDevice(uuid);
-
-    return countOfUsersOnDevice >= pollUntilUserCount;
-  }
-
-  async pollForDeviceVerificationCode(uuid: string): Promise<any> {
-    const foundUsers = await this.getUsersForDevice(uuid);
-    let deviceCode;
-
-    for (const user of foundUsers) {
-      deviceCode = deviceCode ? deviceCode : user.deviceCode;
-    }
-
-    return {deviceCode: deviceCode};
-  }
 
   async confirmFreshAccessToken(userIn: UserEntity): Promise<UserEntity> {
 

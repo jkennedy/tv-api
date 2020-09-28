@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+  </head>
+  <body>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-firestore.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      var firebaseConfig = {
+        apiKey: "AIzaSyCy-4bk1CLzz69tUowLRr-00NtS4QTCKAM",
+        authDomain: "mychannel-1595185361229.firebaseapp.com",
+        databaseURL: "https://mychannel-1595185361229.firebaseio.com",
+        projectId: "mychannel-1595185361229",
+        storageBucket: "mychannel-1595185361229.appspot.com",
+        messagingSenderId: "366836412672",
+        appId: "1:366836412672:web:f0a954c96a0f60d08343e5",
+        measurementId: "G-EN6TND4ZFG"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+  </script>
+  </script>
+  <script>
+    var uiConfig = {
+    callbacks: {
+      signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+        console.log('successfully logged in');
+        console.log(JSON.stringify(authResult));
+        console.log(redirectUrl);
+
+        return false;
+      },
+      uiShown: function() {
+        // The widget is rendered.
+        // Hide the loader.
+        document.getElementById('loader').style.display = 'none';
+      }
+    },
+    // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+    signInFlow: 'popup',
+    signInSuccessUrl: '<url-to-redirect-to-on-success>',
+    signInOptions: [
+      // Leave the lines as is for the providers you want to offer your users.
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+      firebase.auth.PhoneAuthProvider.PROVIDER_ID
+    ],
+    // Terms of service url.
+    tosUrl: '',
+    // Privacy policy url.
+    privacyPolicyUrl: ''
+    };
+
+    // The start method will wait until the DOM is loaded.
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+    ui.start('#firebaseui-auth-container', uiConfig);
+
+  </script>
+  <script>
+    async function testdb() {
+      try {
+        var id = 'K3DYMEHP4CWNH';
+        var db = firebase.firestore();
+        let doc = db.collection('devices').doc(id);
+        let snapshot = await doc.get();
+        let entity = snapshot.exists ? snapshot.data() : null;
+
+        console.log('got device:');
+        console.log(JSON.stringify(entity));
+      }
+      catch (err) {
+        console.log(err);
+      }
+    }
+  </script>
+  <!-- The surrounding HTML is left untouched by FirebaseUI.
+     Your app may use that space for branding, controls and other customizations.-->
+    <h1>Welcome to My Awesome App</h1>
+    <div id="firebaseui-auth-container"></div>
+    <div id="loader">Loading...</div>
+    <button onclick="testdb()">Test</button>
+  </body>
+</html>

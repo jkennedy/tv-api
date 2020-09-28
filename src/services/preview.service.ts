@@ -1,6 +1,5 @@
 import { Injectable, Logger, HttpService } from '@nestjs/common';
 import { ConfigService } from 'nestjs-config';
-import { UserService } from '../services/user.service';
 import Handlebars = require("handlebars");
 import nodeHtmlToImage = require('node-html-to-image');
 import * as fs from 'fs';
@@ -14,7 +13,9 @@ import { WEATHER_GOV_ICON_MAPPINGS } from '../templates/weather.preview.template
 
 @Injectable()
 export class PreviewService {
-  constructor(private readonly userService: UserService, private readonly httpService: HttpService, private readonly config: ConfigService) { }
+  constructor (
+      private readonly httpService: HttpService,
+      private readonly config: ConfigService) { }
 
   getSections(deviceId) {
     const expires = Date.now() + 10000;
@@ -71,7 +72,6 @@ export class PreviewService {
           image = data;
 
           if (err || overwrite) {
-            console.log('Generating Fresh News Preview Image');
 
             image = await nodeHtmlToImage({
               content: {
@@ -87,11 +87,7 @@ export class PreviewService {
     });
   }
 
-  async generateTimePreviewImage(deviceId): Promise<any> {
-    let users = deviceId ? await this.userService.getUsersForDevice(deviceId) : null;
-    let user = users && users.length ? users[0] : null;
-    let timezone = user && user.timezone ? user.timezone : 'America/New_York';
-
+  async generateTimePreviewImage(timezone): Promise<any> {
     let m = moment().tz(timezone);
 
     const dateText = m.format('MMM Do');
@@ -132,18 +128,8 @@ export class PreviewService {
     });
   }
 
-  async generateWeatherPreviewImage (deviceId): Promise<any> {
-    const forecastRequest = await this.httpService.axiosRef({
-      url: 'https://api.weather.gov/gridpoints/TBW/56,95/forecast',
-      method: 'GET',
-      responseType: 'json',
-    }).catch(err => {
-      console.log(`Error generating weather preview ${err}`);
-      return null;
-    });
-
+  async generateWeatherPreviewImage (forecast): Promise<any> {
     let weatherIcons = WEATHER_GOV_ICON_MAPPINGS;
-    const forecast = forecastRequest.data;
     let periods = forecast.properties.periods.slice(0, 3);
 
     Handlebars.registerHelper('firstWord', function(aString) {

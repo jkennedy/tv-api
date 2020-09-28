@@ -80,19 +80,19 @@ body {
 #zipCode {
   font-size: 2em;
 }
-#deviceCodeSection{
+#registrationCodeSection{
   display: flex;
   align-items: center;
 
   justify-content: center;
   margin-top: 20px;
 }
-#deviceCodeDesc{
+#registrationCodeDesc{
   text-align: center;
 	font-size: 2em;
 	margin-right: 20px;
 }
-#deviceCode {
+#registrationCode {
   font-size: 2em;
 }
 .userName {

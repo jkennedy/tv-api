@@ -3,6 +3,7 @@ import { ConfigService } from 'nestjs-config';
 import { CacheEntity } from '../entities/cache.entity';
 import { CacheService } from '../services/cache.service';
 import { UserService } from '../services/user.service';
+import { DeviceService } from '../services/device.service';
 import { PreviewService } from '../services/preview.service';
 import { Interval } from '@nestjs/schedule';
 import * as moment from 'moment-timezone';
@@ -10,7 +11,7 @@ import { MOCK_YOUTUBE_NEWS } from '../mocks/news.youtube';
 
 @Injectable()
 export class NewsService {
-  constructor(private readonly cacheService: CacheService, private readonly userService: UserService,
+  constructor(private readonly cacheService: CacheService, private readonly userService: UserService, private readonly deviceService: DeviceService,
     private readonly httpService: HttpService, private readonly previewService: PreviewService, private readonly config: ConfigService) { }
 
   @Interval(14400000)
@@ -22,8 +23,8 @@ export class NewsService {
   }
 
   async getNationalNews(deviceId) {
-    let users = await this.userService.getUsersForDevice(deviceId);
-    let user = users && users.length ? users[0] : null;
+    let device = await this.deviceService.get(deviceId);
+    let user = await this.userService.getUserForCountry(device.defaultCountry);
     return this.getNationalNewsForUser(user);
   }
 

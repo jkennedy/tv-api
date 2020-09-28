@@ -4,7 +4,7 @@ import { ConfigService } from 'nestjs-config';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly httpService: HttpService, private readonly config: ConfigService) { }
+  constructor(private readonly httpService: HttpService, private readonly config: ConfigService ) { }
 
   getAuthUrl(params): string {
     let uuid = params.uuid;
