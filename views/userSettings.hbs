@@ -1,41 +1,244 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>MyChannel</title>
-    <link rel="stylesheet" href="/css/userSettings.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
-  <!--  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAX9uyQc2BHh1aWfmsGBuhNg4vVsAM10M0&callback=initMap"></script> -->
-  </head>
-  <body onload="initialize('{{email}}')">
-    <header class="header"></header>
-    <div class="content">
-      <div class='welcomeSection'>
-        <div class='welcomeHeader'>Welcome To MyChannel</div>
-        <div class='description'>Please allow this page to detect your location to personalize your channel.</div>
-      </div>
-      <div id="userSection">
-        <img class="userProfilePictureOverlay" src="{{picture}}">
-        <div class="userName">{{firstName}} {{lastName}}</div>
-        <div class="userEmail">{{email}}</div>
-      </div>
-      <div id='locationSection'>
-        <div id='registrationCodeSection'>
-          <div id='registrationCodeDesc'>Code On TV:</div>
-          <input type="text" id="registrationCode" name="registrationCode"/>
-        </div>
-        <div id='zipCodeSection'>
-          <div id='zipDesc'>Zip Code:</div>
-          <input type="text" id="zipCode" name="zipCode"/>
-        </div>
-        <div class='saveSection'>
-          <button class='saveButton' onclick='completeRegistration()'>Complete Registration</button>
-        </div>
-      </div>
-    <!--  <div id='map'></div> -->
+
+<head>
+  <meta charset="utf-8" />
+  <title>MyChannel</title>
+  <link rel="stylesheet" href="/css/userSettings.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
+  <script src="https://apis.google.com/js/client.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+  <script src="https://apis.google.com/js/platform.js?onload=start" async defer></script>
+  <!--
+  <meta name="google-signin-client_id" content="366836412672-agghpni1ogp561vpktd0m7fhdbqmke2e.apps.googleusercontent.com">
+-->
+</head>
+
+<body onload="initialize()">
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-app.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-firestore.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    var firebaseConfig = {
+      apiKey: "AIzaSyCy-4bk1CLzz69tUowLRr-00NtS4QTCKAM",
+      authDomain: "mychannel-1595185361229.firebaseapp.com",
+      databaseURL: "https://mychannel-1595185361229.firebaseio.com",
+      projectId: "mychannel-1595185361229",
+      storageBucket: "mychannel-1595185361229.appspot.com",
+      messagingSenderId: "366836412672",
+      appId: "1:366836412672:web:f0a954c96a0f60d08343e5",
+      measurementId: "G-EN6TND4ZFG"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      console.log('firebase auth state changed');
+      console.log(user);
+
+      let userInfo = user && user.providerData && user.providerData.length > 0 ? user.providerData[0] : null;
+      let userSrc = userInfo ? userInfo : user;
+
+      if (userSrc) {
+        $('#userName').text(userSrc.displayName);
+        $('#userEmail').text(userSrc.email);
+        $('#userProfilePicture').attr('src', userSrc.photoURL);
+      } else {
+        //beginRegistration();
+      }
+    });
+  </script>
+  <script>
+
+
+    function authenticateBaseUser(token) {
+      firebase.auth().signInWithCustomToken(token).then(credentials => {
+        console.log('signed in with custom token');
+        console.log(JSON.stringify(credentials));
+
+        linkGoogle();
+      });
+    }
+
+    function beginRegistration() {
+      $.get('/registerUser', function(data) {
+        console.log('registerUser');
+        console.log(data);
+        let userToken = data;
+        localStorage.setItem('userToken', userToken);
+        authenticateBaseUser(userToken);
+      });
+    }
+
+    function getCurrentUser() {
+      firebase.auth().currentUser.getIdToken(true).then(function(idToken) {
+        // Send token to your backend via HTTPS
+        // ...
+      }).catch(function(error) {
+        // Handle error
+      });
+    }
+
+    function start() {
+      console.log('start');
+      gapi.load('auth2', function() {
+        auth2 = gapi.auth2.init({
+          client_id: '366836412672-agghpni1ogp561vpktd0m7fhdbqmke2e.apps.googleusercontent.com',
+          scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/calendar.events.readonly',
+          redirect_uri: 'http://localhost:3000/google/redirect',
+          ux_mode: 'redirect'
+        });
+      });
+    }
+
+    function offlineSignInCallback(data) {
+      console.log('offlineSignInCallback');
+      console.log(data);
+    }
+
+    function onSignIn(googleUser) {
+      console.log('onSignIn!!!');
+      var profile = googleUser.getBasicProfile();
+      console.log(googleUser);
+      console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+      console.log('Name: ' + profile.getName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    }
+
+    async function testGAPI() {
+      let idToken = await firebase.auth().currentUser.getIdToken(true);
+
+      const authInfo = {
+        idToken: idToken,
+        accessToken: googleCredential.accessToken
+      };
+
+      $.ajaxSetup({
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("Authorization", `Bearer ${idToken}`);
+        }
+      });
+
+      console.log('calling testGAPI');
+      console.log(authInfo);
+
+      $.post('/google/testGAPI', authInfo).done(function(data) {
+        console.log('testGAPI');
+        console.log(data);
+      });
+    }
+
+    async function loginGoogle() {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('https://www.googleapis.com/auth/userinfo.profile');
+      provider.addScope('https://www.googleapis.com/auth/userinfo.email');
+      provider.addScope('https://www.googleapis.com/auth/youtube.readonly');
+      provider.addScope('https://www.googleapis.com/auth/calendar.events.readonly');
+
+
+      firebase.auth().signInWithPopup(provider).then(function(result) {
+        console.log('sign in google');
+        console.log(result);
+        googleUser = result.user;
+        googleCredential = result.credential;
+        console.log('google credential set');
+        console.log(googleCredential);
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
+
+    async function linkGoogle() {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('https://www.googleapis.com/auth/userinfo.profile');
+      provider.addScope('https://www.googleapis.com/auth/userinfo.email');
+      provider.addScope('https://www.googleapis.com/auth/youtube.readonly');
+      provider.addScope('https://www.googleapis.com/auth/calendar.events.readonly');
+
+      firebase.auth().currentUser.linkWithPopup(provider).then(function(result) {
+        // Accounts successfully linked.
+        console.log('linked google account to exisitng account');
+        console.log(result);
+        googleUser = result.user;
+        googleCredential = result.credential;
+        console.log('google credential set');
+        console.log(googleCredential);
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
+
+    async function testdb() {
+      try {
+        var id = 'K3DYMEHP4CWNH';
+        var db = firebase.firestore();
+        let doc = db.collection('devices').doc(id);
+        let snapshot = await doc.get();
+        let entity = snapshot.exists ? snapshot.data() : null;
+
+        console.log('got device:');
+        console.log(JSON.stringify(entity));
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    $(document).ready(function(){
+      $('#signinButton').click(function() {
+        console.log('sign in ubtton click');
+        let config = {
+          consent: true
+        }
+        auth2.grantOfflineAccess(config).then(offlineSignInCallback);
+      });
+    });
+
+
+
+  </script>
+  <header class="header"></header>
+  <div class="content">
+    <div class='welcomeSection'>
+      <div class='welcomeHeader'>Welcome To MyChannel</div>
+      <div class='description'>Please allow this page to detect your location to personalize your channel.</div>
     </div>
-     <footer class="footer"></footer>
-    <div id='notificationSection'></div>
-  </body>
+    <div id="userSection">
+      <img id="userProfilePicture" class="userProfilePictureOverlay" src="">
+      <div id="userName" class="userName"></div>
+      <div id="userEmail" class="userEmail"></div>
+    </div>
+    <div id='locationSection'>
+      <div id='registrationCodeSection'>
+        <div id='registrationCodeDesc'>Code On TV:</div>
+        <input type="text" id="registrationCode" name="registrationCode" />
+      </div>
+      <div id='zipCodeSection'>
+        <div id='zipDesc'>Zip Code:</div>
+        <input type="text" id="zipCode" name="zipCode" />
+      </div>
+      <div class='saveSection'>
+        <button class='saveButton' onclick='loginGoogle()'>Login</button>
+        <button class='saveButton' onclick='beginRegistration()'>Register</button>
+        <button class='saveButton' onclick='completeRegistration()'>Complete Registration</button>
+        <button class='saveButton' onclick='testGAPI()'>TEST</button>
+        <button id="signinButton">Sign in with Google</button>
+      </div>
+    </div>
+    <!--  <div id='map'></div> -->
+  </div>
+  <footer class="footer"></footer>
+  <div id='notificationSection'></div>
+</body>
+
 </html>

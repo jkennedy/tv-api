@@ -33,6 +33,7 @@
     "@types/youtube": "0.0.39",
     "bull": "^3.18.0",
     "canvas-to-image": "^2.2.0",
+    "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",
     "firebase": "^7.21.0",
     "firebase-admin": "^9.1.1",
@@ -44,6 +45,7 @@
     "nestjs-config": "^1.4.7",
     "node-html-to-image": "^2.1.1",
     "passport": "^0.4.1",
+    "passport-custom": "^1.1.1",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
     "qrcode": "^1.4.4",
@@ -51,6 +53,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
     "text2png": "^2.3.0",
+    "uuid": "^8.3.0",
     "youtube-v3-api": "^1.1.1"
   },
   "devDependencies": {

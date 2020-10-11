@@ -18,8 +18,9 @@ import { PreviewService } from './services/preview.service';
 import { ChannelService } from './services/channel.service';
 import { UserService } from './services/user.service';
 import { UserProcessor } from './processors/user.processor';
-import { GoogleStrategy } from './strategies/google.strategy'
 import { PassportModule } from '@nestjs/passport';
+import { FireBaseStrategy } from './strategies/firebase.strategy';
+
 import { FirebaseAdminModule } from '@aginix/nestjs-firebase-admin'
 import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from 'nestjs-config';
@@ -45,7 +46,7 @@ import * as path from 'path';
       },
     })
   ],
-  controllers: [AppController, GoogleController, NewsController, WeatherController, PreviewController, UserController, ChannelController],
-  providers: [AuthService, AppService, CacheService, NewsService, DeviceService, WeatherService, PreviewService, UserService, UserProcessor, ChannelService, GoogleStrategy],
+  controllers: [AppController, GoogleController, NewsController, DeviceController, WeatherController, PreviewController, UserController, ChannelController],
+  providers: [AuthService, AppService, CacheService, NewsService, DeviceService, WeatherService, PreviewService, UserService, UserProcessor, ChannelService, FireBaseStrategy],
 })
 export class AppModule {}

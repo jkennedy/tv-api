@@ -18,4 +18,9 @@ export class UserController {
     let refreshToken = user.refreshToken;
     this.authService.refreshAccessToken(refreshToken);
   }
+
+  @Get('getUsersForDevice')
+  async getUsersForDevice (@Query() params) {
+    return this.userService.getUsersForDevice(params.deviceId);
+  }
 }

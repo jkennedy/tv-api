@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { DeviceEntity } from '../entities/device.entity';
 import { GeoPoint } from '../types/geopoint.type';
 import { WeatherPoint } from '../types/weatherpoint.type';
+import { DeviceRegistrationDto } from '../dtos/deviceRegistration.dto';
 import { FirebaseFirestoreService } from '@aginix/nestjs-firebase-admin';
 import * as firebaseAdmin from 'firebase-admin';
 import * as _ from "lodash";
@@ -12,6 +13,28 @@ export class DeviceService {
   constructor(
       private readonly fireStore: FirebaseFirestoreService,
   ) { }
+
+  async initializeDeviceForRegistration(registration: DeviceRegistrationDto) {
+     let device: DeviceEntity = await this.get(registration.deviceId);
+     let expires = new Date().getTime() + 60000;
+     // TODO: add logic to check devices previously set to initialize
+     if (device) {
+       return;
+     }
+
+     device = {id: registration.deviceId, registrationCode: registration.registrationCode, registrationExpiration: expires};
+     this.create(device);
+  }
+
+  async pollDeviceForRegistrationCompletion(deviceId, registrationCode) {
+     let device: DeviceEntity = await this.get(deviceId);
+
+    // let validRegistration = device.registrationCode == registrationCode && device.registrationExpiration <= new Date().getTime();
+
+     let validRegistration = device.registrationCode == registrationCode;
+
+     return validRegistration ? {userToken: device.userToken} : '';
+  }
 
    async handleUserCreated(deviceId: string) {
      let device = await this.get(deviceId);
@@ -38,7 +61,8 @@ export class DeviceService {
    }
 
   dataToEntity (data): DeviceEntity {
-    return new DeviceEntity(data.id, data.defaultWeatherPoint, data.defaultGeoPoint, data.defaultCountry, data.defaultTimeZone, data.users, data.registrationCode);
+    return new DeviceEntity(data.id, data.defaultWeatherPoint, data.defaultGeoPoint, data.defaultCountry, data.defaultTimeZone, data.users,
+      data.registrationCode, data.registrationExpiration, data.userToken);
   }
 
   entityToData (entity: DeviceEntity) {

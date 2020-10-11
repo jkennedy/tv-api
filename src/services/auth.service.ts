@@ -26,6 +26,43 @@ export class AuthService {
     return authUrl;
   }
 
+  async exchangeCodeForAccessAndRefreshToken (codeIn: string) {
+    let code = '4/5AFAp49AinPhyb4sLywj7dzOV4nfrP53jXNPrAb4yHgMkbLDAT4DyPXiNbmx6OOv1I3M-Y8OFyZFHXGstCtCIhQ';
+    let tokenResponse;
+
+    let redirect = 'postmessage';
+    let url = `https://oauth2.googleapis.com/token`;
+    let clientId = '366836412672-agghpni1ogp561vpktd0m7fhdbqmke2e.apps.googleusercontent.com'
+    let clientSecret = '_QXbnCLw7GnLkAdSs-CK7UMJ'
+    let grantType = 'authorization_code';
+    let dataString = `code=${encodeURIComponent(code)}&client_id=${encodeURIComponent(clientId)}&client_secret=${encodeURIComponent(clientSecret)}&redirect_uri=${redirect}&grant_type=${encodeURIComponent(grantType)}`;
+    console.log(dataString);
+
+    let accessTokenDetailRequest = this.httpService.axiosRef({
+      url: url,
+      method: 'POST',
+      responseType: 'json',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data: dataString
+    });
+
+    await accessTokenDetailRequest
+    .then((response) => {
+      tokenResponse = response.data;
+      console.log('got response:');
+      console.log(JSON.stringify(tokenResponse));
+    })
+    .catch(function(err) {
+        console.log('error loading access token from code');
+        console.log(err.message);
+        console.log(err);
+    });
+
+    return tokenResponse;
+  }
+
   async refreshAccessToken(refreshToken): Promise<string> {
     let url = `https://oauth2.googleapis.com/token`;
     let tokenResponse;

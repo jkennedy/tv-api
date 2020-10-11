@@ -9,6 +9,8 @@ export class DeviceEntity {
              public defaultCountry?: string,
              public defaultTimeZone?: string,
              public users?: string[],
-             public registrationCode?: string
+             public registrationCode?: string,
+             public registrationExpiration?: number,
+             public userToken?: string,
              ) {}
 }

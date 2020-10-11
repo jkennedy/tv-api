@@ -1,4 +1,4 @@
-var infoWindow, address, userEmail, browserPosition;
+var infoWindow, address, browserPosition, googleCredential, googleUser;
 
 function setBrowserPosition (position) {
   browserPosition = {
@@ -9,8 +9,7 @@ function setBrowserPosition (position) {
   getAddressFromPosition(browserPosition);
 }
 
-async function initialize(email) {
-    userEmail = email;
+async function initialize() {
     getPositionFromBrowser();
 }
 
@@ -42,6 +41,8 @@ async function completeRegistration() {
       let zipCode = document.getElementById("zipCode").value;
       let registrationCode = document.getElementById("registrationCode").value;
 
+      let token = localStorage.getItem('userToken');
+
       let registrationDto = {
         pos: {
           lat: position.coords.latitude,
@@ -51,8 +52,13 @@ async function completeRegistration() {
         address: address.formattedAddress,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         country: address.countryRegion,
-        email: userEmail,
-        registrationCode: registrationCode
+        email: 'jack.kennedy@gmail.com',
+        registrationCode: registrationCode,
+        deviceId: 'K3DYMEHP4CWNH',
+        userToken: token,
+        authId: googleUser.uid,
+        googleAccessToken: googleCredential.accessToken,
+        googleRefreshToken: googleCredential.refreshToken ? googleCredential.refreshToken : googleUser.refreshToken
       };
 
       var xhttp = new XMLHttpRequest();

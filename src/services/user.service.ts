@@ -42,7 +42,7 @@ export class UserService {
   }
 
   dataToUserEntity (data): UserEntity {
-    return new UserEntity(data.firstName, data.lastName, data.email, data.picture, data.zipCode, data.address, data.country, data.timezone, data.lat, data.long,
+    return new UserEntity(data.displayName, data.email, data.authId, data.picture, data.zipCode, data.address, data.country, data.timezone, data.lat, data.long,
       data.geoPoint, data.weatherPoint, data.device, data.accessToken, data.refreshToken, data.tokenExpires);
   }
 
@@ -52,6 +52,10 @@ export class UserService {
       userToStore.geoPoint = new firebaseAdmin.firestore.GeoPoint(user.geoPoint.latitude,user.geoPoint.longitude);
 
     return userToStore;
+  }
+
+  getAuthUser (authId): Promise<firebaseAdmin.auth.UserRecord> {
+    return firebaseAdmin.auth().getUser(authId);
   }
 
   async getUser(email: string): Promise <UserEntity> {
@@ -89,13 +93,26 @@ export class UserService {
   }
 
   async completeRegistration(userRegistration: UserRegistrationDto): Promise<string> {
+    let deviceEntity = {
+      id: userRegistration.deviceId,
+      registrationCode: userRegistration.registrationCode,
+      userToken: userRegistration.userToken
+    }
 
-    let user = await this.getUser(userRegistration.email);
-    let device = await this.deviceService.get(user.device);
+    let device = await this.deviceService.create(deviceEntity);
+    let authUserRecord = await this.getAuthUser(userRegistration.authId);
 
-    if (!user || !device || !(device.registrationCode == userRegistration.registrationCode))
-      return "Invalid Registration Code";
+    console.log('complete registration got auth user');
+    console.log(authUserRecord);
 
+    let user: UserEntity = {
+      displayName: authUserRecord.displayName,
+      email: authUserRecord.email,
+      picture: authUserRecord.photoURL,
+      device: device.id
+    }
+    user.accessToken = userRegistration.googleAccessToken;
+    user.refreshToken = userRegistration.googleRefreshToken;
     user.lat = userRegistration.pos.lat;
     user.long = userRegistration.pos.long;
     user.geoPoint = new GeoPoint(user.lat, user.long);
@@ -104,7 +121,10 @@ export class UserService {
     user.country = userRegistration.country;
     user.timezone = userRegistration.timezone;
 
-    await this.updateUser(user);
+    await this.createUser(user);
+
+    device.users = device.users ? device.users.concat(user.email) : [user.email];
+    this.deviceService.update(device);
 
     this.generateQueueEvent('userRegistered', user);
 
@@ -162,10 +182,24 @@ export class UserService {
     return foundUsers ? foundUsers : [];
   }
 
+  async getUsersForDevice(deviceId: string): Promise<Array<UserEntity>> {
+    const foundUsers = [];
+
+    if (deviceId) {
+      const usersRef = this.fireStore.collection('users');
+      const queryRef = await usersRef.where('device', '==', deviceId).get();
+      queryRef.forEach(doc => {
+        foundUsers.push(doc.data());
+      });
+    }
+
+    return foundUsers ? foundUsers : [];
+  }
+
 
   async confirmFreshAccessToken(userIn: UserEntity): Promise<UserEntity> {
 
-    if (userIn.accessToken && userIn.refreshToken && userIn.tokenExpires < new Date().getTime()) {
+    if (userIn.accessToken && userIn.refreshToken && (!userIn.tokenExpires || userIn.tokenExpires < new Date().getTime())) {
       let accessToken = await this.authService.refreshAccessToken(userIn.refreshToken);
       userIn.accessToken = accessToken;
       userIn.tokenExpires = await this.getAcessTokenExpiration(userIn.accessToken);

@@ -3,9 +3,9 @@ import { WeatherPoint } from '../types/weatherpoint.type';
 
 export class UserEntity {
 
- constructor(public firstName: string,
-             public lastName: string,
+ constructor(public displayName: string,
              public email: string,
+             public authId?: string,
              public picture?: string,
              public zipCode?: string,
              public address?: string,
