@@ -17,9 +17,26 @@ export class GoogleController {
     res.redirect(this.authService.getAuthUrl(params));
   }
 
-  @Get('exchangeCode')
-  async getAccessFromOfflineCode(@Query() params) {
-    return this.authService.exchangeCodeForAccessAndRefreshToken(params.code);
+  @Post('exchangeCode')
+  async exchangeCode(@Body() authInfo) {
+    return this.authService.exchangeCodeForAccessAndRefreshToken(authInfo.code);
+  }
+
+  @Post('updateUserTokens')
+  async updateUserTokens(@Body() authInfo) {
+    console.log('update user tokens');
+    console.log(authInfo);
+
+    let accessToken = authInfo.access_token;
+    let refreshToken = authInfo.refresh_token;
+    let userId = authInfo.email;
+
+    let user = await this.userService.getUser(userId);
+    user.accessToken = accessToken;
+    user.refreshToken = refreshToken;
+
+    let userResponse = await this.userService.updateUser(user);
+    return userResponse;
   }
 
   @Get('qrcode')
@@ -32,7 +49,7 @@ export class GoogleController {
 
   @UseGuards(AuthGuard('custom'))
   @Post('testGAPI')
-  async testGAPI(@Request() req, @Body() authInfo) {
+  async testGAPI(@Request() req) {
     const user = req.user;
     console.log('');
     console.log('');
@@ -49,8 +66,6 @@ export class GoogleController {
       },
     });
 
-    // See documentation of personFields at
-    // https://developers.google.com/people/api/rest/v1/people/get
     const res = await people.people.get({
       resourceName: 'people/me',
       personFields: 'emailAddresses,names,photos',

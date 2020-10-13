@@ -66,7 +66,7 @@
         console.log('signed in with custom token');
         console.log(JSON.stringify(credentials));
 
-        linkGoogle();
+      //  linkGoogle();
       });
     }
 
@@ -101,9 +101,50 @@
       });
     }
 
-    function offlineSignInCallback(data) {
+    function signIntoFirebaseWithGoogleIdToken(idToken) {
+      firebase.auth().signInWithCredential(
+        firebase.auth.GoogleAuthProvider.credential(idToken));
+    }
+
+    async function linkGoogleCredentialToCurrentUser(idToken) {
+      let tempCredential = firebase.auth.GoogleAuthProvider.credential(idToken);
+
+      firebase.auth().currentUser.linkWithCredential(tempCredential).then(function(result) {
+        // Accounts successfully linked.
+        console.log('linked google account to exisitng account');
+        console.log(result);
+        googleUser = result.user;
+        googleCredential = result.credential;
+        console.log('google credential set');
+        console.log(googleCredential);
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
+
+    async function offlineSignInCallback(data) {
       console.log('offlineSignInCallback');
       console.log(data);
+      $.post('/google/exchangeCode', {code: data.code}).done(async function(exchangedResponse) {
+        let googleIdToken = exchangedResponse.id_token;
+        googleAccessToken = exchangedResponse.access_token;
+        googleRefreshToken = exchangedResponse.refresh_token;
+
+        await linkGoogleCredentialToCurrentUser(googleIdToken);
+
+        //await signIntoFirebaseWithGoogleIdToken(googleIdToken);
+        /*
+
+        let userTokens = {
+          ...exchangedResponse,
+          email: 'jack.kennedy@gmail.com'
+        }
+        $.post('/google/updateUserTokens', userTokens).done(function(updateResponse) {
+          console.log('done updating user tokens');
+          console.log(updateResponse);
+        });
+        */
+      });
     }
 
     function onSignIn(googleUser) {
@@ -119,21 +160,13 @@
     async function testGAPI() {
       let idToken = await firebase.auth().currentUser.getIdToken(true);
 
-      const authInfo = {
-        idToken: idToken,
-        accessToken: googleCredential.accessToken
-      };
-
       $.ajaxSetup({
         beforeSend: function(xhr) {
           xhr.setRequestHeader("Authorization", `Bearer ${idToken}`);
         }
       });
 
-      console.log('calling testGAPI');
-      console.log(authInfo);
-
-      $.post('/google/testGAPI', authInfo).done(function(data) {
+      $.post('/google/testGAPI').done(function(data) {
         console.log('testGAPI');
         console.log(data);
       });

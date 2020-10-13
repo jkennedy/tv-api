@@ -1,4 +1,4 @@
-var infoWindow, address, browserPosition, googleCredential, googleUser;
+var infoWindow, address, browserPosition, googleCredential, googleUser, googleAccessToken, googleRefreshToken;
 
 function setBrowserPosition (position) {
   browserPosition = {
@@ -57,8 +57,8 @@ async function completeRegistration() {
         deviceId: 'K3DYMEHP4CWNH',
         userToken: token,
         authId: googleUser.uid,
-        googleAccessToken: googleCredential.accessToken,
-        googleRefreshToken: googleCredential.refreshToken ? googleCredential.refreshToken : googleUser.refreshToken
+        googleAccessToken: googleAccessToken,
+        googleRefreshToken: googleRefreshToken
       };
 
       var xhttp = new XMLHttpRequest();

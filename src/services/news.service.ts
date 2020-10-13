@@ -42,15 +42,15 @@ export class NewsService {
   async refreshNationalNews(country = 'UNKNOWN', user) {
     let newsJSON = null;
 
-    //if (this.config._isLocal() || (!user || !user.accessToken)) {
-    //  newsJSON = this.getMockNewsYoutube();
-  //  }
-  //  else {
+    if (this.config._isLocal() || (!user || !user.accessToken)) {
+      newsJSON = this.getMockNewsYoutube();
+    }
+    else {
       user = await this.userService.confirmFreshAccessToken(user);
       newsJSON = await this.getYoutube(user.accessToken);
       this.cacheService.cacheContent ('news', newsJSON, country, 3);
       this.previewService.generateNewsPreviewImage (newsJSON, true);
-  //  }
+    }
 
     return newsJSON;
   }

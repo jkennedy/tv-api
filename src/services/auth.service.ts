@@ -26,10 +26,8 @@ export class AuthService {
     return authUrl;
   }
 
-  async exchangeCodeForAccessAndRefreshToken (codeIn: string) {
-    let code = '4/5AFAp49AinPhyb4sLywj7dzOV4nfrP53jXNPrAb4yHgMkbLDAT4DyPXiNbmx6OOv1I3M-Y8OFyZFHXGstCtCIhQ';
+  async exchangeCodeForAccessAndRefreshToken (code: string) {
     let tokenResponse;
-
     let redirect = 'postmessage';
     let url = `https://oauth2.googleapis.com/token`;
     let clientId = '366836412672-agghpni1ogp561vpktd0m7fhdbqmke2e.apps.googleusercontent.com'
