@@ -6,8 +6,8 @@ import { AuthGuard } from '@nestjs/passport';
 export class NewsController {
   constructor(private readonly newsService: NewsService) { }
 
-  @UseGuards(AuthGuard('custom'))
   @Get('nationalNews')
+  @UseGuards(AuthGuard('custom'))
   async getNationalNews(@Query() params) {
     return this.newsService.getNationalNews(params.uuid);
   }

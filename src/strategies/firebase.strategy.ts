@@ -13,12 +13,28 @@ export class FireBaseStrategy extends PassportStrategy(Strategy) {
 
   async validate(req): Promise<any> {
     let idToken = req.headers.authorization;
-    idToken = idToken ? idToken.split(' ')[1] : '';
-    let decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken);
-    //let user = await firebaseAdmin.auth().getUser(decodedToken.uid);
+    let user;
 
-    let user = await this.userService.getUser(decodedToken.email);
-    user = await this.userService.confirmFreshAccessToken(user);
+    try {
+      idToken = idToken ? idToken.split(' ')[1] : '';
+      let decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken);
+      //let user = await firebaseAdmin.auth().getUser(decodedToken.uid);
+
+      user = await this.userService.getUser(decodedToken.email);
+
+      // fall back to the auth user if the app user isn't created yet
+      user = user ? user : await firebaseAdmin.auth().getUser(decodedToken.uid);
+    }
+    catch (err) {
+
+      console.log('error validating user: ');
+      console.log(idToken);
+      console.log('err:');
+      console.log(err);
+    }
+
+    if (!user)
+      throw new UnauthorizedException();
 
     return user;
   }

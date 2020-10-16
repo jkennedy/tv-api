@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService} from '@nestjs/common';
 import { ConfigService } from 'nestjs-config';
+import * as firebaseAdmin from 'firebase-admin';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +35,6 @@ export class AuthService {
     let clientSecret = '_QXbnCLw7GnLkAdSs-CK7UMJ'
     let grantType = 'authorization_code';
     let dataString = `code=${encodeURIComponent(code)}&client_id=${encodeURIComponent(clientId)}&client_secret=${encodeURIComponent(clientSecret)}&redirect_uri=${redirect}&grant_type=${encodeURIComponent(grantType)}`;
-    console.log(dataString);
 
     let accessTokenDetailRequest = this.httpService.axiosRef({
       url: url,
@@ -49,8 +49,6 @@ export class AuthService {
     await accessTokenDetailRequest
     .then((response) => {
       tokenResponse = response.data;
-      console.log('got response:');
-      console.log(JSON.stringify(tokenResponse));
     })
     .catch(function(err) {
         console.log('error loading access token from code');

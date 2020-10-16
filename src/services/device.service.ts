@@ -32,7 +32,9 @@ export class DeviceService {
     // let validRegistration = device.registrationCode == registrationCode && device.registrationExpiration <= new Date().getTime();
 
      let validRegistration = device.registrationCode == registrationCode;
-
+     console.log('comparing:' + device.registrationCode);
+     console.log('       to:' + registrationCode);
+     
      return validRegistration ? {userToken: device.userToken} : '';
   }
 

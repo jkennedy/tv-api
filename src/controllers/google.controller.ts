@@ -24,9 +24,6 @@ export class GoogleController {
 
   @Post('updateUserTokens')
   async updateUserTokens(@Body() authInfo) {
-    console.log('update user tokens');
-    console.log(authInfo);
-
     let accessToken = authInfo.access_token;
     let refreshToken = authInfo.refresh_token;
     let userId = authInfo.email;
@@ -41,7 +38,6 @@ export class GoogleController {
 
   @Get('qrcode')
   async getQRCode ( @Query() params) {
-
     const url = await QRCode.toDataURL(this.authService.getAuthUrl(params), { width: '500', height: '500' });
 
     return url;
@@ -71,12 +67,6 @@ export class GoogleController {
       personFields: 'emailAddresses,names,photos',
     });
     console.log(res.data);
-  }
-
-  @Post('code')
-  async exchangeCodeForAccessAndRefreshToken(@Body() response) {
-    console.log('exchangeCodeResponse');
-    console.log(response);
   }
 
   @Get('redirect')
