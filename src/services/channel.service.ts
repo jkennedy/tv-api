@@ -15,7 +15,7 @@ export class ChannelService {
         "channels": [
           {
             "name": "National News",
-            "icon": `${baseUrl}/image/channels/national-news.jpg`,
+            "icon": `fas fa-newspaper`,
             "route": "/news/nationalNews",
             "description": "Current Events For the Nation",
             "palette": ['#1a200d', '#b4b0bd', '#876849'],
@@ -23,7 +23,7 @@ export class ChannelService {
           },
           {
             "name": "Local News",
-            "icon": `${baseUrl}/image/channels/local-news.jpg`,
+            "icon": `fas fa-map-marker-alt`,
             "route": "/news/localNews",
             "description": "Current Events From Around Town",
             "palette": ['#6088af', '#0f2134', '#e9f0e6'],
@@ -31,7 +31,7 @@ export class ChannelService {
           },
           {
             "name": "Local Weather",
-            "icon": `${baseUrl}/image/channels/local-weather.jpg`,
+            "icon": `fas fa-cloud-sun-rain`,
             "route": "/channel/localWeather",
             "description": "Current Events From Around Town",
             "palette": ['#331b45', '#9a5965', '#7454c2'],
@@ -39,7 +39,7 @@ export class ChannelService {
           },
           {
             "name": "Comedy",
-            "icon": `${baseUrl}/image/channels/comedy.jpg`,
+            "icon": `fas fa-grin-beam`,
             "route": "/channel/comedy",
             "channelSource": "youtube",
             "channelId": "UCUsN5ZwHx2kILm84-jPDeXw",

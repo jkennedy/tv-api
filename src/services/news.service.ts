@@ -26,9 +26,6 @@ export class NewsService {
     let device = await this.deviceService.get(deviceId);
     let user = await this.userService.getUserForCountry(device.defaultCountry);
 
-    console.log('getNationalNews');
-    console.log(JSON.stringify(device));
-    console.log(JSON.stringify(user));
     return this.getNationalNewsForUser(user);
   }
 
