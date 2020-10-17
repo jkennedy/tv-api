@@ -13,7 +13,8 @@ export class AppController {
 
   @Get('userSettings')
   @Render('userSettings')
-  async userSettings( @Req() req: Request,  @Res() res: Response) {
+  async userSettings(@Query() params) {
+     return { deviceId: params.deviceId };
   }
 
   @Get('auth')

@@ -1,4 +1,4 @@
-var infoWindow, address, browserPosition, customToken, authToken, firebaseUserId, googleCredential, googleAccessToken, googleRefreshToken;
+var infoWindow, deviceId, registrationEmail, address, browserPosition, customToken, authToken, firebaseUserId, googleCredential, googleAccessToken, googleRefreshToken;
 
 $(document).ready(function(){
   firebase.auth().onAuthStateChanged(function(user) {
@@ -69,9 +69,11 @@ function updateUIForCurrentUser() {
   let userSrc = userInfo ? userInfo : user;
 
   if (userSrc) {
+    registrationEmail = userSrc.email;
     $('#userName').text(userSrc.displayName);
-    $('#userEmail').text(userSrc.email);
+    $('#userEmail').text(registrationEmail);
     $('#userProfilePicture').attr('src', userSrc.photoURL);
+
   }
 }
 
@@ -129,8 +131,6 @@ function start() {
   });
 }
 
-
-
 function setBrowserPosition (position) {
   browserPosition = {
     lat: position.coords.latitude,
@@ -140,7 +140,8 @@ function setBrowserPosition (position) {
   getAddressFromPosition(browserPosition);
 }
 
-async function initialize() {
+async function initialize(deviceIdIn) {
+    deviceId = deviceIdIn;
     getPositionFromBrowser();
 }
 
@@ -181,9 +182,9 @@ async function completeRegistration() {
         address: address.formattedAddress,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         country: address.countryRegion,
-        email: 'jack.kennedy@gmail.com',
+        email: registrationEmail,
         registrationCode: registrationCode,
-        deviceId: 'K3DYMEHP4CWNH',
+        deviceId: deviceId,
         userToken: customToken,
         authId: firebaseUserId,
         googleAccessToken: googleAccessToken,
@@ -213,8 +214,6 @@ async function completeRegistration() {
     });
   }
 }
-
-
 
 function geocodeCallback(data) {
   address = data && data.resourceSets && data.resourceSets[0].resources ? data.resourceSets[0].resources[0].address : '';

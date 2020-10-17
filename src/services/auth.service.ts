@@ -27,6 +27,19 @@ export class AuthService {
     return authUrl;
   }
 
+  getRegistrationUrl(params): string {
+    let deviceId = params.uuid;
+
+    const baseUrl = this.config._baseUrl();
+    const encodedDeviceId = encodeURIComponent(deviceId);
+
+    let registrationUrl = `${baseUrl}/userSettings?deviceId=${encodedDeviceId}`;
+
+    console.log(registrationUrl);
+
+    return registrationUrl;
+  }
+
   async exchangeCodeForAccessAndRefreshToken (code: string) {
     let tokenResponse;
     let redirect = 'postmessage';

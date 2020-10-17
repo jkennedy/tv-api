@@ -38,7 +38,7 @@ export class GoogleController {
 
   @Get('qrcode')
   async getQRCode ( @Query() params) {
-    const url = await QRCode.toDataURL(this.authService.getAuthUrl(params), { width: '500', height: '500' });
+    const url = await QRCode.toDataURL(this.authService.getRegistrationUrl(params), { width: '500', height: '500' });
 
     return url;
   }
