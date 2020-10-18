@@ -34,7 +34,7 @@ export class DeviceService {
      let validRegistration = device.registrationCode == registrationCode;
      console.log('comparing:' + device.registrationCode);
      console.log('       to:' + registrationCode);
-     
+
      return validRegistration ? {userToken: device.userToken} : '';
   }
 
@@ -53,7 +53,7 @@ export class DeviceService {
      let device = await this.get(deviceId);
 
      device.registrationCode = '';
-     device.users.push (userId);
+     device.users = _.union(device.users, [userId]);
      device.defaultCountry = country ? country : device.defaultCountry;
      device.defaultTimeZone = timezone ? timezone : device.defaultTimeZone;
      device.defaultGeoPoint = geoPoint ? geoPoint : device.defaultGeoPoint;

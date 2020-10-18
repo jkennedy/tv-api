@@ -17,7 +17,8 @@ export class PreviewController {
 
   @Get('sections')
   getSections(@Query() params) {
-    console.log('TV Refreshing Sections: ' + new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}));
+    let deviceId = params.uuid;
+    console.log('TV Refreshing Sections: ' + deviceId + ' - '  + new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}));
 
     let sections =  this.previewService.getSections(params.uuid);
     return sections;
@@ -30,9 +31,10 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getTime( @Res() res, @Query() params) {
-    console.log('TV Refreshing Time Preview: ' + new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}));
+    let deviceId = params.uuid;
+    console.log('TV Refreshing Time Preview: ' + deviceId + ' - '  + new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}));
 
-    let device = await this.deviceService.get(params.uuid);
+    let device = await this.deviceService.get(deviceId);
     let timezone = device && device.defaultTimeZone ? device.defaultTimeZone : 'America/New_York';
 
     this.previewService.generateTimePreviewImage(timezone).then(image => {
@@ -49,9 +51,10 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getNews( @Res() res, @Query() params) {
-    console.log('TV Refreshing News Preview: ' + new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}));
+    let deviceId = params.uuid;
+    console.log('TV Refreshing News Preview: ' + deviceId + ' - '  + new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}));
 
-    const news = await this.newsService.getNationalNews(params.uuid);
+    const news = await this.newsService.getNationalNews(deviceId);
     this.previewService.generateNewsPreviewImage(news).then(image => {
         res.end(image, 'binary');
     }).catch (err =>  {
@@ -66,9 +69,10 @@ export class PreviewController {
   @Header('Expires', '-1')
   @Header('Pragma', 'no-cache')
   async getWeather( @Res() res, @Query() params) {
-    console.log('TV Refreshing Weather Preview: ' + new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}));
+    let deviceId = params.uuid;
+    console.log('TV Refreshing Weather Preview: Device:' + deviceId + ' - ' + new Date().toLocaleTimeString("en-US", {timeZone: "America/New_York"}));
 
-    let device = await this.deviceService.get(params.uuid);
+    let device = await this.deviceService.get(deviceId);
     let weatherPoint = device.defaultWeatherPoint;
     let forecast = await this.weatherService.getForecast(weatherPoint);
 

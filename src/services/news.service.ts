@@ -7,7 +7,7 @@ import { DeviceService } from '../services/device.service';
 import { PreviewService } from '../services/preview.service';
 import { Interval } from '@nestjs/schedule';
 import * as moment from 'moment-timezone';
-import { MOCK_YOUTUBE_NEWS } from '../mocks/news.youtube';
+import { MOCK_YOUTUBE_NATIONAL_NEWS, MOCK_YOUTUBE_LOCAL_NEWS } from '../mocks/news.youtube';
 
 @Injectable()
 export class NewsService {
@@ -36,11 +36,25 @@ export class NewsService {
     return cachedNews ? JSON.parse(cachedNews.json) : this.refreshNationalNews(country, user);
   }
 
+  async getLocalNews(zipCode) {
+    let cachedNews = await this.cacheService.getCachedContent('news', zipCode);
+
+    return cachedNews ? JSON.parse(cachedNews.json) : this.refreshLocalNews(zipCode);
+  }
+
+  async refreshLocalNews(zipCode = 'UNKNOWN') {
+    let newsJSON = null;
+
+    newsJSON = this.getMockLocalNewsYoutube();
+
+    return newsJSON;
+  }
+
   async refreshNationalNews(country = 'UNKNOWN', user) {
     let newsJSON = null;
 
     if (this.config._isLocal() || (!user || !user.accessToken)) {
-      newsJSON = this.getMockNewsYoutube();
+      newsJSON = this.getMockNationalNewsYoutube();
     }
     else {
       user = await this.userService.confirmFreshAccessToken(user);
@@ -91,7 +105,7 @@ export class NewsService {
     // return the mock news if Youtube API failed
     if (!(mergedVideos && mergedVideos.length)) {
         console.log('Youtube Response Empty: Returning Mock News');
-        mergedVideos = this.getMockNewsYoutube().items;
+        mergedVideos = this.getMockNationalNewsYoutube().items;
     }
 
     var data = {
@@ -101,7 +115,11 @@ export class NewsService {
     return data;
   }
 
-  getMockNewsYoutube() {
-    return MOCK_YOUTUBE_NEWS;
+  getMockNationalNewsYoutube() {
+    return MOCK_YOUTUBE_NATIONAL_NEWS;
+  }
+
+  getMockLocalNewsYoutube() {
+    return MOCK_YOUTUBE_LOCAL_NEWS;
   }
 }

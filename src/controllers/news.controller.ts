@@ -1,4 +1,4 @@
-import { Controller, Query, Get, UseGuards } from '@nestjs/common';
+import { Controller, Query, Get, UseGuards, Request } from '@nestjs/common';
 import { NewsService } from '../services/news.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -10,5 +10,12 @@ export class NewsController {
   @UseGuards(AuthGuard('custom'))
   async getNationalNews(@Query() params) {
     return this.newsService.getNationalNews(params.uuid);
+  }
+
+  @Get('localNews')
+  @UseGuards(AuthGuard('custom'))
+  async getLocalNews(@Request() req) {
+    const user = req.user;
+    return this.newsService.getLocalNews(user.zipCode);
   }
 }
