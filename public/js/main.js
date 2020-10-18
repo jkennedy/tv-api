@@ -12,6 +12,8 @@ $(document).ready(function(){
   });
 
   $('#signinButton').click(function() {
+    getPositionFromBrowser();
+
     let config = {
       consent: true
     }
@@ -142,7 +144,6 @@ function setBrowserPosition (position) {
 
 async function initialize(deviceIdIn) {
     deviceId = deviceIdIn;
-    getPositionFromBrowser();
 }
 
 function getPositionFromBrowser() {
