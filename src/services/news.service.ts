@@ -53,6 +53,8 @@ export class NewsService {
   async refreshNationalNews(country = 'UNKNOWN', user) {
     let newsJSON = null;
 
+    console.log('refreshNationalNews: ' + user);
+
     if (this.config._isLocal() || (!user || !user.accessToken)) {
       newsJSON = this.getMockNationalNewsYoutube();
     }

@@ -12,8 +12,6 @@ $(document).ready(function(){
   });
 
   $('#signinButton').click(function() {
-    getPositionFromBrowser();
-
     let config = {
       consent: true
     }
@@ -97,6 +95,7 @@ function connectCustomTokenUserToGoogleUser () {
       firebase.auth().signInWithCustomToken(customToken).then(credentials => {
         firebase.auth().currentUser.linkWithCredential(googleCredential).then(result => {
           updateUIForCurrentUser();
+          getPositionFromBrowser();
         });
       });
     }).catch(function(error) {
