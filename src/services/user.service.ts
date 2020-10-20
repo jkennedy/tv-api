@@ -199,7 +199,7 @@ export class UserService {
 
   async confirmFreshAccessToken(userIn: UserEntity): Promise<UserEntity> {
 
-    if (userIn.accessToken && userIn.refreshToken && (!userIn.tokenExpires || userIn.tokenExpires < new Date().getTime())) {
+    if (userIn.refreshToken && (!userIn.tokenExpires || userIn.tokenExpires < new Date().getTime())) {
       let accessToken = await this.authService.refreshAccessToken(userIn.refreshToken);
       userIn.accessToken = accessToken;
       userIn.tokenExpires = await this.getAcessTokenExpiration(userIn.accessToken);
