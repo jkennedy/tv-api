@@ -56,6 +56,9 @@ export class NewsService {
     console.log('refreshNationalNews: ' + user);
 
     if (this.config._isLocal() || (!user || !user.accessToken)) {
+      console.log('returning mock news');
+      console.log(this.config._isLocal());
+      console.log(JSON.stringify(user));
       newsJSON = this.getMockNationalNewsYoutube();
     }
     else {
