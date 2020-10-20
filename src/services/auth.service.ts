@@ -80,6 +80,10 @@ export class AuthService {
     let grantType = 'refresh_token';
     let dataString = `client_id=${encodeURIComponent(clientId)}&client_secret=${encodeURIComponent(clientSecret)}&grant_type=${grantType}&refresh_token=${encodeURIComponent(refreshToken)}`;
 
+    console.log('refresh access token');
+    console.log(url);
+    console.log(dataString);
+
     let accessTokenDetailRequest = this.httpService.axiosRef({
       url: url,
       method: 'POST',
@@ -93,6 +97,8 @@ export class AuthService {
     await accessTokenDetailRequest
     .then((response) => {
       tokenResponse = response.data;
+      console.log('refresh response');
+      console.log(response);
     })
     .catch(function(err) {
         console.log('error loading refresh token');
