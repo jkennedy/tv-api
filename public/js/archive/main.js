@@ -62,8 +62,6 @@ async function linkGoogleCredentialToCurrentUser(idToken) {
 }
 
 async function offlineSignInCallback(data) {
-  console.log('offlineSignInCallback');
-  console.log(data);
   $.post('/google/exchangeCode', {code: data.code}).done(async function(exchangedResponse) {
     let googleIdToken = exchangedResponse.id_token;
     googleAccessToken = exchangedResponse.access_token;
