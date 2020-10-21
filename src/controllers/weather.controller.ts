@@ -1,10 +1,11 @@
-import { Controller, Query, Get } from '@nestjs/common';
+import { Controller, Query, Get, UseGuards, Request } from '@nestjs/common';
 import { WeatherService } from '../services/weather.service';
 import { GeoPoint } from '../types/geopoint.type';
 import { WeatherPoint } from '../types/weatherpoint.type';
-
 import { DeviceService } from '../services/device.service';
 import { DeviceEntity } from '../entities/device.entity';
+import { AuthGuard } from '@nestjs/passport';
+
 
 @Controller('weather')
 export class WeatherController {
@@ -15,15 +16,21 @@ export class WeatherController {
     return await this.deviceService.get('K3DYMEHP4CWNH');
   }
 
+  @Get('localWeather')
+  @UseGuards(AuthGuard('custom'))
+  async getLocalWeatherVideos( @Request() req) {
+    return this.weatherService.getLocalWeatherVideos(req.user);
+  }
+
   @Get('forecast')
-  async getForecast(@Query() params) {
+  async getForecast( @Query() params) {
     let device = await this.getDevice();
     let weatherPoint = device.defaultWeatherPoint;
     return this.weatherService.getForecast(weatherPoint);
   }
 
   @Get('observations')
-  async getObservations(@Query() params) {
+  async getObservations( @Query() params) {
     let device = await this.getDevice();
     let weatherPoint = device.defaultWeatherPoint;
     return this.weatherService.getObservations(weatherPoint);

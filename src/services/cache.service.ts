@@ -44,10 +44,7 @@ export class CacheService {
     const cacheRef = this.fireStore.collection('cache');
     const cachedItems = [];
 
-    cacheRef.where('relatedTo', '==', relatedTo);
-    cacheRef.where('type', '==', type);
-
-    const queryRef = await cacheRef.get();
+    const queryRef = await cacheRef.where('relatedTo', '==', relatedTo).where('type', '==', type).get();
 
     queryRef.forEach(doc => {
       cachedItems.push(doc.data());

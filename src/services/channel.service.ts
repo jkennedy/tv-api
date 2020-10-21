@@ -32,8 +32,8 @@ export class ChannelService {
           {
             "name": "Local Weather",
             "icon": `fas fa-cloud-sun-rain`,
-            "route": "/channel/localWeather",
-            "description": "Current Events From Around Town",
+            "route": "/weather/localWeather",
+            "description": "Local Weather Reports",
             "palette": ['#331b45', '#9a5965', '#7454c2'],
             "id": "localWeatherId"
           },

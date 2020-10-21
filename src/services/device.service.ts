@@ -33,6 +33,9 @@ export class DeviceService {
 
      let validRegistration = device.registrationCode == registrationCode;
 
+     console.log('pollDeviceForReg:'  + validRegistration);
+     console.log(device.userToken);
+
      return validRegistration ? {userToken: device.userToken} : '';
   }
 

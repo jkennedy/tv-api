@@ -16,6 +16,6 @@ export class NewsController {
   @UseGuards(AuthGuard('custom'))
   async getLocalNews(@Request() req) {
     const user = req.user;
-    return this.newsService.getLocalNews(user.zipCode);
+    return this.newsService.getLocalNews(user);
   }
 }
