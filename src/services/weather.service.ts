@@ -101,16 +101,14 @@ export class WeatherService {
   async refreshLocalWeather(user: UserEntity) {
     let json = null;
 
-    console.log('refreshLocalWeather: ');
-/*
     if (this.config._isLocal() || !user) {
       newsJSON = this.getMockLocalNewsYoutube();
     }
-    else {*/
+    else {
       user = await this.userService.confirmFreshAccessToken(user);
       json = await this.getYoutubeLocalWeather(user.accessToken);
       this.cacheService.cacheContent ('weather', json, user.zipCode, 3);
-  //  }
+    }
 
     return json;
   }
@@ -148,8 +146,6 @@ export class WeatherService {
     var data = {
       items: mergedVideos
     }
-
-    console.log(JSON.stringify(data));
 
     return data;
   }
