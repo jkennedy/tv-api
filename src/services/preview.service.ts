@@ -106,7 +106,6 @@ export class PreviewService {
     }
     else if (minutes >= 50 && minutes < 60) {
       timeDescription = ":55";
-      m.hours(m.hour() + 1);
     }
 
     timeDescription =  'About ' + m.format('h') + timeDescription;
