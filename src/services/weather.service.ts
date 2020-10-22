@@ -4,10 +4,11 @@ import { UserEntity } from '../entities/user.entity';
 import { CacheService } from '../services/cache.service';
 import { UserService } from '../services/user.service';
 import { ForecastEntity } from '../entities/forecast.entity';
+import { ConfigService } from 'nestjs-config';
 import { GeoPoint } from '../types/geopoint.type';
 import { WeatherPoint } from '../types/weatherpoint.type';
 import { Process, Processor, InjectQueue } from '@nestjs/bull';
-import { MOCK_YOUTUBE_NATIONAL_NEWS, MOCK_YOUTUBE_LOCAL_NEWS } from '../mocks/news.youtube';
+import { MOCK_YOUTUBE_LOCAL_WEATHER } from '../mocks/weather.youtube';
 import { Queue, Job } from 'bull';
 import * as _ from "lodash";
 
@@ -15,7 +16,8 @@ import * as _ from "lodash";
 @Processor('mychannel')
 export class WeatherService {
   constructor(private readonly httpService: HttpService, private readonly cacheService: CacheService,
-              private readonly userService: UserService, @InjectQueue('mychannel') private mychannelQueue: Queue) { }
+              private readonly userService: UserService, private readonly config: ConfigService,
+              @InjectQueue('mychannel') private mychannelQueue: Queue) { }
 
    async handleUserRegistered(userId, geoPoint) {
      let weatherPoint = await this.getWeatherPoint (geoPoint);
@@ -93,16 +95,16 @@ export class WeatherService {
   }
 
   async getLocalWeatherVideos (user: UserEntity) {
-    let cachedNews = await this.cacheService.getCachedContent('weather', user.zipCode);
+    let cached = await this.cacheService.getCachedContent('weather', user.zipCode);
 
-    return cachedNews ? JSON.parse(cachedNews.json) : this.refreshLocalWeather(user);
+    return cached ? JSON.parse(cached.json) : this.refreshLocalWeather(user);
   }
 
   async refreshLocalWeather(user: UserEntity) {
     let json = null;
 
     if (this.config._isLocal() || !user) {
-      newsJSON = this.getMockLocalNewsYoutube();
+      json = this.getMockLocalWeatherYoutube();
     }
     else {
       user = await this.userService.confirmFreshAccessToken(user);
@@ -140,13 +142,19 @@ export class WeatherService {
     // return the mock news if Youtube API failed
     if (!(mergedVideos && mergedVideos.length)) {
         console.log('Youtube Response Empty: Returning Mock News');
-        mergedVideos = MOCK_YOUTUBE_LOCAL_NEWS.items;
+        mergedVideos = MOCK_YOUTUBE_LOCAL_WEATHER.items;
     }
 
     var data = {
       items: mergedVideos
     }
 
+    console.log(data);
+
     return data;
+  }
+
+  getMockLocalWeatherYoutube() {
+    return MOCK_YOUTUBE_LOCAL_WEATHER;
   }
 }

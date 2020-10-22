@@ -11,16 +11,4 @@ export class ChannelController {
   async getChannels(@Query() params) {
     return this.channelService.getChannels(params.uuid);
   }
-
-  @Get('comedy')
-  @UseGuards(AuthGuard('custom'))
-  async getComedy(@Query() params) {
-    return this.channelService.getComedy(params.uuid);
-  }
-
-  @Get('localWeather')
-  @UseGuards(AuthGuard('custom'))
-  async getLocalWeather(@Query() params) {
-    return this.channelService.getLocalWeather(params.uuid);
-  }
 }
