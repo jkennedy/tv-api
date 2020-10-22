@@ -120,7 +120,7 @@ export class WeatherService {
 
     console.log('Loading Local News From Youtube');
 
-    let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&type=video&videoEmbeddable=true';
+    let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&order=date&type=video&videoEmbeddable=true';
     let searchRequest = `${baseYouTube}&&q=tampa%20weather&access_token=${accessToken}`;
 
     const searchApi =  this.httpService.axiosRef({url: searchRequest, method: 'GET',responseType: 'json'});

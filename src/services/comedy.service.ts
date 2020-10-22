@@ -40,7 +40,7 @@ export class ComedyService {
 
     console.log('Loading Comedy From Youtube');
 
-    let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&type=video&videoEmbeddable=true';
+    let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&order=date&type=video&videoEmbeddable=true';
     let dailyRequest = `${baseYouTube}&channelId=UCwWhs_6x42TyRM4Wstoq8HA&access_token=${accessToken}`;
     let colbertRequest = `${baseYouTube}&channelId=UCMtFAi84ehTSYSE9XoHefig&access_token=${accessToken}`;
     let sethRequest = `${baseYouTube}&channelId=UCVTyTA7-g9nopHeHbeuvpRA&access_token=${accessToken}`;

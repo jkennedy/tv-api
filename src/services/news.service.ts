@@ -45,7 +45,7 @@ export class NewsService {
 
   async refreshLocalNews(user: UserEntity) {
     let newsJSON = null;
-        
+
     if (this.config._isLocal() || !user) {
       newsJSON = this.getMockLocalNewsYoutube();
     }
@@ -82,7 +82,7 @@ export class NewsService {
 
     console.log('Loading News From Youtube');
 
-    let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&type=video&videoEmbeddable=true';
+    let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&order=date&type=video&videoEmbeddable=true';
     let cnnRequest = `${baseYouTube}&channelId=UCupvZG-5ko_eiXAupbDfxWw&access_token=${accessToken}`;
     let nbcNewsRequest = `${baseYouTube}&channelId=UCeY0bbntWzzVIaj2z3QigXg&access_token=${accessToken}`;
     let cbsNewsRequest = `${baseYouTube}&channelId=UC8p1vwvWtl6T73JiExfWs1g&access_token=${accessToken}`;
@@ -131,7 +131,7 @@ export class NewsService {
 
     console.log('Loading Local News From Youtube');
 
-    let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&order=date&type=video&videoEmbeddable=true';
+    let baseYouTube = 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&order=date&type=video&videoEmbeddable=true';
     let abcRequest = `${baseYouTube}&channelId=UCupvZG-UCK0UUsCjtMRNtS3BPh1Yc4w&access_token=${accessToken}`;
     let foxRequest = `${baseYouTube}&channelId=UC13mSI38YWz5zfvxXDPpePA&access_token=${accessToken}`;
 
