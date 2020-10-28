@@ -1,7 +1,6 @@
-import { Controller, Query, Get, Request, Req, Res, UseGuards, Post, Body } from '@nestjs/common';
+import { Controller, Query, Get, Request, Req, Res, Post, Body } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
-import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import QRCode = require("qrcode");
 import { people_v1 } from 'googleapis';
@@ -12,7 +11,6 @@ export class GoogleController {
   constructor(private readonly userService: UserService, private readonly authService: AuthService) { }
 
   @Get()
-  //@UseGuards(AuthGuard('google'))
   async googleAuth( @Query() params, @Res() res: Response) {
     res.redirect(this.authService.getAuthUrl(params));
   }
@@ -41,32 +39,6 @@ export class GoogleController {
     const url = await QRCode.toDataURL(this.authService.getRegistrationUrl(params), { width: '500', height: '500' });
 
     return url;
-  }
-
-  @UseGuards(AuthGuard('custom'))
-  @Post('testGAPI')
-  async testGAPI(@Request() req) {
-    const user = req.user;
-    console.log('');
-    console.log('');
-    console.log('getGAPI');
-    console.log(user);
-
-    const accessToken = user.accessToken;
-
-    const people = google.people({
-      version: 'v1',
-      // this header will be present for every request
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const res = await people.people.get({
-      resourceName: 'people/me',
-      personFields: 'emailAddresses,names,photos',
-    });
-    console.log(res.data);
   }
 
   @Get('redirect')

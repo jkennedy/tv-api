@@ -3,6 +3,7 @@ import { BullModule } from '@nestjs/bull';
 import { AppController} from './controllers/app.controller';
 import { GoogleController} from './controllers/google.controller';
 import { NewsController} from './controllers/news.controller';
+import { EventController} from './controllers/event.controller';
 import { ComedyController} from './controllers/comedy.controller';
 import { DeviceController} from './controllers/device.controller';
 import { WeatherController} from './controllers/weather.controller';
@@ -13,6 +14,7 @@ import { AppService } from './services/app.service';
 import { AuthService } from './services/auth.service';
 import { CacheService } from './services/cache.service';
 import { NewsService } from './services/news.service';
+import { EventService } from './services/event.service';
 import { DeviceService } from './services/device.service';
 import { WeatherService } from './services/weather.service';
 import { PreviewService } from './services/preview.service';
@@ -48,7 +50,7 @@ import * as path from 'path';
       },
     })
   ],
-  controllers: [AppController, GoogleController, NewsController, DeviceController, WeatherController, PreviewController, UserController, ChannelController, ComedyController],
-  providers: [AuthService, AppService, CacheService, NewsService, DeviceService, WeatherService, PreviewService, UserService, ComedyService, UserProcessor, ChannelService, FireBaseStrategy],
+  controllers: [AppController, GoogleController, NewsController, EventController, DeviceController, WeatherController, PreviewController, UserController, ChannelController, ComedyController],
+  providers: [AuthService, AppService, CacheService, NewsService, EventService, DeviceService, WeatherService, PreviewService, UserService, ComedyService, UserProcessor, ChannelService, FireBaseStrategy],
 })
 export class AppModule {}

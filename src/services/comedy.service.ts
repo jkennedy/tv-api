@@ -27,7 +27,6 @@ export class ComedyService {
       json = this.getMockComedyVideos();
     }
     else {
-      user = await this.userService.confirmFreshAccessToken(user);
       json = await this.getYoutubeComedyVideos(user.accessToken);
       this.cacheService.cacheContent ('comedy', json, user.country, 3);
     }

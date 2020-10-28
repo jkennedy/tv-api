@@ -1,7 +1,7 @@
-import { Controller, HttpService, Get, Post, Header, HttpCode, HttpStatus, Req, Res, Param, Query, Body, Render, UseGuards} from '@nestjs/common';
+import { Controller, HttpService, Get, Post, Header, HttpCode, HttpStatus, Req, Res, Param, Query, Body, Render} from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { AppService } from '../services/app.service';
-import { AuthGuard } from '@nestjs/passport';
+import { Auth } from '../decorators/auth.decorator';
 import { Request, Response } from 'express';
 import * as uuid from "uuid";
 
@@ -28,7 +28,7 @@ export class AppController {
   }
 
   @Get('registerUser')
-  @UseGuards(AuthGuard('custom'))
+  @Auth()
   async registerUser () {
     const uid: string = uuid.v4();
     let additionalClaims = {

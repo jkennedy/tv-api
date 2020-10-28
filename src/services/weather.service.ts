@@ -107,7 +107,6 @@ export class WeatherService {
       json = this.getMockLocalWeatherYoutube();
     }
     else {
-      user = await this.userService.confirmFreshAccessToken(user);
       json = await this.getYoutubeLocalWeather(user.accessToken);
       this.cacheService.cacheContent ('weather', json, user.zipCode, 3);
     }

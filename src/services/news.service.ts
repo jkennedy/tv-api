@@ -50,7 +50,6 @@ export class NewsService {
       newsJSON = this.getMockLocalNewsYoutube();
     }
     else {
-      user = await this.userService.confirmFreshAccessToken(user);
       newsJSON = await this.getYoutubeLocalNews(user.accessToken);
       this.cacheService.cacheContent ('news', newsJSON, user.zipCode, 3);
       this.previewService.generateNewsPreviewImage (newsJSON, true);
@@ -68,7 +67,6 @@ export class NewsService {
       newsJSON = this.getMockNationalNewsYoutube();
     }
     else {
-      user = await this.userService.confirmFreshAccessToken(user);
       newsJSON = await this.getYoutubeNationalNews(user.accessToken);
       this.cacheService.cacheContent ('news', newsJSON, country, 3);
       this.previewService.generateNewsPreviewImage (newsJSON, true);
