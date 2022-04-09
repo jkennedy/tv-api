@@ -40,7 +40,7 @@
     "google-auth-library": "^6.0.5",
     "googleapis": "^55.0.0",
     "hbs": "^4.1.1",
-    "moment": "^2.26.0",
+    "moment": "^2.29.2",
     "moment-timezone": "^0.5.31",
     "nestjs-config": "^1.4.7",
     "node-html-to-image": "^2.1.1",
