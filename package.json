@@ -41,7 +41,7 @@
     "googleapis": "^55.0.0",
     "hbs": "^4.1.1",
     "moment": "^2.26.0",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.35",
     "nestjs-config": "^1.4.7",
     "node-html-to-image": "^2.1.1",
     "passport": "^0.4.1",
